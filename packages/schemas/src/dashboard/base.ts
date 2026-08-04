@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IdSchema, IsoDateStringSchema } from '../common.js';
+import { EmailSchema, IdSchema, IsoDateStringSchema } from '../common.js';
 import { UserRoleSchema } from '../user/base.js';
 
 export const StaffPresenceStatusSchema = z.enum(['online', 'away', 'offline']);
@@ -15,7 +15,13 @@ export const BaseStaffPresenceSchema = z.object({
 });
 export type StaffPresence = z.infer<typeof BaseStaffPresenceSchema>;
 
-export const AuditActionSchema = z.enum(['media.deleted', 'settings.updated', 'user.role_updated']);
+export const AuditActionSchema = z.enum([
+  'invitation.accepted',
+  'invitation.created',
+  'media.deleted',
+  'settings.updated',
+  'user.role_updated',
+]);
 export type AuditAction = z.infer<typeof AuditActionSchema>;
 
 export const BaseAuditLogSchema = z.object({
@@ -37,6 +43,18 @@ export const BaseAdminSettingSchema = z.object({
   updatedAt: IsoDateStringSchema,
 });
 export type AdminSetting = z.infer<typeof BaseAdminSettingSchema>;
+
+export const BaseStaffInvitationSchema = z.object({
+  id: IdSchema,
+  email: EmailSchema,
+  role: UserRoleSchema.extract(['support_agent', 'admin']),
+  invitedByUserId: IdSchema,
+  acceptedByUserId: IdSchema.nullable(),
+  expiresAt: IsoDateStringSchema,
+  acceptedAt: IsoDateStringSchema.nullable(),
+  createdAt: IsoDateStringSchema,
+});
+export type StaffInvitation = z.infer<typeof BaseStaffInvitationSchema>;
 
 export const DashboardStatsSchema = z.object({
   openTickets: z.number().int().min(0),

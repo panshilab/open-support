@@ -17,12 +17,15 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@open-support/schemas": "workspace:*",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
     "google-auth-library": "^11.0.0",
     "ioredis": "^5.0.0",
     "multer": "^2.2.0",
     "nestjs-zod": "^5.5.0",
     "nodemailer": "^9.0.3",
     "pg": "^8.0.0",
+    "react": "^19.2.8",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0",
     "typeorm": "^0.3.0",
@@ -33,6 +36,7 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^24.0.0",
     "@types/nodemailer": "^8.0.1",
+    "@types/react": "^19.2.18",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.0"
   }

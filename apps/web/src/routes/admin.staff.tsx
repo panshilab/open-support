@@ -1,6 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
 import CircleIcon from '@mui/icons-material/Circle';
-import { Button, Chip, Grid, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
+import SendIcon from '@mui/icons-material/SendOutlined';
+import {
+  Alert,
+  Button,
+  Chip,
+  Grid,
+  MenuItem,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useFormik } from 'formik';
 
 const staff = [
@@ -16,10 +27,25 @@ export const Route = createFileRoute('/admin/staff')({
 function AdminStaffPage() {
   const form = useFormik({
     initialValues: {
-      email: 'agent@example.com',
+      email: '',
       role: 'support_agent',
     },
-    onSubmit: () => undefined,
+    onSubmit: async (values, helpers) => {
+      helpers.setStatus(undefined);
+      const response = await fetch('/api/admin/staff/invitations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        helpers.setStatus('Unable to send invitation');
+        return;
+      }
+
+      helpers.resetForm();
+      helpers.setStatus('Invitation sent');
+    },
   });
 
   return (
@@ -29,12 +55,18 @@ function AdminStaffPage() {
         <Grid size={{ xs: 12, md: 5 }}>
           <Paper sx={{ p: 3 }}>
             <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-              <Typography variant="h2">Assign role</Typography>
+              <Typography variant="h2">Invite staff</Typography>
+              {form.status ? (
+                <Alert severity={form.status === 'Invitation sent' ? 'success' : 'error'}>
+                  {form.status}
+                </Alert>
+              ) : null}
               <TextField
-                label="User email"
+                label="Email"
                 name="email"
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
+                type="email"
                 value={form.values.email}
               />
               <TextField
@@ -46,10 +78,9 @@ function AdminStaffPage() {
               >
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="support_agent">Support agent</MenuItem>
-                <MenuItem value="user">User</MenuItem>
               </TextField>
-              <Button type="submit" variant="contained">
-                Update role
+              <Button startIcon={<SendIcon />} type="submit" variant="contained">
+                Send invitation
               </Button>
             </Stack>
           </Paper>

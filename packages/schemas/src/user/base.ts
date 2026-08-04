@@ -9,6 +9,7 @@ export const BaseUserSchema = z.object({
   email: EmailSchema,
   name: z.string().trim().min(1).max(120).nullable(),
   role: UserRoleSchema,
+  mustChangePassword: z.boolean().default(false),
   receiveEmailNotifications: z.boolean().default(true),
   receiveNewTicketEmails: z.boolean().default(true),
   createdAt: IsoDateStringSchema,

@@ -9,6 +9,7 @@ export interface SessionUser {
   email: string;
   name: string | null;
   role: UserRole;
+  mustChangePassword: boolean;
 }
 
 interface SessionPayload extends SessionUser {
@@ -25,15 +26,22 @@ export class SessionService {
 
   createToken(user: UserEntity) {
     const payload: SessionPayload = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
+      ...this.toSessionUser(user),
       exp: Math.floor(Date.now() / 1000) + this.env.session.ttlSeconds,
     };
     const encodedPayload = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
     const signature = this.sign(encodedPayload);
     return `${encodedPayload}.${signature}`;
+  }
+
+  toSessionUser(user: UserEntity): SessionUser {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      mustChangePassword: user.mustChangePassword,
+    };
   }
 
   createCookie(user: UserEntity) {
@@ -89,6 +97,7 @@ export class SessionService {
         email: payload.email,
         name: payload.name,
         role: payload.role,
+        mustChangePassword: payload.mustChangePassword ?? false,
       };
     } catch {
       return null;

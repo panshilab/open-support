@@ -1,8 +1,10 @@
 import { Body, Controller, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import {
   AuditLogQueryDto,
+  InviteStaffDto,
   StaffHeartbeatDto,
   type AuditLogQuery,
+  type InviteStaffInput,
   type StaffHeartbeatInput,
   type UpsertAdminSettingInput,
   UpsertAdminSettingDto,
@@ -38,6 +40,18 @@ export class AdminOpsController {
   @Get('staff/presence')
   presence() {
     return this.adminOps.listPresence();
+  }
+
+  @Get('staff/invitations')
+  @Roles('admin')
+  invitations() {
+    return this.adminOps.listInvitations();
+  }
+
+  @Post('staff/invitations')
+  @Roles('admin')
+  inviteStaff(@CurrentUser() user: SessionUser, @Body() body: InviteStaffDto) {
+    return this.adminOps.inviteStaff(user, body as InviteStaffInput);
   }
 
   @Post('staff/heartbeat')

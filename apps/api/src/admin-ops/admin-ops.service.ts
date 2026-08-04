@@ -1,13 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { createHash, randomBytes } from 'node:crypto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import type { AcceptInvitationInput } from '@open-support/schemas/auth';
 import type {
   AuditAction,
   AuditLogQuery,
+  InviteStaffInput,
   StaffHeartbeatInput,
   UpsertAdminSettingInput,
 } from '@open-support/schemas/dashboard';
 import { In, Repository } from 'typeorm';
+import { MailerService } from '../auth/mailer.service';
+import { PasswordService } from '../auth/password.service';
 import type { SessionUser } from '../auth/session.service';
+import { EnvService } from '../config/env.service';
 import { KnowledgeBaseArticleEntity } from '../knowledge-base/entities/knowledge-base-article.entity';
 import { MediaAssetEntity } from '../media/media-asset.entity';
 import { TicketCommentEntity } from '../tickets/entities/ticket-comment.entity';
@@ -15,6 +21,7 @@ import { TicketEntity } from '../tickets/entities/ticket.entity';
 import { UserEntity } from '../users/user.entity';
 import { AdminSettingEntity } from './entities/admin-setting.entity';
 import { AuditLogEntity } from './entities/audit-log.entity';
+import { StaffInvitationEntity } from './entities/staff-invitation.entity';
 import { StaffPresenceEntity } from './entities/staff-presence.entity';
 
 @Injectable()
@@ -22,6 +29,8 @@ export class AdminOpsService {
   constructor(
     @InjectRepository(StaffPresenceEntity)
     private readonly staffPresence: Repository<StaffPresenceEntity>,
+    @InjectRepository(StaffInvitationEntity)
+    private readonly staffInvitations: Repository<StaffInvitationEntity>,
     @InjectRepository(AdminSettingEntity)
     private readonly adminSettings: Repository<AdminSettingEntity>,
     @InjectRepository(AuditLogEntity)
@@ -36,6 +45,9 @@ export class AdminOpsService {
     private readonly articles: Repository<KnowledgeBaseArticleEntity>,
     @InjectRepository(MediaAssetEntity)
     private readonly mediaAssets: Repository<MediaAssetEntity>,
+    private readonly env: EnvService,
+    private readonly mailer: MailerService,
+    private readonly passwords: PasswordService,
   ) {}
 
   async stats() {
@@ -130,6 +142,80 @@ export class AdminOpsService {
     });
   }
 
+  async inviteStaff(actor: SessionUser, input: InviteStaffInput) {
+    const token = randomBytes(32).toString('base64url');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const invitation = await this.staffInvitations.save(
+      this.staffInvitations.create({
+        email: input.email.toLowerCase(),
+        role: input.role,
+        tokenHash: this.hashToken(token),
+        invitedByUserId: actor.id,
+        expiresAt,
+      }),
+    );
+    const invitationUrl = `${this.env.appUrl}/accept-invitation?token=${token}`;
+
+    await this.mailer.sendInvitation(invitation.email, invitationUrl, invitation.role, expiresAt);
+    await this.recordAudit(actor, 'invitation.created', 'staff_invitation', invitation.id, {
+      email: invitation.email,
+      role: invitation.role,
+    });
+
+    return this.toPublicInvitation(invitation);
+  }
+
+  async listInvitations() {
+    const invitations = await this.staffInvitations.find({
+      order: { createdAt: 'DESC' },
+      take: 50,
+    });
+
+    return invitations.map((invitation) => this.toPublicInvitation(invitation));
+  }
+
+  async acceptInvitation(input: AcceptInvitationInput) {
+    const invitation = await this.staffInvitations.findOne({
+      where: { tokenHash: this.hashToken(input.token) },
+    });
+
+    if (!invitation || invitation.acceptedAt) {
+      throw new BadRequestException('Invitation is invalid');
+    }
+
+    if (invitation.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('Invitation has expired');
+    }
+
+    const existingUser = await this.users.findOne({ where: { email: invitation.email } });
+    const user = await this.users.save(
+      this.users.create({
+        ...(existingUser ?? {}),
+        email: invitation.email,
+        name: input.name,
+        role: invitation.role,
+        passwordHash: this.passwords.hash(input.password),
+        mustChangePassword: false,
+      }),
+    );
+
+    invitation.acceptedByUserId = user.id;
+    invitation.acceptedAt = new Date();
+    await this.staffInvitations.save(invitation);
+    await this.auditLogs.save(
+      this.auditLogs.create({
+        actorUserId: user.id,
+        actorEmail: user.email,
+        action: 'invitation.accepted',
+        targetType: 'staff_invitation',
+        targetId: invitation.id,
+        metadata: { role: invitation.role },
+      }),
+    );
+
+    return user;
+  }
+
   settings() {
     return this.adminSettings.find({ order: { key: 'ASC' } });
   }
@@ -179,5 +265,22 @@ export class AdminOpsService {
         metadata: metadata ?? null,
       }),
     );
+  }
+
+  private hashToken(token: string) {
+    return createHash('sha256').update(token).digest('hex');
+  }
+
+  private toPublicInvitation(invitation: StaffInvitationEntity) {
+    return {
+      id: invitation.id,
+      email: invitation.email,
+      role: invitation.role,
+      invitedByUserId: invitation.invitedByUserId,
+      acceptedByUserId: invitation.acceptedByUserId,
+      expiresAt: invitation.expiresAt,
+      acceptedAt: invitation.acceptedAt,
+      createdAt: invitation.createdAt,
+    };
   }
 }

@@ -21,6 +21,12 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 32, default: 'user' })
   role!: UserRole;
 
+  @Column({ name: 'password_hash', type: 'varchar', length: 255, nullable: true })
+  passwordHash!: string | null;
+
+  @Column({ name: 'must_change_password', type: 'boolean', default: false })
+  mustChangePassword!: boolean;
+
   @Column({ name: 'receive_email_notifications', type: 'boolean', default: true })
   receiveEmailNotifications!: boolean;
 

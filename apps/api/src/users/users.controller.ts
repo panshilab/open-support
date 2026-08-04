@@ -12,22 +12,27 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { SessionGuard } from '../auth/session.guard';
-import type { SessionUser } from '../auth/session.service';
+import { SessionService, type SessionUser } from '../auth/session.service';
 import { UsersService } from './users.service';
 
 @Controller('users')
 @UseGuards(SessionGuard)
 export class UsersController {
-  constructor(private readonly users: UsersService) {}
+  constructor(
+    private readonly users: UsersService,
+    private readonly sessions: SessionService,
+  ) {}
 
   @Get('me')
   async me(@CurrentUser() user: SessionUser) {
-    return this.users.getById(user.id);
+    return this.sessions.toSessionUser(await this.users.getById(user.id));
   }
 
   @Patch('me/profile')
   async updateProfile(@CurrentUser() user: SessionUser, @Body() body: UpdateProfileDto) {
-    return this.users.updateProfile(user.id, body as UpdateProfileInput);
+    return this.sessions.toSessionUser(
+      await this.users.updateProfile(user.id, body as UpdateProfileInput),
+    );
   }
 
   @Patch('me/notifications')
@@ -35,9 +40,11 @@ export class UsersController {
     @CurrentUser() user: SessionUser,
     @Body() body: UpdateNotificationPreferencesDto,
   ) {
-    return this.users.updateNotificationPreferences(
-      user.id,
-      body as UpdateNotificationPreferencesInput,
+    return this.sessions.toSessionUser(
+      await this.users.updateNotificationPreferences(
+        user.id,
+        body as UpdateNotificationPreferencesInput,
+      ),
     );
   }
 
@@ -49,6 +56,8 @@ export class UsersController {
     @Param() params: UserIdParamDto,
     @Body() body: UpdateUserRoleDto,
   ) {
-    return this.users.updateRole(user, params.id, body as UpdateUserRoleInput);
+    return this.sessions.toSessionUser(
+      await this.users.updateRole(user, params.id, body as UpdateUserRoleInput),
+    );
   }
 }

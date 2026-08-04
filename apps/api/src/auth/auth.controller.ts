@@ -1,8 +1,12 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import {
+  ChangePasswordDto,
+  type ChangePasswordInput,
   GoogleLoginDto,
   type GoogleLoginInput,
+  PasswordLoginDto,
+  type PasswordLoginInput,
   SendOtpDto,
   type SendOtpInput,
   VerifyOtpDto,
@@ -29,14 +33,36 @@ export class AuthController {
   async verifyOtp(@Body() body: VerifyOtpDto, @Res({ passthrough: true }) response: Response) {
     const user = await this.auth.verifyOtp(body as VerifyOtpInput);
     response.setHeader('Set-Cookie', this.sessions.createCookie(user));
-    return { user };
+    return { user: this.sessions.toSessionUser(user) };
+  }
+
+  @Post('password')
+  async passwordLogin(
+    @Body() body: PasswordLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const user = await this.auth.passwordLogin(body as PasswordLoginInput);
+    response.setHeader('Set-Cookie', this.sessions.createCookie(user));
+    return { user: this.sessions.toSessionUser(user) };
+  }
+
+  @Post('change-password')
+  @UseGuards(SessionGuard)
+  async changePassword(
+    @CurrentUser() user: SessionUser,
+    @Body() body: ChangePasswordDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const updatedUser = await this.auth.changePassword(user, body as ChangePasswordInput);
+    response.setHeader('Set-Cookie', this.sessions.createCookie(updatedUser));
+    return { user: this.sessions.toSessionUser(updatedUser) };
   }
 
   @Post('google')
   async google(@Body() body: GoogleLoginDto, @Res({ passthrough: true }) response: Response) {
     const user = await this.auth.verifyGoogle(body as GoogleLoginInput);
     response.setHeader('Set-Cookie', this.sessions.createCookie(user));
-    return { user };
+    return { user: this.sessions.toSessionUser(user) };
   }
 
   @Post('logout')

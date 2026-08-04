@@ -65,6 +65,41 @@ export class UsersService {
     );
   }
 
+  async setPassword(userId: string, passwordHash: string, mustChangePassword: boolean) {
+    const user = await this.getById(userId);
+    user.passwordHash = passwordHash;
+    user.mustChangePassword = mustChangePassword;
+    return this.users.save(user);
+  }
+
+  async createInvitedStaffUser(
+    email: string,
+    name: string,
+    role: 'support_agent' | 'admin',
+    passwordHash: string,
+  ) {
+    const normalizedEmail = email.toLowerCase();
+    const existing = await this.findByEmail(normalizedEmail);
+
+    if (existing) {
+      existing.name = name;
+      existing.role = role;
+      existing.passwordHash = passwordHash;
+      existing.mustChangePassword = false;
+      return this.users.save(existing);
+    }
+
+    return this.users.save(
+      this.users.create({
+        email: normalizedEmail,
+        name,
+        role,
+        passwordHash,
+        mustChangePassword: false,
+      }),
+    );
+  }
+
   async updateProfile(userId: string, input: UpdateProfileInput) {
     const user = await this.getById(userId);
     user.name = input.name;

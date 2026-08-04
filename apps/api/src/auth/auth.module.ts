@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { MailerService } from './mailer.service';
 import { OtpService } from './otp.service';
+import { PasswordService } from './password.service';
 import { RolesGuard } from './roles.guard';
 import { SessionGuard } from './session.guard';
 import { SessionService } from './session.service';
@@ -14,7 +15,15 @@ import { SessionService } from './session.service';
 @Module({
   imports: [AppConfigModule, AppCacheModule, UsersModule],
   controllers: [AuthController],
-  providers: [AuthService, MailerService, OtpService, RolesGuard, SessionGuard, SessionService],
-  exports: [RolesGuard, SessionGuard, SessionService],
+  providers: [
+    AuthService,
+    MailerService,
+    OtpService,
+    PasswordService,
+    RolesGuard,
+    SessionGuard,
+    SessionService,
+  ],
+  exports: [MailerService, PasswordService, RolesGuard, SessionGuard, SessionService],
 })
 export class AuthModule {}
