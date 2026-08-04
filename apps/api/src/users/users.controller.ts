@@ -44,7 +44,11 @@ export class UsersController {
   @Patch(':id/role')
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async updateRole(@Param() params: UserIdParamDto, @Body() body: UpdateUserRoleDto) {
-    return this.users.updateRole(params.id, body as UpdateUserRoleInput);
+  async updateRole(
+    @CurrentUser() user: SessionUser,
+    @Param() params: UserIdParamDto,
+    @Body() body: UpdateUserRoleDto,
+  ) {
+    return this.users.updateRole(user, params.id, body as UpdateUserRoleInput);
   }
 }

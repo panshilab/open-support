@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import type { MediaListQuery, UploadMediaMetadataInput } from '@open-support/schemas/media';
 import { Repository } from 'typeorm';
+import { AdminOpsService } from '../admin-ops/admin-ops.service';
 import type { SessionUser } from '../auth/session.service';
 import { EnvService } from '../config/env.service';
 import { MediaAssetEntity } from './media-asset.entity';
@@ -14,6 +15,7 @@ export class MediaService {
     private readonly mediaAssets: Repository<MediaAssetEntity>,
     private readonly env: EnvService,
     private readonly storage: MediaStorageService,
+    private readonly adminOps: AdminOpsService,
   ) {}
 
   list(query: MediaListQuery) {
@@ -58,7 +60,7 @@ export class MediaService {
     );
   }
 
-  async delete(mediaId: string) {
+  async delete(user: SessionUser, mediaId: string) {
     const media = await this.mediaAssets.findOne({ where: { id: mediaId } });
 
     if (!media) {
@@ -67,6 +69,10 @@ export class MediaService {
 
     await this.storage.delete(media.key);
     await this.mediaAssets.delete(media.id);
+    await this.adminOps.recordAudit(user, 'media.deleted', 'media_asset', media.id, {
+      filename: media.filename,
+      provider: media.provider,
+    });
 
     return { ok: true };
   }

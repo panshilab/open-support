@@ -47,7 +47,7 @@ export class MediaController {
   }
 
   @Delete(':mediaId')
-  delete(@Param() params: MediaAssetIdParamDto) {
-    return this.media.delete(params.mediaId);
+  delete(@CurrentUser() user: SessionUser, @Param() params: MediaAssetIdParamDto) {
+    return this.media.delete(user, params.mediaId);
   }
 }

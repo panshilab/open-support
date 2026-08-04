@@ -35,6 +35,18 @@ export type {
   StartChatInput,
 } from '../chat/index.js';
 export type {
+  AdminSetting,
+  AdminSettingForm,
+  AuditAction,
+  AuditLog,
+  AuditLogQuery,
+  DashboardStats,
+  StaffHeartbeatInput,
+  StaffPresence,
+  StaffPresenceStatus,
+  UpsertAdminSettingInput,
+} from '../dashboard/index.js';
+export type {
   CreateKnowledgeBaseEntryInput,
   EmbeddingStatus,
   KnowledgeBaseEntry,

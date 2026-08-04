@@ -18,6 +18,7 @@
       "@open-support/schemas/auth": ["packages/schemas/src/auth/index.ts"],
       "@open-support/schemas/category": ["packages/schemas/src/category/index.ts"],
       "@open-support/schemas/chat": ["packages/schemas/src/chat/index.ts"],
+      "@open-support/schemas/dashboard": ["packages/schemas/src/dashboard/index.ts"],
       "@open-support/schemas/knowledge-base": ["packages/schemas/src/knowledge-base/index.ts"],
       "@open-support/schemas/media": ["packages/schemas/src/media/index.ts"],
       "@open-support/schemas/ticket": ["packages/schemas/src/ticket/index.ts"],

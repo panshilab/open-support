@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AdminOpsModule } from './admin-ops/admin-ops.module';
 import { AppCacheModule } from './cache/cache.module';
 import { AppConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
     AppConfigModule,
     AppCacheModule,
     DatabaseModule,
+    AdminOpsModule,
     UsersModule,
     AuthModule,
     KnowledgeBaseModule,

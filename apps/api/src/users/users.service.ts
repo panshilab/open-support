@@ -6,6 +6,8 @@ import type {
   UpdateUserRoleInput,
 } from '@open-support/schemas/user';
 import { Repository } from 'typeorm';
+import { AdminOpsService } from '../admin-ops/admin-ops.service';
+import type { SessionUser } from '../auth/session.service';
 import { EnvService } from '../config/env.service';
 import { UserEntity } from './user.entity';
 
@@ -15,6 +17,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private readonly users: Repository<UserEntity>,
     private readonly env: EnvService,
+    private readonly adminOps: AdminOpsService,
   ) {}
 
   async findByEmail(email: string) {
@@ -75,9 +78,15 @@ export class UsersService {
     return this.users.save(user);
   }
 
-  async updateRole(userId: string, input: UpdateUserRoleInput) {
+  async updateRole(actor: SessionUser, userId: string, input: UpdateUserRoleInput) {
     const user = await this.getById(userId);
+    const previousRole = user.role;
     user.role = input.role;
-    return this.users.save(user);
+    const saved = await this.users.save(user);
+    await this.adminOps.recordAudit(actor, 'user.role_updated', 'user', user.id, {
+      previousRole,
+      role: input.role,
+    });
+    return saved;
   }
 }

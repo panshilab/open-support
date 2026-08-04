@@ -51,6 +51,11 @@
       "require": "./dist/chat/index.js",
       "import": "./dist/chat/index.js"
     },
+    "./dashboard": {
+      "types": "./dist/dashboard/index.d.ts",
+      "require": "./dist/dashboard/index.js",
+      "import": "./dist/dashboard/index.js"
+    },
     "./knowledge-base": {
       "types": "./dist/knowledge-base/index.d.ts",
       "require": "./dist/knowledge-base/index.js",
