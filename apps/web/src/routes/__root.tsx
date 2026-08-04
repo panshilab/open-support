@@ -32,31 +32,50 @@ const theme = createTheme({
     mode: 'light',
     primary: {
       main: '#14532d',
+      light: '#2f7a4d',
+      dark: '#0f3d22',
     },
     secondary: {
       main: '#0f766e',
+      light: '#4aa399',
+      dark: '#0d5f59',
     },
     background: {
-      default: '#f7f8f5',
+      default: '#f4f8f1',
       paper: '#ffffff',
     },
+    text: {
+      primary: 'rgba(0, 0, 0, 0.9)',
+      secondary: 'rgba(0, 0, 0, 0.62)',
+    },
+    divider: 'rgba(20, 83, 45, 0.14)',
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 10,
   },
   typography: {
     fontFamily:
       'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     h1: {
-      fontSize: '2.25rem',
-      fontWeight: 700,
+      fontSize: '2rem',
+      fontWeight: 760,
+      lineHeight: 1.12,
     },
     h2: {
-      fontSize: '1.55rem',
-      fontWeight: 700,
+      fontSize: '1.25rem',
+      fontWeight: 740,
+      lineHeight: 1.2,
     },
   },
   components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(12px)',
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
@@ -64,6 +83,64 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          border: '1px solid rgba(20, 83, 45, 0.12)',
+          boxShadow: '0 16px 40px rgba(15, 61, 34, 0.08)',
+        },
+      },
+    },
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: 'rgba(20, 83, 45, 0.04)',
+          },
+          '&:focus-visible': {
+            outline: '3px solid rgba(20, 83, 45, 0.24)',
+            outlineOffset: 2,
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(20, 83, 45, 0.08)',
+          color: 'rgba(0, 0, 0, 0.78)',
+          fontWeight: 650,
+        },
+        outlined: {
+          backgroundColor: 'rgba(15, 118, 110, 0.06)',
+          borderColor: 'rgba(15, 118, 110, 0.22)',
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+          '& fieldset': {
+            borderColor: 'rgba(20, 83, 45, 0.18)',
+          },
+          '&:hover fieldset': {
+            borderColor: 'rgba(20, 83, 45, 0.34)',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#14532d',
+            borderWidth: 1,
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
         },
       },
     },
@@ -229,7 +306,7 @@ function Shell() {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container component="main" maxWidth="lg" sx={{ py: 4 }}>
+      <Container component="main" maxWidth="xl" sx={{ py: 4 }}>
         <Outlet />
       </Container>
     </Box>

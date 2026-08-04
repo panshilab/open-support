@@ -8,11 +8,11 @@ import {
   CardActionArea,
   CardContent,
   Chip,
-  Grid,
+  FormControl,
   InputAdornment,
-  List,
-  ListItemButton,
-  ListItemText,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -156,82 +156,102 @@ function KnowledgebaseIndexPage() {
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h1">Knowledgebase</Typography>
-        <Typography color="text.secondary" sx={{ mt: 1 }}>
-          Browse ecommerce help articles and FAQs.
-        </Typography>
-      </Box>
-      <TextField
-        label="Search articles and FAQs"
-        onChange={(event) => setQuery(event.target.value)}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          },
+      <Box
+        sx={{
+          bgcolor: 'rgba(244, 248, 241, 0.92)',
+          borderBottom: 1,
+          borderColor: 'divider',
+          ml: 'calc(50% - 50vw)',
+          position: 'sticky',
+          top: { xs: 88, sm: 72 },
+          width: '100vw',
+          zIndex: 10,
         }}
-        value={query}
-      />
+      >
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'grid',
+            gap: 1.5,
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'minmax(160px, 0.7fr) minmax(260px, 1.5fr) minmax(180px, 0.9fr) minmax(220px, 1fr)',
+            },
+            maxWidth: 1680,
+            mx: 'auto',
+            px: { xs: 2, sm: 3 },
+            py: 2,
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="h1">Knowledgebase</Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+              Browse ecommerce help articles and FAQs.
+            </Typography>
+          </Box>
+          <TextField
+            label="Search articles and FAQs"
+            onChange={(event) => setQuery(event.target.value)}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            value={query}
+          />
+          <FormControl sx={{ minWidth: 0 }}>
+            <InputLabel id="knowledgebase-product-label">Product</InputLabel>
+            <Select
+              label="Product"
+              labelId="knowledgebase-product-label"
+              onChange={(event) => {
+                setProductId(event.target.value || undefined);
+                setCategoryId(undefined);
+              }}
+              sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
+              value={productId ?? ''}
+            >
+              <MenuItem value="">All products</MenuItem>
+              {products.map((product) => (
+                <MenuItem key={product.id} value={product.id}>
+                  {product.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ minWidth: 0 }}>
+            <InputLabel id="knowledgebase-category-label">Category</InputLabel>
+            <Select
+              label="Category"
+              labelId="knowledgebase-category-label"
+              onChange={(event) => setCategoryId(event.target.value || undefined)}
+              sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
+              value={categoryId ?? ''}
+            >
+              <MenuItem value="">All categories</MenuItem>
+              {flatCategories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.path}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
       ) : null}
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h2">Products</Typography>
-              <List dense>
-                <ListItemButton
-                  selected={!productId}
-                  onClick={() => {
-                    setProductId(undefined);
-                    setCategoryId(undefined);
-                  }}
-                >
-                  <ListItemText primary="All products" />
-                </ListItemButton>
-                {products.map((product) => (
-                  <ListItemButton
-                    key={product.id}
-                    selected={productId === product.id}
-                    onClick={() => {
-                      setProductId(product.id);
-                      setCategoryId(undefined);
-                    }}
-                  >
-                    <ListItemText primary={product.name} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h2">Categories</Typography>
-              <List dense>
-                <ListItemButton selected={!categoryId} onClick={() => setCategoryId(undefined)}>
-                  <ListItemText primary="All categories" />
-                </ListItemButton>
-                {flatCategories.map((category) => (
-                  <ListItemButton
-                    key={category.id}
-                    selected={categoryId === category.id}
-                    onClick={() => setCategoryId(category.id)}
-                  >
-                    <ListItemText primary={category.name} secondary={category.path} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+      <Box
+        sx={{
+          ml: 'calc(50% - 50vw)',
+          width: '100vw',
+        }}
+      >
+        <Box sx={{ maxWidth: 1680, mx: 'auto', px: { xs: 2, sm: 3 } }}>
           {loading ? <LoadingState label="Loading articles" /> : null}
           {error ? <ErrorState message={error} /> : null}
           {!loading && !error && articles.length === 0 ? (
@@ -240,7 +260,17 @@ function KnowledgebaseIndexPage() {
               title="No knowledgebase entries found"
             />
           ) : null}
-          <Stack spacing={2}>
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 2,
+              gridTemplateColumns: {
+                xs: '1fr',
+                md: 'repeat(2, minmax(0, 1fr))',
+                lg: 'repeat(3, minmax(0, 1fr))',
+              },
+            }}
+          >
             {articles.map((article) => (
               <Link
                 key={article.id}
@@ -248,9 +278,9 @@ function KnowledgebaseIndexPage() {
                 style={{ color: 'inherit', textDecoration: 'none' }}
                 to="/knowledgebase/$articleId"
               >
-                <Card>
-                  <CardActionArea>
-                    <CardContent>
+                <Card sx={{ height: '100%' }}>
+                  <CardActionArea sx={{ height: '100%' }}>
+                    <CardContent sx={{ minHeight: 188 }}>
                       <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
                         <Chip label={article.type} size="small" />
                         {article.categoryPath ? (
@@ -258,7 +288,7 @@ function KnowledgebaseIndexPage() {
                         ) : null}
                       </Stack>
                       <Typography variant="h2">{article.name}</Typography>
-                      <Typography color="text.secondary">
+                      <Typography color="text.secondary" sx={{ mt: 1 }}>
                         {article.excerpt ?? 'Open this entry to read the full answer.'}
                       </Typography>
                     </CardContent>
@@ -266,9 +296,9 @@ function KnowledgebaseIndexPage() {
                 </Card>
               </Link>
             ))}
-          </Stack>
-        </Grid>
-      </Grid>
+          </Box>
+        </Box>
+      </Box>
     </Stack>
   );
 }
