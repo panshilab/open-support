@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { Link, Outlet, createFileRoute, useRouterState } from '@tanstack/react-router';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Alert,
@@ -47,6 +47,16 @@ export const Route = createFileRoute('/knowledgebase')({
 });
 
 function KnowledgebasePage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+
+  if (pathname !== '/knowledgebase') {
+    return <Outlet />;
+  }
+
+  return <KnowledgebaseIndexPage />;
+}
+
+function KnowledgebaseIndexPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [articles, setArticles] = useState<KnowledgebaseArticle[]>([]);
@@ -232,22 +242,29 @@ function KnowledgebasePage() {
           ) : null}
           <Stack spacing={2}>
             {articles.map((article) => (
-              <Card key={article.id}>
-                <CardActionArea component="a" href={`/knowledgebase/${article.id}`}>
-                  <CardContent>
-                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                      <Chip label={article.type} size="small" />
-                      {article.categoryPath ? (
-                        <Chip label={article.categoryPath} size="small" variant="outlined" />
-                      ) : null}
-                    </Stack>
-                    <Typography variant="h2">{article.name}</Typography>
-                    <Typography color="text.secondary">
-                      {article.excerpt ?? 'Open this entry to read the full answer.'}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
+              <Link
+                key={article.id}
+                params={{ articleId: article.id }}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+                to="/knowledgebase/$articleId"
+              >
+                <Card>
+                  <CardActionArea>
+                    <CardContent>
+                      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                        <Chip label={article.type} size="small" />
+                        {article.categoryPath ? (
+                          <Chip label={article.categoryPath} size="small" variant="outlined" />
+                        ) : null}
+                      </Stack>
+                      <Typography variant="h2">{article.name}</Typography>
+                      <Typography color="text.secondary">
+                        {article.excerpt ?? 'Open this entry to read the full answer.'}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Link>
             ))}
           </Stack>
         </Grid>
