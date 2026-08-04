@@ -9,6 +9,7 @@ import {
   CardContent,
   Chip,
   Container,
+  CircularProgress,
   Grid,
   InputAdornment,
   Stack,
@@ -242,8 +243,24 @@ function KnowledgebaseIndexPage() {
             </Grid>
           ))}
         </Grid>
-        <Box ref={setLoadMoreNode} sx={{ minHeight: 24, py: 2 }}>
-          {articlesQuery.isFetchingNextPage ? <LoadingState label="Loading more articles" /> : null}
+        <Box
+          ref={setLoadMoreNode}
+          sx={{
+            alignItems: 'center',
+            color: 'text.secondary',
+            display: 'flex',
+            gap: 1,
+            justifyContent: 'center',
+            minHeight: 48,
+            py: 2,
+          }}
+        >
+          {articlesQuery.isFetchingNextPage ? (
+            <>
+              <CircularProgress color="primary" size={18} thickness={5} />
+              <Typography variant="body2">Loading more articles</Typography>
+            </>
+          ) : null}
         </Box>
       </Container>
     </>
