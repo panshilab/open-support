@@ -17,7 +17,7 @@ function HomePage() {
           Ticketing, knowledgebase search, and role-aware support workflows.
         </Typography>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 3 }}>
-          <Button component={Link} startIcon={<AddIcon />} to="/tickets/new" variant="contained">
+          <Button component={Link} startIcon={<AddIcon />} to="/new-ticket" variant="contained">
             New ticket
           </Button>
           <Button

@@ -18,7 +18,7 @@ function TicketsPage() {
     <Stack spacing={2}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h1">Tickets</Typography>
-        <Button component={Link} startIcon={<AddIcon />} to="/tickets/new" variant="contained">
+        <Button component={Link} startIcon={<AddIcon />} to="/new-ticket" variant="contained">
           New ticket
         </Button>
       </Stack>
@@ -30,11 +30,7 @@ function TicketsPage() {
             sx={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
             <Box>
-              <Typography
-                component={Link}
-                sx={{ color: 'primary.main' }}
-                to={`/tickets/${id}` as '/tickets/$ticketId'}
-              >
+              <Typography component="a" href={`/tickets/${id}`} sx={{ color: 'primary.main' }}>
                 {title}
               </Typography>
               <Typography color="text.secondary" variant="body2">
@@ -44,10 +40,10 @@ function TicketsPage() {
             <Stack direction="row" spacing={1}>
               <Chip label={status} size="small" />
               <Button
-                component={Link}
+                component="a"
+                href={`/tickets/${id}`}
                 size="small"
                 startIcon={<VisibilityIcon />}
-                to={`/tickets/${id}` as '/tickets/$ticketId'}
               >
                 View
               </Button>

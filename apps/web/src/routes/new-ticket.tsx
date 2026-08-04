@@ -13,7 +13,7 @@ import {
 import { useFormik } from 'formik';
 import { RichTextEditor } from '../components/rich-text-editor';
 
-export const Route = createFileRoute('/tickets/new')({
+export const Route = createFileRoute('/new-ticket')({
   component: NewTicketPage,
 });
 

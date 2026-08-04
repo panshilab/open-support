@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 
@@ -38,10 +38,10 @@ function AdminTicketsPage() {
             <Stack direction="row" spacing={1}>
               <Chip label={status} size="small" />
               <Button
-                component={Link}
+                component="a"
+                href={`/tickets/${id}`}
                 size="small"
                 startIcon={<VisibilityIcon />}
-                to={`/tickets/${id}` as '/tickets/$ticketId'}
               >
                 Open
               </Button>

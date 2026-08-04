@@ -1,5 +1,12 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
+import {
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+  createRootRoute,
+  redirect,
+} from '@tanstack/react-router';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ArticleIcon from '@mui/icons-material/Article';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -64,6 +71,24 @@ const theme = createTheme({
 });
 
 export const Route = createRootRoute({
+  beforeLoad: async ({ location }) => {
+    if (typeof window === 'undefined' || isPublicPath(location.pathname)) {
+      return;
+    }
+
+    const response = await fetch('/api/auth/me', {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -87,6 +112,16 @@ export const Route = createRootRoute({
   }),
   component: RootComponent,
 });
+
+function isPublicPath(pathname: string) {
+  return (
+    pathname === '/knowledgebase' ||
+    pathname === '/login' ||
+    pathname === '/verify' ||
+    pathname === '/accept-invitation' ||
+    pathname === '/change-password'
+  );
+}
 
 function RootComponent() {
   useEffect(() => {

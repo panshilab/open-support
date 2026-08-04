@@ -6,11 +6,15 @@ import { Alert, Button, Divider, Paper, Stack, TextField, Typography } from '@mu
 import { useFormik } from 'formik';
 
 export const Route = createFileRoute('/login')({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const otpForm = useFormik({
     initialValues: {
       email: '',
@@ -50,7 +54,9 @@ function LoginPage() {
       }
 
       const result = (await response.json()) as { user: { mustChangePassword?: boolean } };
-      await navigate({ to: result.user.mustChangePassword ? '/change-password' : '/admin' });
+      await navigate({
+        href: result.user.mustChangePassword ? '/change-password' : (search.redirect ?? '/admin'),
+      });
     },
   });
 

@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as KnowledgebaseRouteImport } from './routes/knowledgebase'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as NewTicketRouteImport } from './routes/new-ticket'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -27,7 +28,6 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminTicketsRouteImport } from './routes/admin.tickets'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
-import { Route as TicketsNewRouteImport } from './routes/tickets.new'
 import { Route as AdminKnowledgebaseEditRouteImport } from './routes/admin.knowledgebase.edit'
 import { Route as AdminKnowledgebaseNewRouteImport } from './routes/admin.knowledgebase.new'
 
@@ -59,6 +59,11 @@ const KnowledgebaseRoute = KnowledgebaseRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewTicketRoute = NewTicketRouteImport.update({
+  id: '/new-ticket',
+  path: '/new-ticket',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -121,11 +126,6 @@ const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
   path: '/$ticketId',
   getParentRoute: () => TicketsRoute,
 } as any)
-const TicketsNewRoute = TicketsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => TicketsRoute,
-} as any)
 const AdminKnowledgebaseEditRoute = AdminKnowledgebaseEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -144,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
+  '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
@@ -156,7 +157,6 @@ export interface FileRoutesByFullPath {
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
-  '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
@@ -167,6 +167,7 @@ export interface FileRoutesByTo {
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
+  '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
@@ -179,7 +180,6 @@ export interface FileRoutesByTo {
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
-  '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
@@ -191,6 +191,7 @@ export interface FileRoutesById {
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
+  '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
@@ -203,7 +204,6 @@ export interface FileRoutesById {
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
-  '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
@@ -216,6 +216,7 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/knowledgebase'
     | '/login'
+    | '/new-ticket'
     | '/profile'
     | '/tickets'
     | '/verify'
@@ -228,7 +229,6 @@ export interface FileRouteTypes {
     | '/admin/staff'
     | '/admin/tickets'
     | '/tickets/$ticketId'
-    | '/tickets/new'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
   fileRoutesByTo: FileRoutesByTo
@@ -239,6 +239,7 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/knowledgebase'
     | '/login'
+    | '/new-ticket'
     | '/profile'
     | '/tickets'
     | '/verify'
@@ -251,7 +252,6 @@ export interface FileRouteTypes {
     | '/admin/staff'
     | '/admin/tickets'
     | '/tickets/$ticketId'
-    | '/tickets/new'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
   id:
@@ -262,6 +262,7 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/knowledgebase'
     | '/login'
+    | '/new-ticket'
     | '/profile'
     | '/tickets'
     | '/verify'
@@ -274,7 +275,6 @@ export interface FileRouteTypes {
     | '/admin/staff'
     | '/admin/tickets'
     | '/tickets/$ticketId'
-    | '/tickets/new'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
   fileRoutesById: FileRoutesById
@@ -286,6 +286,7 @@ export interface RootRouteChildren {
   ChangePasswordRoute: typeof ChangePasswordRoute
   KnowledgebaseRoute: typeof KnowledgebaseRoute
   LoginRoute: typeof LoginRoute
+  NewTicketRoute: typeof NewTicketRoute
   ProfileRoute: typeof ProfileRoute
   TicketsRoute: typeof TicketsRouteWithChildren
   VerifyRoute: typeof VerifyRoute
@@ -333,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-ticket': {
+      id: '/new-ticket'
+      path: '/new-ticket'
+      fullPath: '/new-ticket'
+      preLoaderRoute: typeof NewTicketRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -419,13 +427,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketsTicketIdRouteImport
       parentRoute: typeof TicketsRoute
     }
-    '/tickets/new': {
-      id: '/tickets/new'
-      path: '/new'
-      fullPath: '/tickets/new'
-      preLoaderRoute: typeof TicketsNewRouteImport
-      parentRoute: typeof TicketsRoute
-    }
     '/admin/knowledgebase/edit': {
       id: '/admin/knowledgebase/edit'
       path: '/edit'
@@ -482,12 +483,10 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface TicketsRouteChildren {
   TicketsTicketIdRoute: typeof TicketsTicketIdRoute
-  TicketsNewRoute: typeof TicketsNewRoute
 }
 
 const TicketsRouteChildren: TicketsRouteChildren = {
   TicketsTicketIdRoute: TicketsTicketIdRoute,
-  TicketsNewRoute: TicketsNewRoute,
 }
 
 const TicketsRouteWithChildren =
@@ -500,6 +499,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChangePasswordRoute: ChangePasswordRoute,
   KnowledgebaseRoute: KnowledgebaseRoute,
   LoginRoute: LoginRoute,
+  NewTicketRoute: NewTicketRoute,
   ProfileRoute: ProfileRoute,
   TicketsRoute: TicketsRouteWithChildren,
   VerifyRoute: VerifyRoute,
