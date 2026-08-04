@@ -12,3 +12,30 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+.rich-text-editor-content {
+  min-height: inherit;
+  outline: none;
+}
+
+.rich-text-editor-content p {
+  margin: 0 0 0.75rem;
+}
+
+.rich-text-editor-content p:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text-editor-content ul,
+.rich-text-editor-content ol {
+  margin: 0.5rem 0 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.rich-text-editor-content .is-editor-empty:first-child::before {
+  color: #6b7280;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

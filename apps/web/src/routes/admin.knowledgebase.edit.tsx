@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Button, Chip, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { RichTextEditor } from '../components/rich-text-editor';
 
 export const Route = createFileRoute('/admin/knowledgebase/edit')({
   component: EditKnowledgebaseEntryPage,
@@ -46,13 +47,12 @@ function EditKnowledgebaseEntryPage() {
           onChange={form.handleChange}
           value={form.values.title}
         />
-        <TextField
+        <RichTextEditor
           label="Article content"
-          minRows={10}
-          multiline
-          name="contentHtml"
-          onBlur={form.handleBlur}
-          onChange={form.handleChange}
+          minHeight={280}
+          onBlur={() => form.setFieldTouched('contentHtml', true)}
+          onChange={(value) => form.setFieldValue('contentHtml', value)}
+          placeholder="Write the article content..."
           value={form.values.contentHtml}
         />
         <Button type="submit" variant="contained">

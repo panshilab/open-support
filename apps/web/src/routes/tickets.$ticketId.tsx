@@ -9,10 +9,10 @@ import {
   Paper,
   Select,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import { RichTextEditor } from '../components/rich-text-editor';
 
 export const Route = createFileRoute('/tickets/$ticketId')({
   component: TicketDetailPage,
@@ -82,13 +82,11 @@ function TicketDetailPage() {
             Customer: I cannot upload an invoice PDF from the billing dashboard.
           </Typography>
           <Typography>Agent: We are checking the attachment service and file limits.</Typography>
-          <TextField
+          <RichTextEditor
             label="Reply"
-            minRows={4}
-            multiline
-            name="contentHtml"
-            onBlur={replyForm.handleBlur}
-            onChange={replyForm.handleChange}
+            onBlur={() => replyForm.setFieldTouched('contentHtml', true)}
+            onChange={(value) => replyForm.setFieldValue('contentHtml', value)}
+            placeholder="Write a reply..."
             value={replyForm.values.contentHtml}
           />
           <Button type="submit" variant="contained">

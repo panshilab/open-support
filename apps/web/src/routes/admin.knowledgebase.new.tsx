@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import { RichTextEditor } from '../components/rich-text-editor';
 
 export const Route = createFileRoute('/admin/knowledgebase/new')({
   component: NewKnowledgebaseEntryPage,
@@ -74,13 +75,12 @@ function NewKnowledgebaseEntryPage() {
           onChange={form.handleChange}
           value={form.values.question}
         />
-        <TextField
+        <RichTextEditor
           label="Article content or FAQ answer"
-          minRows={10}
-          multiline
-          name="contentHtml"
-          onBlur={form.handleBlur}
-          onChange={form.handleChange}
+          minHeight={280}
+          onBlur={() => form.setFieldTouched('contentHtml', true)}
+          onChange={(value) => form.setFieldValue('contentHtml', value)}
+          placeholder="Write the article body or FAQ answer..."
           value={form.values.contentHtml}
         />
         <Button type="submit" variant="contained">

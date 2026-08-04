@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import { RichTextEditor } from '../components/rich-text-editor';
 
 export const Route = createFileRoute('/tickets/new')({
   component: NewTicketPage,
@@ -65,13 +66,11 @@ function NewTicketPage() {
           onChange={form.handleChange}
           value={form.values.title}
         />
-        <TextField
+        <RichTextEditor
           label="Message"
-          minRows={6}
-          multiline
-          name="descriptionHtml"
-          onBlur={form.handleBlur}
-          onChange={form.handleChange}
+          onBlur={() => form.setFieldTouched('descriptionHtml', true)}
+          onChange={(value) => form.setFieldValue('descriptionHtml', value)}
+          placeholder="Describe the issue..."
           value={form.values.descriptionHtml}
         />
         <Button type="submit" variant="contained">
