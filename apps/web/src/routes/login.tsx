@@ -1,9 +1,34 @@
+import { useEffect, useRef, useState } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import GoogleIcon from '@mui/icons-material/Google';
 import MailOutlineIcon from '@mui/icons-material/MailOutlineOutlined';
 import PasswordIcon from '@mui/icons-material/PasswordOutlined';
-import { Alert, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        id?: {
+          initialize: (config: GoogleIdentityInitializeConfig) => void;
+          renderButton: (element: HTMLElement, options: GoogleIdentityButtonOptions) => void;
+        };
+      };
+    };
+  }
+}
+
+interface GoogleIdentityInitializeConfig {
+  client_id: string;
+  callback: (response: { credential?: string }) => void;
+}
+
+interface GoogleIdentityButtonOptions {
+  theme: 'outline' | 'filled_blue' | 'filled_black';
+  size: 'large' | 'medium' | 'small';
+  width?: string;
+}
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -15,6 +40,8 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
+  const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const otpForm = useFormik({
     initialValues: {
       email: '',
@@ -60,6 +87,79 @@ function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function initializeGoogleLogin() {
+      setGoogleStatus(null);
+      const response = await fetch('/api/auth/google/config');
+
+      if (!response.ok) {
+        setGoogleStatus('Unable to load Google login settings');
+        return;
+      }
+
+      const config = (await response.json()) as {
+        enabled: boolean;
+        clientId: string | null;
+      };
+
+      if (!config.enabled || !config.clientId) {
+        setGoogleStatus('Google login is not configured');
+        return;
+      }
+
+      await loadGoogleIdentityScript();
+
+      if (cancelled || !googleButtonRef.current || !window.google?.accounts?.id) {
+        return;
+      }
+
+      googleButtonRef.current.innerHTML = '';
+      window.google.accounts.id.initialize({
+        client_id: config.clientId,
+        callback: async (credentialResponse) => {
+          if (!credentialResponse.credential) {
+            setGoogleStatus('Google did not return a login token');
+            return;
+          }
+
+          const loginResponse = await fetch('/api/auth/google', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: credentialResponse.credential }),
+          });
+
+          if (!loginResponse.ok) {
+            setGoogleStatus('Google login failed');
+            return;
+          }
+
+          const result = (await loginResponse.json()) as {
+            user: { mustChangePassword?: boolean };
+          };
+          await navigate({
+            href: result.user.mustChangePassword
+              ? '/change-password'
+              : (search.redirect ?? '/admin'),
+          });
+        },
+      });
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: 'outline',
+        size: 'large',
+        width: '100%',
+      });
+    }
+
+    void initializeGoogleLogin();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate, search.redirect]);
+
   return (
     <Paper sx={{ maxWidth: 480, mx: 'auto', p: 3 }}>
       <Stack component="form" onSubmit={otpForm.handleSubmit} spacing={2}>
@@ -77,9 +177,12 @@ function LoginPage() {
         <Button startIcon={<MailOutlineIcon />} type="submit" variant="contained">
           Send OTP
         </Button>
-        <Button startIcon={<GoogleIcon />} variant="outlined">
-          Continue with Google
-        </Button>
+        <Box ref={googleButtonRef} sx={{ minHeight: 40 }} />
+        {googleStatus ? (
+          <Alert icon={<GoogleIcon />} severity="info">
+            {googleStatus}
+          </Alert>
+        ) : null}
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Stack component="form" onSubmit={passwordForm.handleSubmit} spacing={2}>
@@ -109,4 +212,24 @@ function LoginPage() {
       </Stack>
     </Paper>
   );
+}
+
+function loadGoogleIdentityScript() {
+  const scriptId = 'google-identity-services';
+  const existingScript = document.getElementById(scriptId);
+
+  if (existingScript) {
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.async = true;
+    script.defer = true;
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Google login'));
+    document.head.appendChild(script);
+  });
 }

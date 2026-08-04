@@ -76,4 +76,13 @@ export class AuthService {
 
     return this.users.findOrCreateLocalUser(payload.email, payload.name ?? null);
   }
+
+  googleConfig() {
+    const clientId = this.env.googleClientId;
+
+    return {
+      enabled: Boolean(clientId),
+      clientId: clientId || null,
+    };
+  }
 }

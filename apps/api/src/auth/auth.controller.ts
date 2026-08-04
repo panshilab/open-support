@@ -65,6 +65,11 @@ export class AuthController {
     return { user: this.sessions.toSessionUser(user) };
   }
 
+  @Get('google/config')
+  googleConfig() {
+    return this.auth.googleConfig();
+  }
+
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response) {
     response.setHeader('Set-Cookie', this.sessions.createClearCookie());
