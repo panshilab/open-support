@@ -1,7 +1,10 @@
+import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { useVerifyOtpMutation } from '@open-support/services';
+import { useFormik, type FormikHelpers } from 'formik';
+import type { VerifyOtpForm } from '@open-support/schemas/auth';
 
 export const Route = createFileRoute('/verify')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -13,27 +16,26 @@ export const Route = createFileRoute('/verify')({
 function VerifyPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const form = useFormik({
+  const verifyOtpMutation = useVerifyOtpMutation();
+  const handleSubmit = useCallback(
+    async (values: VerifyOtpForm, helpers: FormikHelpers<VerifyOtpForm>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        const result = await verifyOtpMutation.mutateAsync(values);
+        await navigate({ to: result.user.mustChangePassword ? '/change-password' : '/tickets' });
+      } catch {
+        helpers.setStatus('Invalid or expired code');
+      }
+    },
+    [navigate, verifyOtpMutation],
+  );
+  const form = useFormik<VerifyOtpForm>({
     initialValues: {
       email: search.email,
       otp: '',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Invalid or expired code');
-        return;
-      }
-
-      const result = (await response.json()) as { user: { mustChangePassword?: boolean } };
-      await navigate({ to: result.user.mustChangePassword ? '/change-password' : '/tickets' });
-    },
+    onSubmit: handleSubmit,
   });
 
   return (

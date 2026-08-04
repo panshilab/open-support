@@ -123,6 +123,9 @@ importers:
       '@open-support/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
+      '@open-support/services':
+        specifier: workspace:*
+        version: link:../../packages/services
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
@@ -187,6 +190,18 @@ importers:
       zod:
         specifier: ^4.0.0
         version: 4.4.3
+
+  packages/services:
+    devDependencies:
+      '@open-support/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
 packages:
 

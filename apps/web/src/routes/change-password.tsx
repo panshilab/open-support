@@ -1,7 +1,10 @@
+import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import SaveIcon from '@mui/icons-material/SaveOutlined';
 import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { useChangePasswordMutation } from '@open-support/services';
+import { useFormik, type FormikHelpers } from 'formik';
+import type { ChangePasswordForm } from '@open-support/schemas/auth';
 
 export const Route = createFileRoute('/change-password')({
   component: ChangePasswordPage,
@@ -9,27 +12,27 @@ export const Route = createFileRoute('/change-password')({
 
 function ChangePasswordPage() {
   const navigate = useNavigate();
-  const form = useFormik({
+  const changePasswordMutation = useChangePasswordMutation();
+  const handleSubmit = useCallback(
+    async (values: ChangePasswordForm, helpers: FormikHelpers<ChangePasswordForm>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        await changePasswordMutation.mutateAsync(values);
+        await navigate({ to: '/admin' });
+      } catch {
+        helpers.setStatus('Unable to change password');
+      }
+    },
+    [changePasswordMutation, navigate],
+  );
+  const form = useFormik<ChangePasswordForm>({
     initialValues: {
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Unable to change password');
-        return;
-      }
-
-      await navigate({ to: '/admin' });
-    },
+    onSubmit: handleSubmit,
   });
 
   return (

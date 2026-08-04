@@ -25,6 +25,7 @@ import {
   Typography,
   createTheme,
 } from '@mui/material';
+import { getCurrentSession } from '@open-support/services';
 import { AppProviders } from '../providers/app-providers';
 import '../styles.css';
 
@@ -194,11 +195,9 @@ export const Route = createRootRoute({
       return;
     }
 
-    const response = await fetch('/api/auth/me', {
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
+    try {
+      await getCurrentSession();
+    } catch {
       throw redirect({
         to: '/login',
         search: {
@@ -283,12 +282,10 @@ function Shell() {
     let cancelled = false;
 
     async function checkSession() {
-      const response = await fetch('/api/auth/me', {
-        credentials: 'include',
-      }).catch(() => null);
+      const session = await getCurrentSession().catch(() => null);
 
       if (!cancelled) {
-        setAuthenticated(Boolean(response?.ok));
+        setAuthenticated(Boolean(session));
       }
     }
 

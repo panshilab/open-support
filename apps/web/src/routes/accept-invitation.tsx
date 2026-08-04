@@ -1,7 +1,10 @@
+import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import CheckIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { useAcceptInvitationMutation } from '@open-support/services';
+import { useFormik, type FormikHelpers } from 'formik';
+import type { AcceptInvitationForm } from '@open-support/schemas/auth';
 
 export const Route = createFileRoute('/accept-invitation')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -13,28 +16,28 @@ export const Route = createFileRoute('/accept-invitation')({
 function AcceptInvitationPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const form = useFormik({
+  const acceptInvitationMutation = useAcceptInvitationMutation();
+  const handleSubmit = useCallback(
+    async (values: AcceptInvitationForm, helpers: FormikHelpers<AcceptInvitationForm>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        await acceptInvitationMutation.mutateAsync(values);
+        await navigate({ to: '/admin' });
+      } catch {
+        helpers.setStatus('Invitation could not be accepted');
+      }
+    },
+    [acceptInvitationMutation, navigate],
+  );
+  const form = useFormik<AcceptInvitationForm>({
     initialValues: {
       token: search.token,
       name: '',
       password: '',
       confirmPassword: '',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/invitations/accept', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Invitation could not be accepted');
-        return;
-      }
-
-      await navigate({ to: '/admin' });
-    },
+    onSubmit: handleSubmit,
   });
 
   return (

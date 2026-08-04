@@ -1,0 +1,33 @@
+{
+  "name": "@open-support/services",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./axios": {
+      "types": "./dist/axios.d.ts",
+      "require": "./dist/axios.js",
+      "import": "./dist/axios.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@open-support/schemas": "workspace:*",
+    "@tanstack/react-query": "^5.101.4",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@open-support/schemas": "workspace:*",
+    "@tanstack/react-query": "^5.101.4"
+  }
+}

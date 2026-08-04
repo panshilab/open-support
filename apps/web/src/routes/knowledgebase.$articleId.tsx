@@ -1,10 +1,8 @@
-import { useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
-import { knowledgebaseService } from '../services/knowledgebase.service';
+import { useGetKnowledgeBaseArticle } from '@open-support/services';
 
 export const Route = createFileRoute('/knowledgebase/$articleId')({
   component: KnowledgebaseArticlePage,
@@ -12,14 +10,7 @@ export const Route = createFileRoute('/knowledgebase/$articleId')({
 
 function KnowledgebaseArticlePage() {
   const { articleId } = Route.useParams();
-  const getArticleQueryFn = useCallback(
-    () => knowledgebaseService.getArticle(articleId),
-    [articleId],
-  );
-  const articleQuery = useQuery({
-    queryKey: ['knowledgebase', 'article', articleId],
-    queryFn: getArticleQueryFn,
-  });
+  const articleQuery = useGetKnowledgeBaseArticle(articleId);
   const article = articleQuery.data;
 
   if (articleQuery.isLoading) {

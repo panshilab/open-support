@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import CircleIcon from '@mui/icons-material/Circle';
 import SendIcon from '@mui/icons-material/SendOutlined';
@@ -12,7 +13,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { useCreateStaffInvitationMutation } from '@open-support/services';
+import { useFormik, type FormikHelpers } from 'formik';
+import type { InviteStaffInput } from '@open-support/schemas/dashboard';
 
 const staff = [
   ['Asif Saho', 'asifsaho@example.com', 'admin', 'online', '18'],
@@ -25,27 +28,27 @@ export const Route = createFileRoute('/admin/staff')({
 });
 
 function AdminStaffPage() {
-  const form = useFormik({
+  const createStaffInvitationMutation = useCreateStaffInvitationMutation();
+  const handleSubmit = useCallback(
+    async (values: InviteStaffInput, helpers: FormikHelpers<InviteStaffInput>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        await createStaffInvitationMutation.mutateAsync(values);
+        helpers.resetForm();
+        helpers.setStatus('Invitation sent');
+      } catch {
+        helpers.setStatus('Unable to send invitation');
+      }
+    },
+    [createStaffInvitationMutation],
+  );
+  const form = useFormik<InviteStaffInput>({
     initialValues: {
       email: '',
       role: 'support_agent',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/admin/staff/invitations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Unable to send invitation');
-        return;
-      }
-
-      helpers.resetForm();
-      helpers.setStatus('Invitation sent');
-    },
+    onSubmit: handleSubmit,
   });
 
   return (

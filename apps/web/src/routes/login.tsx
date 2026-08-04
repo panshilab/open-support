@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import GoogleIcon from '@mui/icons-material/Google';
 import MailOutlineIcon from '@mui/icons-material/MailOutlineOutlined';
 import PasswordIcon from '@mui/icons-material/PasswordOutlined';
 import { Alert, Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import {
+  getCurrentSession,
+  getGoogleConfig,
+  googleLogin,
+  usePasswordLoginMutation,
+  useSendOtpMutation,
+} from '@open-support/services';
+import { useFormik, type FormikHelpers } from 'formik';
+import type { PasswordLoginForm, SendOtpForm } from '@open-support/schemas/auth';
 
 declare global {
   interface Window {
@@ -39,17 +47,11 @@ export const Route = createFileRoute('/login')({
       return;
     }
 
-    const response = await fetch('/api/auth/me', {
-      credentials: 'include',
-    });
+    const result = await getCurrentSession().catch(() => null);
 
-    if (!response.ok) {
+    if (!result) {
       return;
     }
-
-    const result = (await response.json()) as {
-      user: { mustChangePassword?: boolean };
-    };
 
     throw redirect({
       href: result.user.mustChangePassword ? '/change-password' : (search.redirect ?? '/admin'),
@@ -63,49 +65,51 @@ function LoginPage() {
   const search = Route.useSearch();
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const [googleStatus, setGoogleStatus] = useState<string | null>(null);
-  const otpForm = useFormik({
+  const sendOtpMutation = useSendOtpMutation();
+  const passwordLoginMutation = usePasswordLoginMutation();
+
+  const handleOtpSubmit = useCallback(
+    async (values: SendOtpForm, helpers: FormikHelpers<SendOtpForm>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        await sendOtpMutation.mutateAsync(values);
+        await navigate({ to: '/verify', search: { email: values.email } });
+      } catch {
+        helpers.setStatus('Unable to send OTP');
+      }
+    },
+    [navigate, sendOtpMutation],
+  );
+
+  const handlePasswordSubmit = useCallback(
+    async (values: PasswordLoginForm, helpers: FormikHelpers<PasswordLoginForm>) => {
+      helpers.setStatus(undefined);
+
+      try {
+        const result = await passwordLoginMutation.mutateAsync(values);
+        await navigate({
+          href: result.user.mustChangePassword ? '/change-password' : (search.redirect ?? '/admin'),
+        });
+      } catch {
+        helpers.setStatus('Invalid email or password');
+      }
+    },
+    [navigate, passwordLoginMutation, search.redirect],
+  );
+
+  const otpForm = useFormik<SendOtpForm>({
     initialValues: {
       email: '',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Unable to send OTP');
-        return;
-      }
-
-      await navigate({ to: '/verify', search: { email: values.email } });
-    },
+    onSubmit: handleOtpSubmit,
   });
-  const passwordForm = useFormik({
+  const passwordForm = useFormik<PasswordLoginForm>({
     initialValues: {
       email: '',
       password: '',
     },
-    onSubmit: async (values, helpers) => {
-      helpers.setStatus(undefined);
-      const response = await fetch('/api/auth/password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        helpers.setStatus('Invalid email or password');
-        return;
-      }
-
-      const result = (await response.json()) as { user: { mustChangePassword?: boolean } };
-      await navigate({
-        href: result.user.mustChangePassword ? '/change-password' : (search.redirect ?? '/admin'),
-      });
-    },
+    onSubmit: handlePasswordSubmit,
   });
 
   useEffect(() => {
@@ -113,17 +117,12 @@ function LoginPage() {
 
     async function initializeGoogleLogin() {
       setGoogleStatus(null);
-      const response = await fetch('/api/auth/google/config');
+      const config = await getGoogleConfig().catch(() => null);
 
-      if (!response.ok) {
+      if (!config) {
         setGoogleStatus('Unable to load Google login settings');
         return;
       }
-
-      const config = (await response.json()) as {
-        enabled: boolean;
-        clientId: string | null;
-      };
 
       if (!config.enabled || !config.clientId) {
         setGoogleStatus('Google login is not configured');
@@ -145,21 +144,15 @@ function LoginPage() {
             return;
           }
 
-          const loginResponse = await fetch('/api/auth/google', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: credentialResponse.credential }),
-          });
+          const result = await googleLogin({ idToken: credentialResponse.credential }).catch(
+            () => null,
+          );
 
-          if (!loginResponse.ok) {
+          if (!result) {
             setGoogleStatus('Google login failed');
             return;
           }
 
-          const result = (await loginResponse.json()) as {
-            user: { mustChangePassword?: boolean };
-          };
           await navigate({
             href: result.user.mustChangePassword
               ? '/change-password'

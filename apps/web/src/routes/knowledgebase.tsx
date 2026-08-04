@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Link, Outlet, createFileRoute, useRouterState } from '@tanstack/react-router';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Alert,
@@ -25,7 +24,11 @@ import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
 import type { CategoryTreeNode, Product } from '@open-support/schemas/category';
 import type { ChangeEvent } from 'react';
-import { knowledgebaseService } from '../services/knowledgebase.service';
+import {
+  useGetKnowledgeBaseArticles,
+  useGetKnowledgeBaseCategories,
+  useGetKnowledgeBaseProducts,
+} from '@open-support/services';
 
 const EMPTY_CATEGORY_TREE: CategoryTreeNode[] = [];
 const EMPTY_PRODUCTS: Product[] = [];
@@ -48,55 +51,27 @@ function KnowledgebaseIndexPage() {
   const [productId, setProductId] = useState<string | undefined>();
   const [categoryId, setCategoryId] = useState<string | undefined>();
   const [query, setQuery] = useState('');
+  const trimmedQuery = query.trim();
 
-  const listProductsQueryFn = useCallback(() => knowledgebaseService.listProducts(), []);
-
-  const listCategoriesQueryFn = useCallback(
-    () => knowledgebaseService.listCategories(productId),
+  const categoryParams = useMemo(
+    () => ({
+      productId,
+    }),
     [productId],
   );
-
-  const listArticlesQueryFn = useCallback(
-    ({ pageParam }: { pageParam: number }) =>
-      query.trim()
-        ? knowledgebaseService.searchArticles({
-            page: pageParam,
-            limit: 18,
-            productId,
-            categoryId,
-            query: query.trim(),
-          })
-        : knowledgebaseService.listArticles({
-            page: pageParam,
-            limit: 18,
-            productId,
-            categoryId,
-          }),
-    [categoryId, productId, query],
+  const articleParams = useMemo(
+    () => ({
+      limit: 18,
+      productId,
+      categoryId,
+      query: trimmedQuery || undefined,
+    }),
+    [categoryId, productId, trimmedQuery],
   );
 
-  const getNextArticlePageParam = useCallback(
-    (lastPage: Awaited<ReturnType<typeof knowledgebaseService.listArticles>>) =>
-      lastPage.nextPage ?? undefined,
-    [],
-  );
-
-  const productsQuery = useQuery({
-    queryKey: ['knowledgebase', 'products'],
-    queryFn: listProductsQueryFn,
-  });
-
-  const categoriesQuery = useQuery({
-    queryKey: ['knowledgebase', 'categories', productId],
-    queryFn: listCategoriesQueryFn,
-  });
-
-  const articlesQuery = useInfiniteQuery({
-    queryKey: ['knowledgebase', 'articles', productId, categoryId, query.trim()],
-    initialPageParam: 1,
-    queryFn: listArticlesQueryFn,
-    getNextPageParam: getNextArticlePageParam,
-  });
+  const productsQuery = useGetKnowledgeBaseProducts();
+  const categoriesQuery = useGetKnowledgeBaseCategories(categoryParams);
+  const articlesQuery = useGetKnowledgeBaseArticles(articleParams);
 
   const products = productsQuery.data ?? EMPTY_PRODUCTS;
   const categories = categoriesQuery.data ?? EMPTY_CATEGORY_TREE;

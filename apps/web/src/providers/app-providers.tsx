@@ -1,11 +1,15 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  type UseMutationOptions,
-} from '@tanstack/react-query';
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
+import { QueryClientProvider, useMutation, type UseMutationOptions } from '@tanstack/react-query';
 import { Alert, Snackbar } from '@mui/material';
+import { getErrorMessage, queryClient, setServicesMutationNotifier } from '@open-support/services';
 
 interface SnackbarState {
   message: string;
@@ -18,15 +22,6 @@ interface SnackbarContextValue {
 }
 
 const SnackbarContext = createContext<SnackbarContextValue | null>(null);
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 30_000,
-    },
-  },
-});
 
 export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
@@ -50,6 +45,13 @@ export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
     }),
     [notifyError, notifySuccess],
   );
+
+  useEffect(() => {
+    setServicesMutationNotifier({
+      onError: notifyError,
+      onSuccess: notifySuccess,
+    });
+  }, [notifyError, notifySuccess]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -104,8 +106,4 @@ export function useSnackbarMutation<TData, TError, TVariables, TContext>(
       onSuccess?.(data, variables, onMutateResult, context);
     },
   });
-}
-
-function getErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'Request failed';
 }

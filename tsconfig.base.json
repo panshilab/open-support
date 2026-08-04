@@ -22,7 +22,9 @@
       "@open-support/schemas/knowledge-base": ["packages/schemas/src/knowledge-base/index.ts"],
       "@open-support/schemas/media": ["packages/schemas/src/media/index.ts"],
       "@open-support/schemas/ticket": ["packages/schemas/src/ticket/index.ts"],
-      "@open-support/schemas/user": ["packages/schemas/src/user/index.ts"]
+      "@open-support/schemas/user": ["packages/schemas/src/user/index.ts"],
+      "@open-support/services": ["packages/services/src/index.ts"],
+      "@open-support/services/axios": ["packages/services/src/axios.ts"]
     }
   }
 }
