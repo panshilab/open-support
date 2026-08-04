@@ -306,7 +306,7 @@ function Shell() {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container component="main" maxWidth="xl" sx={{ py: 4 }}>
+      <Container component="main" maxWidth="lg" sx={{ py: 4 }}>
         <Outlet />
       </Container>
     </Box>

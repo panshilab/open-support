@@ -8,6 +8,7 @@ import {
   CardActionArea,
   CardContent,
   Chip,
+  Container,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -161,14 +162,13 @@ function KnowledgebaseIndexPage() {
           bgcolor: 'rgba(244, 248, 241, 0.92)',
           borderBottom: 1,
           borderColor: 'divider',
-          ml: 'calc(50% - 50vw)',
           position: 'sticky',
           top: { xs: 88, sm: 72 },
-          width: '100vw',
           zIndex: 10,
         }}
       >
-        <Box
+        <Container
+          maxWidth="lg"
           sx={{
             alignItems: 'center',
             display: 'grid',
@@ -177,9 +177,6 @@ function KnowledgebaseIndexPage() {
               xs: '1fr',
               md: 'minmax(160px, 0.7fr) minmax(260px, 1.5fr) minmax(180px, 0.9fr) minmax(220px, 1fr)',
             },
-            maxWidth: 1680,
-            mx: 'auto',
-            px: { xs: 2, sm: 3 },
             py: 2,
           }}
         >
@@ -240,65 +237,58 @@ function KnowledgebaseIndexPage() {
               ))}
             </Select>
           </FormControl>
-        </Box>
+        </Container>
       </Box>
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
       ) : null}
-      <Box
-        sx={{
-          ml: 'calc(50% - 50vw)',
-          width: '100vw',
-        }}
-      >
-        <Box sx={{ maxWidth: 1680, mx: 'auto', px: { xs: 2, sm: 3 } }}>
-          {loading ? <LoadingState label="Loading articles" /> : null}
-          {error ? <ErrorState message={error} /> : null}
-          {!loading && !error && articles.length === 0 ? (
-            <EmptyState
-              message="Try another product, category, or search term."
-              title="No knowledgebase entries found"
-            />
-          ) : null}
-          <Box
-            sx={{
-              display: 'grid',
-              gap: 2,
-              gridTemplateColumns: {
-                xs: '1fr',
-                md: 'repeat(2, minmax(0, 1fr))',
-                lg: 'repeat(3, minmax(0, 1fr))',
-              },
-            }}
-          >
-            {articles.map((article) => (
-              <Link
-                key={article.id}
-                params={{ articleId: article.id }}
-                style={{ color: 'inherit', textDecoration: 'none' }}
-                to="/knowledgebase/$articleId"
-              >
-                <Card sx={{ height: '100%' }}>
-                  <CardActionArea sx={{ height: '100%' }}>
-                    <CardContent sx={{ minHeight: 188 }}>
-                      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                        <Chip label={article.type} size="small" />
-                        {article.categoryPath ? (
-                          <Chip label={article.categoryPath} size="small" variant="outlined" />
-                        ) : null}
-                      </Stack>
-                      <Typography variant="h2">{article.name}</Typography>
-                      <Typography color="text.secondary" sx={{ mt: 1 }}>
-                        {article.excerpt ?? 'Open this entry to read the full answer.'}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Link>
-            ))}
-          </Box>
+      <Container maxWidth="lg" sx={{ px: { xs: 0, sm: 0 } }}>
+        {loading ? <LoadingState label="Loading articles" /> : null}
+        {error ? <ErrorState message={error} /> : null}
+        {!loading && !error && articles.length === 0 ? (
+          <EmptyState
+            message="Try another product, category, or search term."
+            title="No knowledgebase entries found"
+          />
+        ) : null}
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 2,
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'repeat(2, minmax(0, 1fr))',
+              lg: 'repeat(3, minmax(0, 1fr))',
+            },
+          }}
+        >
+          {articles.map((article) => (
+            <Link
+              key={article.id}
+              params={{ articleId: article.id }}
+              style={{ color: 'inherit', textDecoration: 'none' }}
+              to="/knowledgebase/$articleId"
+            >
+              <Card sx={{ height: '100%' }}>
+                <CardActionArea sx={{ height: '100%' }}>
+                  <CardContent sx={{ minHeight: 188 }}>
+                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                      <Chip label={article.type} size="small" />
+                      {article.categoryPath ? (
+                        <Chip label={article.categoryPath} size="small" variant="outlined" />
+                      ) : null}
+                    </Stack>
+                    <Typography variant="h2">{article.name}</Typography>
+                    <Typography color="text.secondary" sx={{ mt: 1 }}>
+                      {article.excerpt ?? 'Open this entry to read the full answer.'}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Link>
+          ))}
         </Box>
-      </Box>
+      </Container>
     </Stack>
   );
 }
