@@ -1174,8 +1174,6 @@ Deliverable:
 - Add role-based guards for `admin`, `support_agent`, and `user`
 - Add admin-only user role assignment
 - Add profile page and profile API
-- Add notification preferences
-- Optionally add reCAPTCHA
 
 Deliverable:
 
@@ -1190,12 +1188,16 @@ Deliverable:
 - Implement docs articles table
 - Support knowledge base entry types: article and FAQ
 - Implement FAQ fields for question and answer
-- Implement publish/unpublish state
-- Implement featured/common-question flag
+- Implement publish/unpublish/draft state
 - Implement `searchText` generation from title, question, answer, product, and content
-- Generate embeddings when creating or updating a knowledge base entry
-- Save embeddings to the pgvector column
-- Implement semantic search using vector similarity
+- Add `OPENAI_API_KEY` as an optional environment variable for embeddings
+- Add a centralized search mode resolver: use vector search only when `OPENAI_API_KEY` is configured; otherwise use regular text search
+- Generate embeddings when creating or updating a knowledge base entry only when OpenAI embeddings are enabled
+- Save embeddings to the pgvector column when vector search is enabled
+- Leave the pgvector column nullable so knowledge base entries can be saved without an OpenAI token
+- Implement regular search using `searchText`, `ILIKE`, and/or PostgreSQL full-text search as the default fallback
+- Implement semantic search using vector similarity when embeddings are available
+- If vector search is enabled but an entry has no embedding, fall back to regular search for that entry/query path
 - Implement public article list
 - Implement public FAQ listing/search
 - Implement public product/category pages with nested category navigation
@@ -1212,7 +1214,7 @@ Deliverable:
 
 Deliverable:
 
-- Admin can manage articles and FAQs; visitors can browse/search/read the knowledge base and leave feedback
+- Admin can manage articles and FAQs; visitors can browse/search/read the knowledge base and leave feedback. Search works without OpenAI using regular text search, and automatically upgrades to vector search when `OPENAI_API_KEY` is configured.
 
 ### Phase 4: Ticket System
 
