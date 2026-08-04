@@ -2,7 +2,7 @@ import {
   UpdateNotificationPreferencesFormSchema,
   UpdateProfileFormSchema,
   UpdateUserRoleFormSchema,
-} from '../frontend/user.schema.js';
+} from './frontend.js';
 
 export const UpdateProfileSchema = UpdateProfileFormSchema;
 export const UpdateNotificationPreferencesSchema = UpdateNotificationPreferencesFormSchema;

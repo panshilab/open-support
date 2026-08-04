@@ -1,4 +1,4 @@
-import { BaseTicketCommentSchema, BaseTicketSchema } from '../base/ticket.schema.js';
+import { BaseTicketCommentSchema, BaseTicketSchema } from './base.js';
 
 export const CreateTicketFormSchema = BaseTicketSchema.pick({
   productId: true,

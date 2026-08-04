@@ -264,16 +264,29 @@ apps/
 packages/
   schemas/
     src/
-      base/
-      frontend/
-      backend/
+      category/
+        base.ts
+        frontend.ts
+        backend.ts
+        dto.ts
+      ticket/
+        base.ts
+        frontend.ts
+        backend.ts
+        dto.ts
+      user/
+        base.ts
+        frontend.ts
+        backend.ts
+        dto.ts
+      ...
       types/
-      dto/
 ```
 
 Use Nx for monorepo management:
 
-- Root `package.json` manages npm workspaces.
+- Root `package.json` declares `packageManager`.
+- `pnpm-workspace.yaml` manages pnpm workspaces.
 - `nx.json` defines target defaults and cacheable tasks.
 - `tsconfig.base.json` defines shared path aliases.
 - Each app/library gets a `project.json`.
@@ -284,11 +297,12 @@ Use Nx for monorepo management:
 
 Use one shared package for all reusable schemas and types:
 
-- Base schemas live in `packages/schemas/src/base`
-- Frontend schemas extend base schemas in `packages/schemas/src/frontend`
-- Backend schemas extend base schemas in `packages/schemas/src/backend`
+- Schemas are grouped by topic under `packages/schemas/src/<topic>`
+- Base schemas live in `packages/schemas/src/<topic>/base.ts`
+- Frontend schemas extend base schemas in `packages/schemas/src/<topic>/frontend.ts`
+- Backend schemas extend base schemas in `packages/schemas/src/<topic>/backend.ts`
 - Shared inferred TypeScript types live in `packages/schemas/src/types`
-- NestJS DTO classes live in `packages/schemas/src/dto`
+- NestJS DTO classes live in `packages/schemas/src/<topic>/dto.ts`
 
 Rules:
 
@@ -319,7 +333,7 @@ Recommended DTO library:
 Example schema flow:
 
 ```ts
-// packages/schemas/src/base/user.schema.ts
+// packages/schemas/src/user/base.ts
 export const UserRoleSchema = z.enum(['admin', 'support_agent', 'user']);
 
 export const BaseUserSchema = z.object({
@@ -329,12 +343,12 @@ export const BaseUserSchema = z.object({
   role: UserRoleSchema,
 });
 
-// packages/schemas/src/backend/user.schema.ts
+// packages/schemas/src/user/backend.ts
 export const UpdateUserRoleSchema = BaseUserSchema.pick({
   role: true,
 });
 
-// packages/schemas/src/dto/user.dto.ts
+// packages/schemas/src/user/dto.ts
 export class UpdateUserRoleDto extends createZodDto(UpdateUserRoleSchema) {}
 ```
 
@@ -1111,7 +1125,7 @@ Reactions:
 ### Phase 1: Project Foundation
 
 - Create Nx monorepo structure
-- Configure root npm workspaces
+- Configure root pnpm workspaces
 - Configure `nx.json`
 - Configure `tsconfig.base.json` path aliases
 - Add Nx `project.json` for each app/package

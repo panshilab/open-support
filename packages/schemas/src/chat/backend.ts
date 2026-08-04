@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SendChatMessageFormSchema, StartChatFormSchema } from '../frontend/chat.schema.js';
+import { SendChatMessageFormSchema, StartChatFormSchema } from './frontend.js';
 
 export const StartChatSchema = StartChatFormSchema;
 export const SendChatMessageSchema = SendChatMessageFormSchema.extend({

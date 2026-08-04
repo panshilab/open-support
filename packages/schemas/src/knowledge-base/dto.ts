@@ -3,7 +3,7 @@ import {
   CreateKnowledgeBaseEntrySchema,
   KnowledgeBaseSearchQuerySchema,
   UpdateKnowledgeBaseEntrySchema,
-} from '../backend/knowledge-base.schema.js';
+} from './backend.js';
 
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}
 export class UpdateKnowledgeBaseEntryDto extends createZodDto(UpdateKnowledgeBaseEntrySchema) {}

@@ -4,7 +4,7 @@ import {
   ChatTypingSchema,
   SendChatMessageSchema,
   StartChatSchema,
-} from '../backend/chat.schema.js';
+} from './backend.js';
 
 export class StartChatDto extends createZodDto(StartChatSchema) {}
 export class SendChatMessageDto extends createZodDto(SendChatMessageSchema) {}

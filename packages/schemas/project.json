@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npm run build",
+        "command": "../../node_modules/.bin/tsc -p tsconfig.json",
         "cwd": "packages/schemas"
       },
       "outputs": ["{projectRoot}/dist"]
@@ -15,7 +15,7 @@
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npm run typecheck",
+        "command": "../../node_modules/.bin/tsc -p tsconfig.json --noEmit",
         "cwd": "packages/schemas"
       }
     }

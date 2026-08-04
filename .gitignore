@@ -1,7 +1,36 @@
+# Dependencies
 node_modules
+.pnpm-store
+
+# Build output
 dist
+build
+.output
+.vinxi
+.tanstack
+coverage
+
+# Nx
 .nx/cache
 .nx/workspace-data
 
 apps/*/dist
 packages/*/dist
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/editor
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json

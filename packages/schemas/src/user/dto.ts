@@ -3,7 +3,7 @@ import {
   UpdateNotificationPreferencesSchema,
   UpdateProfileSchema,
   UpdateUserRoleSchema,
-} from '../backend/user.schema.js';
+} from './backend.js';
 
 export class UpdateProfileDto extends createZodDto(UpdateProfileSchema) {}
 export class UpdateNotificationPreferencesDto extends createZodDto(UpdateNotificationPreferencesSchema) {}

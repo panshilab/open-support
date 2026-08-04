@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   BaseKnowledgeBaseEntrySchema,
   KnowledgeBaseEntryTypeSchema,
-} from '../base/knowledge-base.schema.js';
+} from './base.js';
 
 export const KnowledgeBaseEntryFieldsSchema = BaseKnowledgeBaseEntrySchema.pick({
   productId: true,

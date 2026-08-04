@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { CreateTicketCommentFormSchema, CreateTicketFormSchema } from '../frontend/ticket.schema.js';
-import { TicketStatusSchema } from '../base/ticket.schema.js';
+import { TicketStatusSchema } from './base.js';
+import { CreateTicketCommentFormSchema, CreateTicketFormSchema } from './frontend.js';
 
 export const CreateTicketSchema = CreateTicketFormSchema;
 export const CreateTicketCommentSchema = CreateTicketCommentFormSchema;

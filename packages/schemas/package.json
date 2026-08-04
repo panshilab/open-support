@@ -29,6 +29,38 @@
     "./dto": {
       "types": "./dist/dto/index.d.ts",
       "import": "./dist/dto/index.js"
+    },
+    "./ai": {
+      "types": "./dist/ai/index.d.ts",
+      "import": "./dist/ai/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./category": {
+      "types": "./dist/category/index.d.ts",
+      "import": "./dist/category/index.js"
+    },
+    "./chat": {
+      "types": "./dist/chat/index.d.ts",
+      "import": "./dist/chat/index.js"
+    },
+    "./knowledge-base": {
+      "types": "./dist/knowledge-base/index.d.ts",
+      "import": "./dist/knowledge-base/index.js"
+    },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "import": "./dist/media/index.js"
+    },
+    "./ticket": {
+      "types": "./dist/ticket/index.d.ts",
+      "import": "./dist/ticket/index.js"
+    },
+    "./user": {
+      "types": "./dist/user/index.d.ts",
+      "import": "./dist/user/index.js"
     }
   },
   "scripts": {

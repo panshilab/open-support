@@ -3,7 +3,7 @@ import {
   KnowledgeBaseEntryFieldsSchema,
   KnowledgeBaseEntryFormSchema,
   KnowledgeBaseSearchFormSchema,
-} from '../frontend/knowledge-base.schema.js';
+} from './frontend.js';
 import { PaginationQuerySchema } from '../common.js';
 
 export const CreateKnowledgeBaseEntrySchema = KnowledgeBaseEntryFormSchema;

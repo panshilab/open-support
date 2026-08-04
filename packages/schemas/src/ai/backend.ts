@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AiProviderSchema } from '../base/ai.schema.js';
+import { AiProviderSchema } from './base.js';
 
 export const UpsertAiConfigSchema = z.object({
   provider: AiProviderSchema,

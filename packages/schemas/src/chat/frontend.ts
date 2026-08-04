@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseChatMessageSchema, BaseChatMetaSchema, BaseChatSchema } from '../base/chat.schema.js';
+import { BaseChatMessageSchema, BaseChatMetaSchema, BaseChatSchema } from './base.js';
 import { EmailSchema } from '../common.js';
 
 export const StartChatFormSchema = BaseChatSchema.pick({

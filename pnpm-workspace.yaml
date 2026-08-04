@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+onlyBuiltDependencies:
+  - nx
+
+confirmModulesPurge: false
+allowBuilds:
+  nx: true

@@ -1,4 +1,4 @@
-import { BaseCategorySchema, BaseProductSchema } from '../base/category.schema.js';
+import { BaseCategorySchema, BaseProductSchema } from './base.js';
 
 export const CreateProductFormSchema = BaseProductSchema.pick({
   name: true,

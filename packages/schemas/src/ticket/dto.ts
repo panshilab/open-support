@@ -4,7 +4,7 @@ import {
   CreateTicketSchema,
   MarkTicketSeenSchema,
   UpdateTicketStatusSchema,
-} from '../backend/ticket.schema.js';
+} from './backend.js';
 
 export class CreateTicketDto extends createZodDto(CreateTicketSchema) {}
 export class CreateTicketCommentDto extends createZodDto(CreateTicketCommentSchema) {}

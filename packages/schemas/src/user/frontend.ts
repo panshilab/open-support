@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseUserSchema, UserRoleSchema } from '../base/user.schema.js';
+import { BaseUserSchema, UserRoleSchema } from './base.js';
 
 export const UpdateProfileFormSchema = BaseUserSchema.pick({
   name: true,

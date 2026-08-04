@@ -2,7 +2,7 @@ import {
   CreateCategoryFormSchema,
   CreateProductFormSchema,
   UpdateCategoryFormSchema,
-} from '../frontend/category.schema.js';
+} from './frontend.js';
 
 export const CreateProductSchema = CreateProductFormSchema;
 export const CreateCategorySchema = CreateCategoryFormSchema;
