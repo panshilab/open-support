@@ -10,6 +10,7 @@ import {
   Chip,
   Container,
   FormControl,
+  Grid,
   InputAdornment,
   InputLabel,
   MenuItem,
@@ -169,76 +170,75 @@ function KnowledgebaseIndexPage() {
           zIndex: 10,
         }}
       >
-        <Container
-          maxWidth="lg"
-          sx={{
-            alignItems: 'center',
-            display: 'grid',
-            gap: 1.5,
-            gridTemplateColumns: {
-              xs: '1fr',
-              md: 'minmax(160px, 0.7fr) minmax(260px, 1.5fr) minmax(180px, 0.9fr) minmax(220px, 1fr)',
-            },
-            py: 2,
-          }}
-        >
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="h1">Knowledgebase</Typography>
-            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-              Browse ecommerce help articles and FAQs.
-            </Typography>
-          </Box>
-          <TextField
-            label="Search articles and FAQs"
-            onChange={(event) => setQuery(event.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            value={query}
-          />
-          <FormControl sx={{ minWidth: 0 }}>
-            <InputLabel id="knowledgebase-product-label">Product</InputLabel>
-            <Select
-              label="Product"
-              labelId="knowledgebase-product-label"
-              onChange={(event) => {
-                setProductId(event.target.value || undefined);
-                setCategoryId(undefined);
-              }}
-              sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
-              value={productId ?? ''}
-            >
-              <MenuItem value="">All products</MenuItem>
-              {products.map((product) => (
-                <MenuItem key={product.id} value={product.id}>
-                  {product.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ minWidth: 0 }}>
-            <InputLabel id="knowledgebase-category-label">Category</InputLabel>
-            <Select
-              label="Category"
-              labelId="knowledgebase-category-label"
-              onChange={(event) => setCategoryId(event.target.value || undefined)}
-              sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
-              value={categoryId ?? ''}
-            >
-              <MenuItem value="">All categories</MenuItem>
-              {flatCategories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.path}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <Container maxWidth="lg" sx={{ py: 2 }}>
+          <Grid container spacing={1.5} sx={{ alignItems: 'center' }}>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography variant="h1">Knowledgebase</Typography>
+                <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+                  Browse ecommerce help articles and FAQs.
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                label="Search articles and FAQs"
+                onChange={(event) => setQuery(event.target.value)}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                value={query}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+              <FormControl fullWidth sx={{ minWidth: 0 }}>
+                <InputLabel id="knowledgebase-product-label">Product</InputLabel>
+                <Select
+                  label="Product"
+                  labelId="knowledgebase-product-label"
+                  onChange={(event) => {
+                    setProductId(event.target.value || undefined);
+                    setCategoryId(undefined);
+                  }}
+                  sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
+                  value={productId ?? ''}
+                >
+                  <MenuItem value="">All products</MenuItem>
+                  {products.map((product) => (
+                    <MenuItem key={product.id} value={product.id}>
+                      {product.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <FormControl fullWidth sx={{ minWidth: 0 }}>
+                <InputLabel id="knowledgebase-category-label">Category</InputLabel>
+                <Select
+                  label="Category"
+                  labelId="knowledgebase-category-label"
+                  onChange={(event) => setCategoryId(event.target.value || undefined)}
+                  sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
+                  value={categoryId ?? ''}
+                >
+                  <MenuItem value="">All categories</MenuItem>
+                  {flatCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.path}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
       {searchMode ? (
@@ -253,43 +253,39 @@ function KnowledgebaseIndexPage() {
             title="No knowledgebase entries found"
           />
         ) : null}
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 2,
-            gridTemplateColumns: {
-              xs: '1fr',
-              md: 'repeat(2, minmax(0, 1fr))',
-              lg: 'repeat(3, minmax(0, 1fr))',
-            },
-          }}
-        >
+        <Grid container spacing={2}>
           {articles.map((article) => (
-            <Link
-              key={article.id}
-              params={{ articleId: article.id }}
-              style={{ color: 'inherit', textDecoration: 'none' }}
-              to="/knowledgebase/$articleId"
-            >
-              <Card sx={{ height: '100%' }}>
-                <CardActionArea sx={{ height: '100%' }}>
-                  <CardContent sx={{ minHeight: 188 }}>
-                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                      <Chip label={article.type} size="small" />
-                      {article.categoryPath ? (
-                        <Chip label={article.categoryPath} size="small" variant="outlined" />
-                      ) : null}
-                    </Stack>
-                    <Typography variant="h2">{article.name}</Typography>
-                    <Typography color="text.secondary" sx={{ mt: 1 }}>
-                      {article.excerpt ?? 'Open this entry to read the full answer.'}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Link>
+            <Grid key={article.id} size={{ xs: 12, md: 6, lg: 4 }}>
+              <Link
+                params={{ articleId: article.id }}
+                style={{
+                  color: 'inherit',
+                  display: 'block',
+                  height: '100%',
+                  textDecoration: 'none',
+                }}
+                to="/knowledgebase/$articleId"
+              >
+                <Card sx={{ height: '100%' }}>
+                  <CardActionArea sx={{ height: '100%' }}>
+                    <CardContent sx={{ minHeight: 188 }}>
+                      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                        <Chip label={article.type} size="small" />
+                        {article.categoryPath ? (
+                          <Chip label={article.categoryPath} size="small" variant="outlined" />
+                        ) : null}
+                      </Stack>
+                      <Typography variant="h2">{article.name}</Typography>
+                      <Typography color="text.secondary" sx={{ mt: 1 }}>
+                        {article.excerpt ?? 'Open this entry to read the full answer.'}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Link>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Container>
     </Stack>
   );
