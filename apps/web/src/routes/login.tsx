@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import GoogleIcon from '@mui/icons-material/Google';
 import MailOutlineIcon from '@mui/icons-material/MailOutlineOutlined';
 import PasswordIcon from '@mui/icons-material/PasswordOutlined';
@@ -34,6 +34,27 @@ export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
   }),
+  beforeLoad: async ({ search }) => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const response = await fetch('/api/auth/me', {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = (await response.json()) as {
+      user: { mustChangePassword?: boolean };
+    };
+
+    throw redirect({
+      href: result.user.mustChangePassword ? '/change-password' : (search.redirect ?? '/admin'),
+    });
+  },
   component: LoginPage,
 });
 
