@@ -37,7 +37,9 @@ export class CreateAdminOperations0000000000005 implements MigrationInterface {
     await queryRunner.query(
       'CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs (created_at DESC)',
     );
-    await queryRunner.query('CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs (action)');
+    await queryRunner.query(
+      'CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs (action)',
+    );
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {

@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminKnowledgebaseRouteImport } from './routes/admin.knowledgebase'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
@@ -62,6 +63,11 @@ const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuditLogsRoute = AdminAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/tickets': typeof TicketsRouteWithChildren
   '/verify': typeof VerifyRoute
+  '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
   '/admin/media': typeof AdminMediaRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tickets'
     | '/verify'
+    | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/knowledgebase'
     | '/admin/media'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tickets'
     | '/verify'
+    | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/knowledgebase'
     | '/admin/media'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/tickets'
     | '/verify'
+    | '/admin/audit-logs'
     | '/admin/categories'
     | '/admin/knowledgebase'
     | '/admin/media'
@@ -303,6 +315,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/audit-logs': {
+      id: '/admin/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/admin/audit-logs'
+      preLoaderRoute: typeof AdminAuditLogsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/categories': {
       id: '/admin/categories'
@@ -398,6 +417,7 @@ const AdminKnowledgebaseRouteWithChildren =
   AdminKnowledgebaseRoute._addFileChildren(AdminKnowledgebaseRouteChildren)
 
 interface AdminRouteChildren {
+  AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminKnowledgebaseRoute: typeof AdminKnowledgebaseRouteWithChildren
   AdminMediaRoute: typeof AdminMediaRoute
@@ -408,6 +428,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminKnowledgebaseRoute: AdminKnowledgebaseRouteWithChildren,
   AdminMediaRoute: AdminMediaRoute,

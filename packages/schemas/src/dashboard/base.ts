@@ -15,11 +15,7 @@ export const BaseStaffPresenceSchema = z.object({
 });
 export type StaffPresence = z.infer<typeof BaseStaffPresenceSchema>;
 
-export const AuditActionSchema = z.enum([
-  'media.deleted',
-  'settings.updated',
-  'user.role_updated',
-]);
+export const AuditActionSchema = z.enum(['media.deleted', 'settings.updated', 'user.role_updated']);
 export type AuditAction = z.infer<typeof AuditActionSchema>;
 
 export const BaseAuditLogSchema = z.object({

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -11,6 +11,7 @@ import {
   Button,
   Container,
   CssBaseline,
+  LinearProgress,
   Stack,
   ThemeProvider,
   Toolbar,
@@ -77,12 +78,23 @@ export const Route = createRootRoute({
         name: 'description',
         content: 'Customer support portal with tickets, knowledge base, and live chat.',
       },
+      {
+        name: 'theme-color',
+        content: '#14532d',
+      },
     ],
+    links: [{ rel: 'manifest', href: '/manifest.webmanifest' }],
   }),
   component: RootComponent,
 });
 
 function RootComponent() {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  }, []);
+
   return (
     <RootDocument>
       <ThemeProvider theme={theme}>
@@ -108,10 +120,21 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 function Shell() {
+  const [navigating, setNavigating] = useState(false);
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      {navigating ? (
+        <LinearProgress sx={{ left: 0, position: 'fixed', right: 0, top: 0, zIndex: 2000 }} />
+      ) : null}
       <AppBar color="inherit" position="sticky" sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar sx={{ gap: 2, flexWrap: 'wrap', py: 1 }}>
+        <Toolbar
+          onClickCapture={() => {
+            setNavigating(true);
+            window.setTimeout(() => setNavigating(false), 350);
+          }}
+          sx={{ gap: 2, flexWrap: 'wrap', py: 1 }}
+        >
           <Typography
             component={Link}
             sx={{ color: 'primary.main', fontWeight: 800, textDecoration: 'none' }}

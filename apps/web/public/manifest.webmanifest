@@ -1,0 +1,10 @@
+{
+  "name": "Open Support",
+  "short_name": "Open Support",
+  "description": "Customer support portal for tickets, knowledgebase, and staff operations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8f5",
+  "theme_color": "#14532d",
+  "icons": []
+}
