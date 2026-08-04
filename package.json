@@ -1,0 +1,20 @@
+{
+  "name": "open-support",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "nx run-many -t build",
+    "typecheck": "nx run-many -t typecheck",
+    "schemas:build": "nx build schemas",
+    "schemas:typecheck": "nx typecheck schemas"
+  },
+  "devDependencies": {
+    "nx": "^21.0.0",
+    "typescript": "^5.0.0"
+  }
+}

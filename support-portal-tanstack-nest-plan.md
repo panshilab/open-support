@@ -3,6 +3,7 @@
 Source reference: `raselupm/support-portal`
 
 Target stack:
+- Monorepo: Nx
 - Frontend: TanStack Start, React, TypeScript
 - Backend: NestJS, TypeScript
 - Primary database: PostgreSQL with pgvector
@@ -238,6 +239,8 @@ The original repo is a Next.js Redis-backed monolith. The rebuild should separat
 ### Monorepo Layout
 
 ```txt
+nx.json
+tsconfig.base.json
 apps/
   web/
     src/
@@ -259,25 +262,33 @@ apps/
       realtime/
       common/
 packages/
-  shared/
+  schemas/
     src/
-      schemas/
-        base/
-        frontend/
-        backend/
+      base/
+      frontend/
+      backend/
       types/
       dto/
 ```
+
+Use Nx for monorepo management:
+
+- Root `package.json` manages npm workspaces.
+- `nx.json` defines target defaults and cacheable tasks.
+- `tsconfig.base.json` defines shared path aliases.
+- Each app/library gets a `project.json`.
+- Use Nx targets for build, typecheck, test, lint, and serve tasks.
+- Current shared schema library project name: `schemas`.
 
 ### Shared Types and DTO Strategy
 
 Use one shared package for all reusable schemas and types:
 
-- Base schemas live in `packages/shared/src/schemas/base`
-- Frontend schemas extend base schemas in `packages/shared/src/schemas/frontend`
-- Backend schemas extend base schemas in `packages/shared/src/schemas/backend`
-- Shared inferred TypeScript types live in `packages/shared/src/types`
-- NestJS DTO classes live in `packages/shared/src/dto`
+- Base schemas live in `packages/schemas/src/base`
+- Frontend schemas extend base schemas in `packages/schemas/src/frontend`
+- Backend schemas extend base schemas in `packages/schemas/src/backend`
+- Shared inferred TypeScript types live in `packages/schemas/src/types`
+- NestJS DTO classes live in `packages/schemas/src/dto`
 
 Rules:
 
@@ -308,7 +319,7 @@ Recommended DTO library:
 Example schema flow:
 
 ```ts
-// packages/shared/src/schemas/base/user.schema.ts
+// packages/schemas/src/base/user.schema.ts
 export const UserRoleSchema = z.enum(['admin', 'support_agent', 'user']);
 
 export const BaseUserSchema = z.object({
@@ -318,12 +329,12 @@ export const BaseUserSchema = z.object({
   role: UserRoleSchema,
 });
 
-// packages/shared/src/schemas/backend/user.schema.ts
+// packages/schemas/src/backend/user.schema.ts
 export const UpdateUserRoleSchema = BaseUserSchema.pick({
   role: true,
 });
 
-// packages/shared/src/dto/user.dto.ts
+// packages/schemas/src/dto/user.dto.ts
 export class UpdateUserRoleDto extends createZodDto(UpdateUserRoleSchema) {}
 ```
 
@@ -1099,7 +1110,11 @@ Reactions:
 
 ### Phase 1: Project Foundation
 
-- Create monorepo structure
+- Create Nx monorepo structure
+- Configure root npm workspaces
+- Configure `nx.json`
+- Configure `tsconfig.base.json` path aliases
+- Add Nx `project.json` for each app/package
 - Configure TanStack Start app
 - Configure NestJS app
 - Add shared package for types and validation schemas

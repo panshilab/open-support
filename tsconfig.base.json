@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@open-support/schemas": ["packages/schemas/src/index.ts"],
+      "@open-support/schemas/base": ["packages/schemas/src/base/index.ts"],
+      "@open-support/schemas/backend": ["packages/schemas/src/backend/index.ts"],
+      "@open-support/schemas/frontend": ["packages/schemas/src/frontend/index.ts"],
+      "@open-support/schemas/types": ["packages/schemas/src/types/index.ts"],
+      "@open-support/schemas/dto": ["packages/schemas/src/dto/index.ts"]
+    }
+  }
+}
