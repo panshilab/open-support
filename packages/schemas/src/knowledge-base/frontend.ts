@@ -15,6 +15,8 @@ export const KnowledgeBaseEntryFieldsSchema = BaseKnowledgeBaseEntrySchema.pick(
   featured: true,
   order: true,
 }).extend({
+  productId: BaseKnowledgeBaseEntrySchema.shape.productId.unwrap(),
+  categoryId: BaseKnowledgeBaseEntrySchema.shape.categoryId.unwrap(),
   type: KnowledgeBaseEntryTypeSchema,
 });
 export type KnowledgeBaseEntryFields = z.infer<typeof KnowledgeBaseEntryFieldsSchema>;

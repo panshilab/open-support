@@ -37,6 +37,9 @@ export const EnvSchema = z.object({
   SMTP_FROM_NAME: z.string().min(1).default('Open Support'),
 
   GOOGLE_CLIENT_ID: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
+  OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
+  OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

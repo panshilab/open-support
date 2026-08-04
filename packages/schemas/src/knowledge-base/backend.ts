@@ -6,11 +6,16 @@ import {
   KnowledgeBaseSearchFormSchema,
 } from './frontend.js';
 import { PaginationQuerySchema } from '../common.js';
+import { IdSchema } from '../common.js';
 
 export const CreateKnowledgeBaseEntrySchema = KnowledgeBaseEntryFormSchema;
 export const UpdateKnowledgeBaseEntrySchema = KnowledgeBaseEntryFieldsSchema.partial();
+export const KnowledgeBaseEntryIdParamSchema = z.object({
+  articleId: IdSchema,
+});
 export type CreateKnowledgeBaseEntryInput = z.infer<typeof CreateKnowledgeBaseEntrySchema>;
 export type UpdateKnowledgeBaseEntryInput = z.infer<typeof UpdateKnowledgeBaseEntrySchema>;
+export type KnowledgeBaseEntryIdParam = z.infer<typeof KnowledgeBaseEntryIdParamSchema>;
 
 export const KnowledgeBaseSearchQuerySchema = KnowledgeBaseSearchFormSchema.merge(
   PaginationQuerySchema,
@@ -22,3 +27,6 @@ export type KnowledgeBaseSearchQuery = z.infer<typeof KnowledgeBaseSearchQuerySc
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}
 export class UpdateKnowledgeBaseEntryDto extends createZodDto(UpdateKnowledgeBaseEntrySchema) {}
 export class KnowledgeBaseSearchQueryDto extends createZodDto(KnowledgeBaseSearchQuerySchema) {}
+export class KnowledgeBaseEntryIdParamDto extends createZodDto(
+  KnowledgeBaseEntryIdParamSchema,
+) {}

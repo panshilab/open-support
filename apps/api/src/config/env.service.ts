@@ -87,4 +87,12 @@ export class EnvService {
   get googleClientId() {
     return this.config.get('GOOGLE_CLIENT_ID', { infer: true });
   }
+
+  get openAi() {
+    return {
+      apiKey: this.config.get('OPENAI_API_KEY', { infer: true }),
+      embeddingModel: this.config.get('OPENAI_EMBEDDING_MODEL', { infer: true }),
+      embeddingDimensions: this.config.get('OPENAI_EMBEDDING_DIMENSIONS', { infer: true }),
+    };
+  }
 }
