@@ -99,8 +99,9 @@ export class TicketsService {
       }),
     );
 
-    ticket.status = isStaff ? 'replied' : 'customer_reply';
-    await this.tickets.save(ticket);
+    await this.tickets.update(ticket.id, {
+      status: isStaff ? 'replied' : 'customer_reply',
+    });
     await this.markSeen(ticket.id, user, { side: isStaff ? 'staff' : 'customer' });
     return this.getForUser(ticket.id, user);
   }
