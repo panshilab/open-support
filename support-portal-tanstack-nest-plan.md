@@ -268,17 +268,14 @@ packages/
         base.ts
         frontend.ts
         backend.ts
-        dto.ts
       ticket/
         base.ts
         frontend.ts
         backend.ts
-        dto.ts
       user/
         base.ts
         frontend.ts
         backend.ts
-        dto.ts
       ...
       types/
 ```
@@ -301,8 +298,8 @@ Use one shared package for all reusable schemas and types:
 - Base schemas live in `packages/schemas/src/<topic>/base.ts`
 - Frontend schemas extend base schemas in `packages/schemas/src/<topic>/frontend.ts`
 - Backend schemas extend base schemas in `packages/schemas/src/<topic>/backend.ts`
+- Backend DTO classes live beside backend schemas in `packages/schemas/src/<topic>/backend.ts`
 - Shared inferred TypeScript types live in `packages/schemas/src/types`
-- NestJS DTO classes live in `packages/schemas/src/<topic>/dto.ts`
 
 Rules:
 
@@ -314,6 +311,7 @@ Rules:
 - Extend the base schema for frontend form needs.
 - Extend the base schema for backend API needs.
 - Convert backend Zod schemas to DTO classes for NestJS controllers and services.
+- Export `z.infer` types beside every schema, for example `CreateTicketInput`.
 - Use DTO classes in controller decorators, request bodies, query params, route params, and Swagger decorators.
 - Prefer validation metadata directly on Zod schemas using `.min()`, `.max()`, `.email()`, `.uuid()`, `.describe()`, `.default()`, `.optional()`, `.nullable()`, and enum schemas.
 - Prefer NestJS decorators for controller/service/entity concerns:
@@ -347,8 +345,8 @@ export const BaseUserSchema = z.object({
 export const UpdateUserRoleSchema = BaseUserSchema.pick({
   role: true,
 });
+export type UpdateUserRoleInput = z.infer<typeof UpdateUserRoleSchema>;
 
-// packages/schemas/src/user/dto.ts
 export class UpdateUserRoleDto extends createZodDto(UpdateUserRoleSchema) {}
 ```
 

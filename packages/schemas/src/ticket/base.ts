@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { HtmlSchema, IdSchema, IsoDateStringSchema } from '../common.js';
-import { EmailSchema } from '../common.js';
+import { EmailSchema, HtmlSchema, IdSchema, IsoDateStringSchema } from '../common.js';
 
 export const TicketStatusSchema = z.enum([
   'open',
@@ -8,6 +7,7 @@ export const TicketStatusSchema = z.enum([
   'replied',
   'resolved',
 ]);
+export type TicketStatus = z.infer<typeof TicketStatusSchema>;
 
 export const BaseTicketSchema = z.object({
   id: IdSchema,
@@ -21,6 +21,7 @@ export const BaseTicketSchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type Ticket = z.infer<typeof BaseTicketSchema>;
 
 export const BaseTicketCommentSchema = z.object({
   id: IdSchema,
@@ -32,9 +33,11 @@ export const BaseTicketCommentSchema = z.object({
   isSystem: z.boolean().default(false),
   createdAt: IsoDateStringSchema,
 });
+export type TicketComment = z.infer<typeof BaseTicketCommentSchema>;
 
 export const BaseTicketSeenStateSchema = z.object({
   ticketId: IdSchema,
   customerSeenAt: IsoDateStringSchema.nullable(),
   staffSeenAt: IsoDateStringSchema.nullable(),
 });
+export type TicketSeenState = z.infer<typeof BaseTicketSeenStateSchema>;

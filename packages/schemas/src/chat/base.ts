@@ -3,6 +3,8 @@ import { EmailSchema, IdSchema, IsoDateStringSchema } from '../common.js';
 
 export const ChatStatusSchema = z.enum(['waiting', 'active', 'closed']);
 export const ChatSenderSchema = z.enum(['visitor', 'staff', 'system', 'bot']);
+export type ChatStatus = z.infer<typeof ChatStatusSchema>;
+export type ChatSender = z.infer<typeof ChatSenderSchema>;
 
 export const BaseChatSchema = z.object({
   id: IdSchema,
@@ -15,6 +17,7 @@ export const BaseChatSchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type Chat = z.infer<typeof BaseChatSchema>;
 
 export const BaseChatMessageSchema = z.object({
   id: IdSchema,
@@ -26,6 +29,7 @@ export const BaseChatMessageSchema = z.object({
   staffOnly: z.boolean().default(false),
   createdAt: IsoDateStringSchema,
 });
+export type ChatMessage = z.infer<typeof BaseChatMessageSchema>;
 
 export const BaseChatMetaSchema = z.object({
   chatId: IdSchema,
@@ -36,3 +40,4 @@ export const BaseChatMetaSchema = z.object({
   os: z.string().max(120).nullable(),
   language: z.string().max(80).nullable(),
 });
+export type ChatMeta = z.infer<typeof BaseChatMetaSchema>;

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { IdSchema, IsoDateStringSchema } from '../common.js';
 
 export const MediaProviderSchema = z.enum(['s3', 'cloudinary']);
+export type MediaProvider = z.infer<typeof MediaProviderSchema>;
 
 export const BaseMediaAssetSchema = z.object({
   id: IdSchema,
@@ -14,3 +15,4 @@ export const BaseMediaAssetSchema = z.object({
   createdAt: IsoDateStringSchema,
   uploadedByUserId: IdSchema,
 });
+export type MediaAsset = z.infer<typeof BaseMediaAssetSchema>;

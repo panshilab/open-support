@@ -14,7 +14,6 @@
       "@open-support/schemas/backend": ["packages/schemas/src/backend/index.ts"],
       "@open-support/schemas/frontend": ["packages/schemas/src/frontend/index.ts"],
       "@open-support/schemas/types": ["packages/schemas/src/types/index.ts"],
-      "@open-support/schemas/dto": ["packages/schemas/src/dto/index.ts"],
       "@open-support/schemas/ai": ["packages/schemas/src/ai/index.ts"],
       "@open-support/schemas/auth": ["packages/schemas/src/auth/index.ts"],
       "@open-support/schemas/category": ["packages/schemas/src/category/index.ts"],

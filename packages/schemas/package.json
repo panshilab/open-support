@@ -26,10 +26,6 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.js"
     },
-    "./dto": {
-      "types": "./dist/dto/index.d.ts",
-      "import": "./dist/dto/index.js"
-    },
     "./ai": {
       "types": "./dist/ai/index.d.ts",
       "import": "./dist/ai/index.js"

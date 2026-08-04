@@ -3,6 +3,8 @@ import { HtmlSchema, IdSchema, IsoDateStringSchema, SlugSchema } from '../common
 
 export const KnowledgeBaseEntryTypeSchema = z.enum(['article', 'faq']);
 export const EmbeddingStatusSchema = z.enum(['pending', 'ready', 'failed']);
+export type KnowledgeBaseEntryType = z.infer<typeof KnowledgeBaseEntryTypeSchema>;
+export type EmbeddingStatus = z.infer<typeof EmbeddingStatusSchema>;
 
 export const BaseKnowledgeBaseEntrySchema = z.object({
   id: IdSchema,
@@ -27,3 +29,4 @@ export const BaseKnowledgeBaseEntrySchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type KnowledgeBaseEntry = z.infer<typeof BaseKnowledgeBaseEntrySchema>;

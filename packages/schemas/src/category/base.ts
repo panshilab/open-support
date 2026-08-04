@@ -9,6 +9,7 @@ export const BaseProductSchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type Product = z.infer<typeof BaseProductSchema>;
 
 export const BaseCategorySchema = z.object({
   id: IdSchema,
@@ -23,6 +24,7 @@ export const BaseCategorySchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type Category = z.infer<typeof BaseCategorySchema>;
 
 export type CategoryTreeNodeValue = z.infer<typeof BaseCategorySchema> & {
   children: CategoryTreeNodeValue[];
@@ -31,3 +33,4 @@ export type CategoryTreeNodeValue = z.infer<typeof BaseCategorySchema> & {
 export const CategoryTreeNodeSchema: z.ZodType<CategoryTreeNodeValue> = BaseCategorySchema.extend({
   children: z.array(z.lazy(() => CategoryTreeNodeSchema)).default([]),
 });
+export type CategoryTreeNode = z.infer<typeof CategoryTreeNodeSchema>;

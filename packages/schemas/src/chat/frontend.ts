@@ -9,7 +9,9 @@ export const StartChatFormSchema = BaseChatSchema.pick({
   message: z.string().trim().min(1).max(5000),
   meta: BaseChatMetaSchema.omit({ chatId: true }).partial().optional(),
 });
+export type StartChatForm = z.infer<typeof StartChatFormSchema>;
 
 export const SendChatMessageFormSchema = BaseChatMessageSchema.pick({
   content: true,
 });
+export type SendChatMessageForm = z.infer<typeof SendChatMessageFormSchema>;

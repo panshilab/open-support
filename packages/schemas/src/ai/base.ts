@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { IdSchema, IsoDateStringSchema } from '../common.js';
 
 export const AiProviderSchema = z.enum(['anthropic', 'openai', 'gemini']);
+export type AiProvider = z.infer<typeof AiProviderSchema>;
 
 export const BaseAiConfigSchema = z.object({
   id: IdSchema,
@@ -11,3 +12,4 @@ export const BaseAiConfigSchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type AiConfig = z.infer<typeof BaseAiConfigSchema>;

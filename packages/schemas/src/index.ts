@@ -9,5 +9,4 @@ export * from './frontend/index.js';
 export * from './knowledge-base/index.js';
 export * from './media/index.js';
 export * from './ticket/index.js';
-export * from './types/index.js';
 export * from './user/index.js';

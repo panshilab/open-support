@@ -20,6 +20,7 @@ export const KnowledgeBaseEntryFieldsSchema = BaseKnowledgeBaseEntrySchema.pick(
 }).extend({
   type: KnowledgeBaseEntryTypeSchema,
 });
+export type KnowledgeBaseEntryFields = z.infer<typeof KnowledgeBaseEntryFieldsSchema>;
 
 export const KnowledgeBaseEntryFormSchema = KnowledgeBaseEntryFieldsSchema.superRefine((value, ctx) => {
   if (value.type === 'article' && !value.contentHtml) {
@@ -48,9 +49,11 @@ export const KnowledgeBaseEntryFormSchema = KnowledgeBaseEntryFieldsSchema.super
     }
   }
 });
+export type KnowledgeBaseEntryForm = z.infer<typeof KnowledgeBaseEntryFormSchema>;
 
 export const KnowledgeBaseSearchFormSchema = z.object({
   query: z.string().trim().min(1).max(300),
   productId: BaseKnowledgeBaseEntrySchema.shape.productId.optional(),
   categoryId: BaseKnowledgeBaseEntrySchema.shape.categoryId.optional(),
 });
+export type KnowledgeBaseSearchForm = z.infer<typeof KnowledgeBaseSearchFormSchema>;

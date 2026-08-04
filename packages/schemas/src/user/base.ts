@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { EmailSchema, IdSchema, IsoDateStringSchema } from '../common.js';
 
 export const UserRoleSchema = z.enum(['admin', 'support_agent', 'user']);
+export type UserRole = z.infer<typeof UserRoleSchema>;
 
 export const BaseUserSchema = z.object({
   id: IdSchema,
@@ -13,6 +14,7 @@ export const BaseUserSchema = z.object({
   createdAt: IsoDateStringSchema,
   updatedAt: IsoDateStringSchema,
 });
+export type User = z.infer<typeof BaseUserSchema>;
 
 export const PublicUserSchema = BaseUserSchema.pick({
   id: true,
@@ -20,3 +22,4 @@ export const PublicUserSchema = BaseUserSchema.pick({
   name: true,
   role: true,
 });
+export type PublicUser = z.infer<typeof PublicUserSchema>;
