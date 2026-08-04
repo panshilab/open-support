@@ -1,5 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Chip, Divider, Paper, Stack, TextField, Button, Typography } from '@mui/material';
+import {
+  Button,
+  Chip,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 export const Route = createFileRoute('/tickets/$ticketId')({
   component: TicketDetailPage,
@@ -14,17 +26,35 @@ function TicketDetailPage() {
         <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between' }}>
           <div>
             <Typography variant="h1">Ticket {ticketId}</Typography>
-            <Typography color="text.secondary">Billing / Invoices</Typography>
+            <Typography color="text.secondary">
+              Customer Portal · Billing / Invoices · customer seen, staff unseen
+            </Typography>
           </div>
           <Chip color="warning" label="open" />
+        </Stack>
+      </Paper>
+      <Paper sx={{ p: 3 }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+          <FormControl fullWidth>
+            <InputLabel id="status-label">Status</InputLabel>
+            <Select label="Status" labelId="status-label" value="open">
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="customer_reply">Customer reply</MenuItem>
+              <MenuItem value="replied">Replied</MenuItem>
+              <MenuItem value="resolved">Resolved</MenuItem>
+            </Select>
+          </FormControl>
+          <Button variant="outlined">Mark seen</Button>
         </Stack>
       </Paper>
       <Paper sx={{ p: 3 }}>
         <Stack spacing={2}>
           <Typography variant="h2">Conversation</Typography>
           <Divider />
-          <Typography>Customer: I cannot upload an invoice PDF.</Typography>
-          <Typography>Agent: We are checking the attachment service.</Typography>
+          <Typography>
+            Customer: I cannot upload an invoice PDF from the billing dashboard.
+          </Typography>
+          <Typography>Agent: We are checking the attachment service and file limits.</Typography>
           <TextField label="Reply" minRows={4} multiline />
           <Button variant="contained">Send reply</Button>
         </Stack>

@@ -21,6 +21,7 @@ import { Route as AdminKnowledgebaseRouteImport } from './routes/admin.knowledge
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
+import { Route as AdminTicketsRouteImport } from './routes/admin.tickets'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
 import { Route as TicketsNewRouteImport } from './routes/tickets.new'
 import { Route as AdminKnowledgebaseEditRouteImport } from './routes/admin.knowledgebase.edit'
@@ -86,6 +87,11 @@ const AdminStaffRoute = AdminStaffRouteImport.update({
   path: '/staff',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTicketsRoute = AdminTicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => AdminRoute,
+} as any)
 const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
   id: '/$ticketId',
   path: '/$ticketId',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
+  '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
+  '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
+  '/admin/tickets': typeof AdminTicketsRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/tickets/new': typeof TicketsNewRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
+    | '/admin/tickets'
     | '/tickets/$ticketId'
     | '/tickets/new'
     | '/admin/knowledgebase/edit'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
+    | '/admin/tickets'
     | '/tickets/$ticketId'
     | '/tickets/new'
     | '/admin/knowledgebase/edit'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
+    | '/admin/tickets'
     | '/tickets/$ticketId'
     | '/tickets/new'
     | '/admin/knowledgebase/edit'
@@ -315,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStaffRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/tickets': {
+      id: '/admin/tickets'
+      path: '/tickets'
+      fullPath: '/admin/tickets'
+      preLoaderRoute: typeof AdminTicketsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/tickets/$ticketId': {
       id: '/tickets/$ticketId'
       path: '/$ticketId'
@@ -365,6 +384,7 @@ interface AdminRouteChildren {
   AdminProductsRoute: typeof AdminProductsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStaffRoute: typeof AdminStaffRoute
+  AdminTicketsRoute: typeof AdminTicketsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -373,6 +393,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProductsRoute: AdminProductsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStaffRoute: AdminStaffRoute,
+  AdminTicketsRoute: AdminTicketsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

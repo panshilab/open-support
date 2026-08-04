@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import AddIcon from '@mui/icons-material/Add';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 
 const tickets = [
-  ['TS-1042', 'Cannot upload invoice attachment', 'open'],
-  ['TS-1041', 'Billing email needs to be changed', 'pending'],
-  ['TS-1038', 'Workspace invite failed', 'resolved'],
+  ['TS-1042', 'Cannot upload invoice attachment', 'Billing / Invoices', 'open'],
+  ['TS-1041', 'Billing email needs to be changed', 'Billing / Contacts', 'customer_reply'],
+  ['TS-1038', 'Workspace invite failed', 'Account / Access', 'resolved'],
 ];
 
 export const Route = createFileRoute('/tickets')({
@@ -21,7 +22,7 @@ function TicketsPage() {
           New ticket
         </Button>
       </Stack>
-      {tickets.map(([id, title, status]) => (
+      {tickets.map(([id, title, categoryPath, status]) => (
         <Paper key={id} sx={{ p: 2 }}>
           <Stack
             direction="row"
@@ -37,10 +38,20 @@ function TicketsPage() {
                 {title}
               </Typography>
               <Typography color="text.secondary" variant="body2">
-                {id}
+                {id} · {categoryPath}
               </Typography>
             </Box>
-            <Chip label={status} size="small" />
+            <Stack direction="row" spacing={1}>
+              <Chip label={status} size="small" />
+              <Button
+                component={Link}
+                size="small"
+                startIcon={<VisibilityIcon />}
+                to={`/tickets/${id}` as '/tickets/$ticketId'}
+              >
+                View
+              </Button>
+            </Stack>
           </Stack>
         </Paper>
       ))}
