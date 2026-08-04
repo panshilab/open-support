@@ -225,7 +225,7 @@ function KnowledgebaseIndexPage() {
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
       ) : null}
-      <Container maxWidth="lg">
+      <Container maxWidth={false}>
         {loading ? <LoadingState label="Loading articles" /> : null}
         {error ? <ErrorState message={error} /> : null}
         {!loading && !error && articles.length === 0 ? (

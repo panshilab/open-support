@@ -313,7 +313,7 @@ function Shell() {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container component="main" maxWidth="lg" sx={{ py: 4 }}>
+      <Container component="main" maxWidth={false} sx={{ pb: 4, pt: 0 }}>
         <Outlet />
       </Container>
     </Box>
