@@ -69,6 +69,18 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiAutocomplete: {
+      styleOverrides: {
+        option: {
+          '&[aria-selected="true"]': {
+            backgroundColor: 'rgba(20, 83, 45, 0.1)',
+          },
+          '&[aria-selected="true"].Mui-focused': {
+            backgroundColor: 'rgba(20, 83, 45, 0.14)',
+          },
+        },
+      },
+    },
     MuiAppBar: {
       defaultProps: {
         elevation: 0,
@@ -122,6 +134,30 @@ const theme = createTheme({
         outlined: {
           backgroundColor: 'rgba(15, 118, 110, 0.06)',
           borderColor: 'rgba(15, 118, 110, 0.22)',
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            backgroundColor: 'rgba(20, 83, 45, 0.1)',
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: 'rgba(20, 83, 45, 0.14)',
+          },
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            backgroundColor: 'rgba(20, 83, 45, 0.1)',
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: 'rgba(20, 83, 45, 0.14)',
+          },
         },
       },
     },
