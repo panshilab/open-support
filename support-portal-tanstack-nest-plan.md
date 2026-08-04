@@ -1181,20 +1181,23 @@ Deliverable:
 
 ### Phase 3: Knowledge Base
 
-- Implement docs products table
+- Implement `Product`, `Category`, and `Article` as the core knowledge base entities
+- Implement products table
 - Implement multi-level categories table with `parentId`
+- Link categories to products
+- Link articles to one product and one category
 - Add category tree APIs
 - Add admin category tree management
-- Implement docs articles table
-- Support knowledge base entry types: article and FAQ
-- Implement FAQ fields for question and answer
+- Implement articles table
+- Support article types: article and FAQ
+- Store FAQ content on the article entity using question and answer fields
 - Implement publish/unpublish/draft state
 - Implement `searchText` generation from title, question, answer, product, and content
 - Add `OPENAI_API_KEY` as an optional environment variable for embeddings
 - Add a centralized search mode resolver: use vector search only when `OPENAI_API_KEY` is configured; otherwise use regular text search
-- Generate embeddings when creating or updating a knowledge base entry only when OpenAI embeddings are enabled
+- Generate embeddings when creating or updating an article only when OpenAI embeddings are enabled
 - Save embeddings to the pgvector column when vector search is enabled
-- Leave the pgvector column nullable so knowledge base entries can be saved without an OpenAI token
+- Leave the article pgvector column nullable so articles can be saved without an OpenAI token
 - Implement regular search using `searchText`, `ILIKE`, and/or PostgreSQL full-text search as the default fallback
 - Implement semantic search using vector similarity when embeddings are available
 - If vector search is enabled but an entry has no embedding, fall back to regular search for that entry/query path
@@ -1214,7 +1217,7 @@ Deliverable:
 
 Deliverable:
 
-- Admin can manage articles and FAQs; visitors can browse/search/read the knowledge base and leave feedback. Search works without OpenAI using regular text search, and automatically upgrades to vector search when `OPENAI_API_KEY` is configured.
+- Admin can manage products, categories, articles, and FAQ-style articles; visitors can browse/search/read the knowledge base and leave feedback. Search works without OpenAI using regular text search, and automatically upgrades to vector search when `OPENAI_API_KEY` is configured.
 
 ### Phase 4: Ticket System
 
