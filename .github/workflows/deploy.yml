@@ -5,6 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      deploy_api:
+        description: Deploy api
+        type: boolean
+        default: true
+      deploy_web:
+        description: Deploy web
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -23,6 +32,9 @@ jobs:
           - app: web
             dockerfile: apps/web/Dockerfile
             image: open-support-web
+    if: |
+      (matrix.app == 'api' && (github.event_name != 'workflow_dispatch' || inputs.deploy_api)) ||
+      (matrix.app == 'web' && (github.event_name != 'workflow_dispatch' || inputs.deploy_web))
 
     steps:
       - name: Checkout
@@ -59,17 +71,11 @@ jobs:
 
       - name: Trigger Dokploy deployment
         env:
-          DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
-          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
-          DOKPLOY_APPLICATION_ID: ${{ matrix.app == 'api' && secrets.DOKPLOY_API_APPLICATION_ID || secrets.DOKPLOY_WEB_APPLICATION_ID }}
+          DOKPLOY_WEBHOOK_URL: ${{ matrix.app == 'api' && secrets.DOKPLOY_API_WEBHOOK_URL || secrets.DOKPLOY_WEB_WEBHOOK_URL }}
         run: |
-          if [ -z "${DOKPLOY_URL}" ] || [ -z "${DOKPLOY_API_KEY}" ] || [ -z "${DOKPLOY_APPLICATION_ID}" ]; then
-            echo "Dokploy secrets are not fully configured; skipping Dokploy deployment trigger."
+          if [ -z "${DOKPLOY_WEBHOOK_URL}" ]; then
+            echo "Dokploy webhook URL is not configured; skipping Dokploy deployment trigger."
             exit 0
           fi
 
-          curl -fsSL -X POST "${DOKPLOY_URL%/}/api/application.deploy" \
-            -H "accept: application/json" \
-            -H "content-type: application/json" \
-            -H "x-api-key: ${DOKPLOY_API_KEY}" \
-            -d "{\"applicationId\":\"${DOKPLOY_APPLICATION_ID}\"}"
+          curl -fsSL -X GET "${DOKPLOY_WEBHOOK_URL}"

@@ -220,12 +220,10 @@ This repository is ready for Dokploy deployments using Docker Hub images.
 2. Add these GitHub repository secrets:
    - `DOCKERHUB_USERNAME`
    - `DOCKERHUB_TOKEN`
-3. Optional, if you want GitHub Actions to trigger Dokploy after pushing images:
-   - `DOKPLOY_URL`, for example `https://dokploy.example.com`
-   - `DOKPLOY_API_KEY`
-   - `DOKPLOY_API_APPLICATION_ID`
-   - `DOKPLOY_WEB_APPLICATION_ID`
-4. Push to `main` or run the `Build And Deploy` workflow manually.
+3. Optional, if you want GitHub Actions to trigger Dokploy after pushing images, create a deploy webhook for each Dokploy application and add these GitHub repository secrets:
+   - `DOKPLOY_API_WEBHOOK_URL`
+   - `DOKPLOY_WEB_WEBHOOK_URL`
+4. Push to `main` to build and deploy both apps, or run the `Build And Deploy` workflow manually and uncheck `deploy_api` or `deploy_web` to build only one app.
 
 The workflow pushes these tags for both images:
 
@@ -243,7 +241,7 @@ In Dokploy, create one application for the API and one for the web app using the
 
 Set all required API environment variables in the Dokploy API application. At minimum, production needs `APP_NAME`, `APP_URL`, `API_HOST`, `API_PORT`, database settings, session settings, OTP settings, and media settings. Use `API_HOST=0.0.0.0`, `API_PORT=3001`, `MEDIA_LOCAL_DIR=/app/uploads/media`, and attach persistent storage to `/app/uploads/media` if using local media uploads.
 
-Dokploy also supports Docker Hub auto deploys from repository webhooks. Copy the Dokploy deployment webhook URL for each application into the corresponding Docker Hub repository webhook settings; Dokploy deploys only when the pushed image tag matches the tag configured in Dokploy.
+To get each application's deploy webhook URL, open the Dokploy application, go to its `Deployments` (or `General`) tab, and copy the deploy webhook URL. Use the API application's URL for `DOKPLOY_API_WEBHOOK_URL` and the web application's URL for `DOKPLOY_WEB_WEBHOOK_URL`.
 
 ## Notes
 
