@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { AppConfigModule } from '../config/config.module';
 import { EnvService } from '../config/env.service';
 import { CACHE_STORE, CacheService } from './cache.service';
 import { MemoryCacheStore } from './memory-cache.store';
 import { RedisCacheStore } from './redis-cache.store';
 
 @Module({
+  imports: [AppConfigModule],
   providers: [
     {
       provide: CACHE_STORE,

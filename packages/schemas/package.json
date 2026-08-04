@@ -2,60 +2,73 @@
   "name": "@open-support/schemas",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
       "import": "./dist/index.js"
     },
     "./base": {
       "types": "./dist/base/index.d.ts",
+      "require": "./dist/base/index.js",
       "import": "./dist/base/index.js"
     },
     "./frontend": {
       "types": "./dist/frontend/index.d.ts",
+      "require": "./dist/frontend/index.js",
       "import": "./dist/frontend/index.js"
     },
     "./backend": {
       "types": "./dist/backend/index.d.ts",
+      "require": "./dist/backend/index.js",
       "import": "./dist/backend/index.js"
     },
     "./types": {
       "types": "./dist/types/index.d.ts",
+      "require": "./dist/types/index.js",
       "import": "./dist/types/index.js"
     },
     "./ai": {
       "types": "./dist/ai/index.d.ts",
+      "require": "./dist/ai/index.js",
       "import": "./dist/ai/index.js"
     },
     "./auth": {
       "types": "./dist/auth/index.d.ts",
+      "require": "./dist/auth/index.js",
       "import": "./dist/auth/index.js"
     },
     "./category": {
       "types": "./dist/category/index.d.ts",
+      "require": "./dist/category/index.js",
       "import": "./dist/category/index.js"
     },
     "./chat": {
       "types": "./dist/chat/index.d.ts",
+      "require": "./dist/chat/index.js",
       "import": "./dist/chat/index.js"
     },
     "./knowledge-base": {
       "types": "./dist/knowledge-base/index.d.ts",
+      "require": "./dist/knowledge-base/index.js",
       "import": "./dist/knowledge-base/index.js"
     },
     "./media": {
       "types": "./dist/media/index.d.ts",
+      "require": "./dist/media/index.js",
       "import": "./dist/media/index.js"
     },
     "./ticket": {
       "types": "./dist/ticket/index.d.ts",
+      "require": "./dist/ticket/index.js",
       "import": "./dist/ticket/index.js"
     },
     "./user": {
       "types": "./dist/user/index.d.ts",
+      "require": "./dist/user/index.js",
       "import": "./dist/user/index.js"
     }
   },
@@ -64,7 +77,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "nestjs-zod": "^4.3.1",
+    "nestjs-zod": "^5.5.0",
     "typescript": "^5.0.0",
     "zod": "^4.0.0"
   },
