@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: open_support
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      APP_NAME: Open Support
+      APP_URL: http://localhost:3000
+      API_HOST: 0.0.0.0
+      API_PORT: 3001
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: open_support
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_SSL: 'false'
+      REDIS_URL: redis://redis:6379
+      CACHE_DEFAULT_TTL_SECONDS: 300
+      SESSION_SECRET: change-this-local-docker-secret-at-least-32-chars
+      SESSION_COOKIE_NAME: open_support_session
+      SESSION_TTL_SECONDS: 604800
+      ADMIN_EMAILS: admin@example.com
+      OTP_EXPIRES_IN_SECONDS: 600
+      OTP_LENGTH: 6
+      MEDIA_PROVIDER: local
+      MEDIA_LOCAL_DIR: /app/uploads/media
+      MEDIA_PUBLIC_URL: http://localhost:3000/uploads/media
+      MEDIA_MAX_FILE_SIZE_BYTES: 5242880
+      MEDIA_ALLOWED_MIME_TYPES: image/jpeg,image/png,image/webp,image/gif,application/pdf
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '3001:3001'
+    volumes:
+      - api-uploads:/app/uploads/media
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      API_ORIGIN: http://api:3001
+    depends_on:
+      - api
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres-data:
+  api-uploads:

@@ -148,6 +148,103 @@ pnpm schemas:typecheck
 pnpm schemas:build
 ```
 
+## Docker
+
+Build and run the full stack locally with Docker Compose:
+
+```sh
+docker compose up --build
+```
+
+Default Docker URLs:
+
+- Web: `http://localhost:3000`
+- API: `http://localhost:3001/api`
+- PostgreSQL: `localhost:5432`
+- Redis: `localhost:6379`
+
+The Compose setup uses `pgvector/pgvector:pg17`, Redis, the API image from `apps/api/Dockerfile`, and the web image from `apps/web/Dockerfile`. Uploaded media is stored in the `api-uploads` Docker volume and PostgreSQL data is stored in `postgres-data`.
+
+Build the images manually:
+
+```sh
+docker build -f apps/api/Dockerfile -t open-support-api .
+docker build -f apps/web/Dockerfile -t open-support-web .
+```
+
+Run the API image manually:
+
+```sh
+docker run --rm -p 3001:3001 \
+  -e NODE_ENV=production \
+  -e APP_NAME="Open Support" \
+  -e APP_URL=http://localhost:3000 \
+  -e API_HOST=0.0.0.0 \
+  -e API_PORT=3001 \
+  -e DATABASE_HOST=host.docker.internal \
+  -e DATABASE_PORT=5432 \
+  -e DATABASE_NAME=open_support \
+  -e DATABASE_USER=postgres \
+  -e DATABASE_PASSWORD=postgres \
+  -e DATABASE_SSL=false \
+  -e SESSION_SECRET=replace-with-a-real-secret-at-least-32-chars \
+  -e SESSION_COOKIE_NAME=open_support_session \
+  -e SESSION_TTL_SECONDS=604800 \
+  -e OTP_EXPIRES_IN_SECONDS=600 \
+  -e OTP_LENGTH=6 \
+  -e MEDIA_PROVIDER=local \
+  -e MEDIA_LOCAL_DIR=/app/uploads/media \
+  -e MEDIA_PUBLIC_URL=http://localhost:3001/uploads/media \
+  -e MEDIA_MAX_FILE_SIZE_BYTES=5242880 \
+  -e MEDIA_ALLOWED_MIME_TYPES=image/jpeg,image/png,image/webp,image/gif,application/pdf \
+  open-support-api
+```
+
+Run the web image manually:
+
+```sh
+docker run --rm -p 3000:3000 \
+  -e API_ORIGIN=http://host.docker.internal:3001 \
+  open-support-web
+```
+
+The web container proxies `/api` and `/uploads` to `API_ORIGIN`. In Docker Compose and Dokploy, set `API_ORIGIN` to the internal API service URL, for example `http://api:3001`.
+
+## Dokploy Deployment
+
+This repository is ready for Dokploy deployments using Docker Hub images.
+
+1. Create two Docker Hub repositories:
+   - `<dockerhub-username>/open-support-api`
+   - `<dockerhub-username>/open-support-web`
+2. Add these GitHub repository secrets:
+   - `DOCKERHUB_USERNAME`
+   - `DOCKERHUB_TOKEN`
+3. Optional, if you want GitHub Actions to trigger Dokploy after pushing images:
+   - `DOKPLOY_URL`, for example `https://dokploy.example.com`
+   - `DOKPLOY_API_KEY`
+   - `DOKPLOY_API_APPLICATION_ID`
+   - `DOKPLOY_WEB_APPLICATION_ID`
+4. Push to `main` or run the `Build And Deploy` workflow manually.
+
+The workflow pushes these tags for both images:
+
+- `latest`
+- the commit SHA
+
+In Dokploy, create one application for the API and one for the web app using the Docker image source:
+
+- API image: `<dockerhub-username>/open-support-api:latest`
+- API exposed port: `3001`
+- API health check path: `/api/health`
+- Web image: `<dockerhub-username>/open-support-web:latest`
+- Web exposed port: `3000`
+- Web `API_ORIGIN`: the internal Dokploy API service URL, for example `http://open-support-api:3001`
+
+Set all required API environment variables in the Dokploy API application. At minimum, production needs `APP_NAME`, `APP_URL`, `API_HOST`, `API_PORT`, database settings, session settings, OTP settings, and media settings. Use `API_HOST=0.0.0.0`, `API_PORT=3001`, `MEDIA_LOCAL_DIR=/app/uploads/media`, and attach persistent storage to `/app/uploads/media` if using local media uploads.
+
+Dokploy also supports Docker Hub auto deploys from repository webhooks. Copy the Dokploy deployment webhook URL for each application into the corresponding Docker Hub repository webhook settings; Dokploy deploys only when the pushed image tag matches the tag configured in Dokploy.
+
 ## Notes
 
 - Do not use `class-validator` or `class-transformer` for request validation.

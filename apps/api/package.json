@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "commonjs",
-  "main": "./dist/main.js",
+  "main": "./dist/apps/api/src/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/main.js",
+    "start": "node dist/apps/api/src/main.js",
     "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "seed:ecommerce": "ts-node src/seed/seed-ecommerce.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
