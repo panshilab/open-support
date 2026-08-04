@@ -156,6 +156,27 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 
 function Shell() {
   const [navigating, setNavigating] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkSession() {
+      const response = await fetch('/api/auth/me', {
+        credentials: 'include',
+      }).catch(() => null);
+
+      if (!cancelled) {
+        setAuthenticated(Boolean(response?.ok));
+      }
+    }
+
+    void checkSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -199,9 +220,11 @@ function Shell() {
             <Button component={Link} startIcon={<PersonIcon />} to="/profile">
               Profile
             </Button>
-            <Button component={Link} startIcon={<LoginIcon />} to="/login" variant="contained">
-              Login
-            </Button>
+            {!authenticated ? (
+              <Button component={Link} startIcon={<LoginIcon />} to="/login" variant="contained">
+                Login
+              </Button>
+            ) : null}
           </Stack>
         </Toolbar>
       </AppBar>
