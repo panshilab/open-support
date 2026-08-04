@@ -103,6 +103,7 @@ export class CreateTicketDto extends createZodDto(CreateTicketSchema) {}
 - Keep knowledgebase title, search, product filter, and category filter together in one sticky row on desktop, with responsive wrapping on smaller screens.
 - Keep knowledgebase content below the sticky header in `Container maxWidth="lg"` so article cards align with the header controls.
 - Avoid fixed viewport widths for content areas; only full-bleed background bands should break out.
+- For card-based layouts, use infinite scroll. For tabular views, use pagination.
 
 ## Git
 
@@ -119,3 +120,19 @@ Before committing:
 - Check `git status --short`
 - Run relevant typecheck/build commands
 - Avoid committing generated `dist`, `.nx`, `.pnpm-store`, or `node_modules`
+
+## Data Fetching And Service SDK
+
+- Use React Query to fetch data from the API.
+- Put request methods in a service package instead of building `fetch` calls in components.
+- Add a service method for every API request a component needs.
+- Components should subscribe to queries/mutations and render the returned data.
+- Use snackbars for mutation success/failure feedback unless the mutation is intentionally silent.
+- Use `useInfiniteQuery` for infinite scroll.
+
+## React Code Pattern
+
+- Always use `useCallback` for callback functions.
+- Create custom hooks when they make shared behavior reusable.
+- Keep one component per file when a component grows large enough to deserve its own file.
+- Split large components by topic instead of growing one very large component.

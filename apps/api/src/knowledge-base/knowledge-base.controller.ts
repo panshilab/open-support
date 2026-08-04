@@ -16,10 +16,12 @@ import {
   CreateKnowledgeBaseEntryDto,
   KnowledgeBaseEntryIdParamDto,
   KnowledgeBaseSearchQueryDto,
+  ListKnowledgeBaseArticlesQueryDto,
   UpdateKnowledgeBaseEntryDto,
   type BackfillKnowledgeBaseEmbeddingsInput,
   type CreateKnowledgeBaseEntryInput,
   type KnowledgeBaseSearchQuery,
+  type ListKnowledgeBaseArticlesQuery,
   type UpdateKnowledgeBaseEntryInput,
 } from '@open-support/schemas/knowledge-base';
 import { Roles } from '../auth/roles.decorator';
@@ -42,8 +44,8 @@ export class KnowledgeBaseController {
   }
 
   @Get('articles')
-  listArticles() {
-    return this.knowledgeBase.listArticles();
+  listArticles(@Query() query: ListKnowledgeBaseArticlesQueryDto) {
+    return this.knowledgeBase.listArticles(query as ListKnowledgeBaseArticlesQuery);
   }
 
   @Get('search')

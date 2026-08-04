@@ -13,9 +13,14 @@ export const UpdateKnowledgeBaseEntrySchema = KnowledgeBaseEntryFieldsSchema.par
 export const KnowledgeBaseEntryIdParamSchema = z.object({
   articleId: IdSchema,
 });
+export const ListKnowledgeBaseArticlesQuerySchema = PaginationQuerySchema.extend({
+  productId: IdSchema.optional(),
+  categoryId: IdSchema.optional(),
+});
 export type CreateKnowledgeBaseEntryInput = z.infer<typeof CreateKnowledgeBaseEntrySchema>;
 export type UpdateKnowledgeBaseEntryInput = z.infer<typeof UpdateKnowledgeBaseEntrySchema>;
 export type KnowledgeBaseEntryIdParam = z.infer<typeof KnowledgeBaseEntryIdParamSchema>;
+export type ListKnowledgeBaseArticlesQuery = z.infer<typeof ListKnowledgeBaseArticlesQuerySchema>;
 
 export const KnowledgeBaseSearchQuerySchema = KnowledgeBaseSearchFormSchema.merge(
   PaginationQuerySchema,
@@ -33,6 +38,9 @@ export type BackfillKnowledgeBaseEmbeddingsInput = z.infer<
 
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}
 export class UpdateKnowledgeBaseEntryDto extends createZodDto(UpdateKnowledgeBaseEntrySchema) {}
+export class ListKnowledgeBaseArticlesQueryDto extends createZodDto(
+  ListKnowledgeBaseArticlesQuerySchema,
+) {}
 export class KnowledgeBaseSearchQueryDto extends createZodDto(KnowledgeBaseSearchQuerySchema) {}
 export class KnowledgeBaseEntryIdParamDto extends createZodDto(KnowledgeBaseEntryIdParamSchema) {}
 export class BackfillKnowledgeBaseEmbeddingsDto extends createZodDto(

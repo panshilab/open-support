@@ -25,6 +25,7 @@ import {
   Typography,
   createTheme,
 } from '@mui/material';
+import { AppProviders } from '../providers/app-providers';
 import '../styles.css';
 
 const theme = createTheme({
@@ -212,7 +213,9 @@ function RootComponent() {
     <RootDocument>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Shell />
+        <AppProviders>
+          <Shell />
+        </AppProviders>
       </ThemeProvider>
     </RootDocument>
   );

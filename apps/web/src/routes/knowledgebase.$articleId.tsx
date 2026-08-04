@@ -1,20 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
-
-interface KnowledgebaseArticleDetail {
-  id: string;
-  name: string;
-  type: 'article' | 'faq';
-  contentHtml: string | null;
-  answerHtml: string | null;
-  excerpt: string | null;
-  question: string | null;
-  categoryPath: string | null;
-  updatedAt: string;
-}
+import { knowledgebaseService } from '../services/knowledgebase.service';
 
 export const Route = createFileRoute('/knowledgebase/$articleId')({
   component: KnowledgebaseArticlePage,
@@ -22,46 +12,22 @@ export const Route = createFileRoute('/knowledgebase/$articleId')({
 
 function KnowledgebaseArticlePage() {
   const { articleId } = Route.useParams();
-  const [article, setArticle] = useState<KnowledgebaseArticleDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const getArticleQueryFn = useCallback(
+    () => knowledgebaseService.getArticle(articleId),
+    [articleId],
+  );
+  const articleQuery = useQuery({
+    queryKey: ['knowledgebase', 'article', articleId],
+    queryFn: getArticleQueryFn,
+  });
+  const article = articleQuery.data;
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadArticle() {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`/api/knowledgebase/articles/${articleId}`);
-
-      if (!response.ok) {
-        throw new Error('Unable to load article');
-      }
-
-      if (!cancelled) {
-        setArticle((await response.json()) as KnowledgebaseArticleDetail);
-        setLoading(false);
-      }
-    }
-
-    loadArticle().catch(() => {
-      if (!cancelled) {
-        setError('Unable to load article');
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [articleId]);
-
-  if (loading) {
+  if (articleQuery.isLoading) {
     return <LoadingState label="Loading article" />;
   }
 
-  if (error || !article) {
-    return <ErrorState message={error ?? 'Article not found'} />;
+  if (articleQuery.error || !article) {
+    return <ErrorState message={articleQuery.error?.message ?? 'Article not found'} />;
   }
 
   const html = article.type === 'faq' ? article.answerHtml : article.contentHtml;

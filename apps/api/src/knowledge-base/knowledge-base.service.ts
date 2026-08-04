@@ -10,6 +10,7 @@ import type {
   BackfillKnowledgeBaseEmbeddingsInput,
   CreateKnowledgeBaseEntryInput,
   KnowledgeBaseSearchQuery,
+  ListKnowledgeBaseArticlesQuery,
   UpdateKnowledgeBaseEntryInput,
 } from '@open-support/schemas/knowledge-base';
 import { Repository } from 'typeorm';
@@ -83,11 +84,36 @@ export class KnowledgeBaseService {
     return build(null);
   }
 
-  listArticles(includeDrafts = false) {
-    return this.articles.find({
-      where: includeDrafts ? {} : { published: true },
-      order: { featured: 'DESC', order: 'ASC', updatedAt: 'DESC' },
-    });
+  async listArticles(query: ListKnowledgeBaseArticlesQuery, includeDrafts = false) {
+    const builder = this.articles
+      .createQueryBuilder('article')
+      .orderBy('article.featured', 'DESC')
+      .addOrderBy('article.order', 'ASC')
+      .addOrderBy('article.updatedAt', 'DESC')
+      .skip((query.page - 1) * query.limit)
+      .take(query.limit);
+
+    if (!includeDrafts) {
+      builder.where('article.published = true');
+    }
+
+    if (query.productId) {
+      builder.andWhere('article.productId = :productId', { productId: query.productId });
+    }
+
+    if (query.categoryId) {
+      builder.andWhere('article.categoryId = :categoryId', { categoryId: query.categoryId });
+    }
+
+    const [items, total] = await builder.getManyAndCount();
+
+    return {
+      items,
+      page: query.page,
+      limit: query.limit,
+      total,
+      nextPage: query.page * query.limit < total ? query.page + 1 : null,
+    };
   }
 
   async getArticle(articleId: string, includeDrafts = false) {

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link, Outlet, createFileRoute, useRouterState } from '@tanstack/react-router';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Alert,
@@ -15,6 +16,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  type SelectChangeEvent,
   Stack,
   TextField,
   Typography,
@@ -22,27 +24,11 @@ import {
 import { EmptyState } from '../components/empty-state';
 import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
+import type { CategoryTreeNode } from '@open-support/schemas/category';
+import type { ChangeEvent } from 'react';
+import { knowledgebaseService } from '../services/knowledgebase.service';
 
-interface Product {
-  id: string;
-  name: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  path: string;
-  children?: Category[];
-}
-
-interface KnowledgebaseArticle {
-  id: string;
-  name: string;
-  type: 'article' | 'faq';
-  excerpt: string | null;
-  categoryPath: string | null;
-  updatedAt: string;
-}
+const EMPTY_CATEGORY_TREE: CategoryTreeNode[] = [];
 
 export const Route = createFileRoute('/knowledgebase')({
   component: KnowledgebasePage,
@@ -59,105 +45,104 @@ function KnowledgebasePage() {
 }
 
 function KnowledgebaseIndexPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [articles, setArticles] = useState<KnowledgebaseArticle[]>([]);
   const [productId, setProductId] = useState<string | undefined>();
   const [categoryId, setCategoryId] = useState<string | undefined>();
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'text' | 'vector' | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const listProductsQueryFn = useCallback(() => knowledgebaseService.listProducts(), []);
+
+  const listCategoriesQueryFn = useCallback(
+    () => knowledgebaseService.listCategories(productId),
+    [productId],
+  );
+
+  const listArticlesQueryFn = useCallback(
+    ({ pageParam }: { pageParam: number }) =>
+      query.trim()
+        ? knowledgebaseService.searchArticles({
+            page: pageParam,
+            limit: 18,
+            productId,
+            categoryId,
+            query: query.trim(),
+          })
+        : knowledgebaseService.listArticles({
+            page: pageParam,
+            limit: 18,
+            productId,
+            categoryId,
+          }),
+    [categoryId, productId, query],
+  );
+
+  const getNextArticlePageParam = useCallback(
+    (lastPage: Awaited<ReturnType<typeof knowledgebaseService.listArticles>>) =>
+      lastPage.nextPage ?? undefined,
+    [],
+  );
+
+  const productsQuery = useQuery({
+    queryKey: ['knowledgebase', 'products'],
+    queryFn: listProductsQueryFn,
+  });
+
+  const categoriesQuery = useQuery({
+    queryKey: ['knowledgebase', 'categories', productId],
+    queryFn: listCategoriesQueryFn,
+  });
+
+  const articlesQuery = useInfiniteQuery({
+    queryKey: ['knowledgebase', 'articles', productId, categoryId, query.trim()],
+    initialPageParam: 1,
+    queryFn: listArticlesQueryFn,
+    getNextPageParam: getNextArticlePageParam,
+  });
+
+  const products = productsQuery.data ?? [];
+  const categories = categoriesQuery.data ?? EMPTY_CATEGORY_TREE;
+  const articles = articlesQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const searchMode = articlesQuery.data?.pages.find((page) => page.mode)?.mode ?? null;
   const flatCategories = useMemo(() => flattenCategories(categories), [categories]);
+  const loading = productsQuery.isLoading || categoriesQuery.isLoading || articlesQuery.isLoading;
+  const error =
+    productsQuery.error?.message ??
+    categoriesQuery.error?.message ??
+    articlesQuery.error?.message ??
+    null;
 
-  useEffect(() => {
-    let cancelled = false;
+  const handleSearchChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  }, []);
 
-    async function loadFilters() {
-      const [productsResponse, categoriesResponse] = await Promise.all([
-        fetch('/api/knowledgebase/products'),
-        fetch(
-          productId
-            ? `/api/knowledgebase/categories?productId=${productId}`
-            : '/api/knowledgebase/categories',
-        ),
-      ]);
+  const handleProductChange = useCallback((event: SelectChangeEvent<string>) => {
+    setProductId(event.target.value || undefined);
+    setCategoryId(undefined);
+  }, []);
 
-      if (!productsResponse.ok || !categoriesResponse.ok) {
-        throw new Error('Unable to load knowledgebase filters');
+  const handleCategoryChange = useCallback((event: SelectChangeEvent<string>) => {
+    setCategoryId(event.target.value || undefined);
+  }, []);
+
+  const setLoadMoreNode = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || !articlesQuery.hasNextPage || articlesQuery.isFetchingNextPage) {
+        return;
       }
 
-      if (!cancelled) {
-        setProducts((await productsResponse.json()) as Product[]);
-        setCategories((await categoriesResponse.json()) as Category[]);
-      }
-    }
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
+          void articlesQuery.fetchNextPage();
+        }
+      });
+      observer.observe(node);
 
-    loadFilters().catch(() => {
-      if (!cancelled) {
-        setError('Unable to load knowledgebase filters');
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [productId]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadArticles() {
-      setLoading(true);
-      setError(null);
-      const params = new URLSearchParams();
-
-      if (query.trim()) {
-        params.set('query', query.trim());
-      }
-
-      if (productId) {
-        params.set('productId', productId);
-      }
-
-      if (categoryId) {
-        params.set('categoryId', categoryId);
-      }
-
-      const url = query.trim()
-        ? `/api/knowledgebase/search?${params.toString()}`
-        : '/api/knowledgebase/articles';
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error('Unable to load knowledgebase articles');
-      }
-
-      const payload = (await response.json()) as
-        | KnowledgebaseArticle[]
-        | { mode: 'text' | 'vector'; results: KnowledgebaseArticle[] };
-
-      if (!cancelled) {
-        setArticles(Array.isArray(payload) ? payload : payload.results);
-        setSearchMode(Array.isArray(payload) ? null : payload.mode);
-        setLoading(false);
-      }
-    }
-
-    loadArticles().catch(() => {
-      if (!cancelled) {
-        setError('Unable to load knowledgebase articles');
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [categoryId, productId, query]);
+      return () => observer.disconnect();
+    },
+    [articlesQuery],
+  );
 
   return (
-    <Stack spacing={3}>
+    <>
       <Box
         sx={{
           bgcolor: 'rgba(244, 248, 241, 0.92)',
@@ -165,12 +150,12 @@ function KnowledgebaseIndexPage() {
           borderColor: 'divider',
           mx: 'calc(50% - 50vw)',
           position: 'sticky',
-          top: { xs: 88, sm: 72 },
+          top: { xs: 88, sm: 65 },
           zIndex: 10,
         }}
       >
-        <Container maxWidth="lg" sx={{ py: 2 }}>
-          <Grid container spacing={1.5} sx={{ alignItems: 'center' }}>
+        <Box sx={{ px: 3, py: 2 }}>
+          <Grid container spacing={1.5} sx={{ alignItems: 'center', pt: 0 }}>
             <Grid size={{ xs: 12, md: 3 }}>
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="h1">Knowledgebase</Typography>
@@ -183,7 +168,7 @@ function KnowledgebaseIndexPage() {
               <TextField
                 fullWidth
                 label="Search articles and FAQs"
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={handleSearchChange}
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -202,10 +187,7 @@ function KnowledgebaseIndexPage() {
                 <Select
                   label="Product"
                   labelId="knowledgebase-product-label"
-                  onChange={(event) => {
-                    setProductId(event.target.value || undefined);
-                    setCategoryId(undefined);
-                  }}
+                  onChange={handleProductChange}
                   sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
                   value={productId ?? ''}
                 >
@@ -224,7 +206,7 @@ function KnowledgebaseIndexPage() {
                 <Select
                   label="Category"
                   labelId="knowledgebase-category-label"
-                  onChange={(event) => setCategoryId(event.target.value || undefined)}
+                  onChange={handleCategoryChange}
                   sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
                   value={categoryId ?? ''}
                 >
@@ -238,7 +220,7 @@ function KnowledgebaseIndexPage() {
               </FormControl>
             </Grid>
           </Grid>
-        </Container>
+        </Box>
       </Box>
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
@@ -285,12 +267,15 @@ function KnowledgebaseIndexPage() {
             </Grid>
           ))}
         </Grid>
+        <Box ref={setLoadMoreNode} sx={{ minHeight: 24, py: 2 }}>
+          {articlesQuery.isFetchingNextPage ? <LoadingState label="Loading more articles" /> : null}
+        </Box>
       </Container>
-    </Stack>
+    </>
   );
 }
 
-function flattenCategories(categories: Category[]): Category[] {
+function flattenCategories(categories: CategoryTreeNode[]): CategoryTreeNode[] {
   return categories.flatMap((category) => [
     category,
     ...flattenCategories(category.children ?? []),
