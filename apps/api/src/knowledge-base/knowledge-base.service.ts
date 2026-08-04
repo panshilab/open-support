@@ -72,7 +72,9 @@ export class KnowledgeBaseService {
       byParent.set(category.parentId, children);
     }
 
-    const build = (parentId: string | null): Array<CategoryEntity & { children: CategoryEntity[] }> =>
+    const build = (
+      parentId: string | null,
+    ): Array<CategoryEntity & { children: CategoryEntity[] }> =>
       (byParent.get(parentId) ?? []).map((category) =>
         Object.assign(category, { children: build(category.id) }),
       );
@@ -195,7 +197,7 @@ export class KnowledgeBaseService {
       .createQueryBuilder('article')
       .where('article.published = true')
       .andWhere(
-        "(article.searchText ILIKE :query OR article.name ILIKE :query OR article.question ILIKE :query)",
+        '(article.searchText ILIKE :query OR article.name ILIKE :query OR article.question ILIKE :query)',
         { query: `%${query.query}%` },
       );
 

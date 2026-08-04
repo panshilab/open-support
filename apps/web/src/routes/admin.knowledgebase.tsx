@@ -3,7 +3,11 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, Chip, Paper, Stack, Typography } from '@mui/material';
 
-const entries = ['Upload invoice attachments', 'Reset account access', 'Change billing contact'];
+const entries = [
+  ['Upload invoice attachments', 'article', 'Customer Portal', 'Billing / Invoices', 'ready'],
+  ['How do I reset account access?', 'faq', 'Customer Portal', 'Account / Access', 'ready'],
+  ['Change billing contact', 'article', 'Billing Desk', 'Billing / Contacts', 'text search'],
+];
 
 export const Route = createFileRoute('/admin/knowledgebase')({
   component: AdminKnowledgebasePage,
@@ -23,7 +27,7 @@ function AdminKnowledgebasePage() {
           New entry
         </Button>
       </Stack>
-      {entries.map((entry) => (
+      {entries.map(([entry, type, product, category, embeddingStatus]) => (
         <Paper key={entry} sx={{ p: 2 }}>
           <Stack
             direction="row"
@@ -32,7 +36,12 @@ function AdminKnowledgebasePage() {
           >
             <div>
               <Typography>{entry}</Typography>
-              <Chip label="vector indexed" size="small" sx={{ mt: 1 }} />
+              <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                <Chip label={type} size="small" />
+                <Chip label={product} size="small" variant="outlined" />
+                <Chip label={category} size="small" variant="outlined" />
+                <Chip color="secondary" label={embeddingStatus} size="small" />
+              </Stack>
             </div>
             <Button component={Link} startIcon={<EditIcon />} to="/admin/knowledgebase/edit">
               Edit

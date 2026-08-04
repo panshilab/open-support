@@ -96,6 +96,9 @@ export class KnowledgeBaseController {
     @Param() params: KnowledgeBaseEntryIdParamDto,
     @Body() body: UpdateKnowledgeBaseEntryDto,
   ) {
-    return this.knowledgeBase.updateArticle(params.articleId, body as UpdateKnowledgeBaseEntryInput);
+    return this.knowledgeBase.updateArticle(
+      params.articleId,
+      body as UpdateKnowledgeBaseEntryInput,
+    );
   }
 }

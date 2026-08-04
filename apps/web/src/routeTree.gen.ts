@@ -18,6 +18,7 @@ import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminKnowledgebaseRouteImport } from './routes/admin.knowledgebase'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
@@ -70,6 +71,11 @@ const AdminKnowledgebaseRoute = AdminKnowledgebaseRouteImport.update({
   path: '/knowledgebase',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/verify': typeof VerifyRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/products': typeof AdminProductsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/admin/categories'
     | '/admin/knowledgebase'
+    | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
     | '/tickets/$ticketId'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/admin/categories'
     | '/admin/knowledgebase'
+    | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
     | '/tickets/$ticketId'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/admin/categories'
     | '/admin/knowledgebase'
+    | '/admin/products'
     | '/admin/settings'
     | '/admin/staff'
     | '/tickets/$ticketId'
@@ -282,6 +294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminKnowledgebaseRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -343,6 +362,7 @@ const AdminKnowledgebaseRouteWithChildren =
 interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminKnowledgebaseRoute: typeof AdminKnowledgebaseRouteWithChildren
+  AdminProductsRoute: typeof AdminProductsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStaffRoute: typeof AdminStaffRoute
 }
@@ -350,6 +370,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminKnowledgebaseRoute: AdminKnowledgebaseRouteWithChildren,
+  AdminProductsRoute: AdminProductsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStaffRoute: AdminStaffRoute,
 }

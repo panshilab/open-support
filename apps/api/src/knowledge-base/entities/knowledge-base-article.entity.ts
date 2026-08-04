@@ -7,10 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import type {
-  EmbeddingStatus,
-  KnowledgeBaseEntryType,
-} from '@open-support/schemas/knowledge-base';
+import type { EmbeddingStatus, KnowledgeBaseEntryType } from '@open-support/schemas/knowledge-base';
 import { CategoryEntity } from './category.entity';
 import { ProductEntity } from './product.entity';
 

@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import CategoryIcon from '@mui/icons-material/Category';
 import GroupsIcon from '@mui/icons-material/Groups';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StorageIcon from '@mui/icons-material/Storage';
 import { Card, CardActionArea, CardContent, Grid, Stack, Typography } from '@mui/material';
 import type { UserRole } from '@open-support/schemas/user';
 
 const adminCards = [
+  ['Products', '/admin/products', <InventoryIcon key="products" />],
   ['Knowledgebase', '/admin/knowledgebase', <StorageIcon key="kb" />],
   ['Categories', '/admin/categories', <CategoryIcon key="categories" />],
   ['Staff', '/admin/staff', <GroupsIcon key="staff" />],

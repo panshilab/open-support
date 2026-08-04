@@ -10,6 +10,9 @@ build
 .tanstack
 coverage
 
+# Generated route manifests
+apps/web/src/routeTree.gen.ts
+
 # Nx
 .nx/cache
 .nx/workspace-data

@@ -27,6 +27,4 @@ export type KnowledgeBaseSearchQuery = z.infer<typeof KnowledgeBaseSearchQuerySc
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}
 export class UpdateKnowledgeBaseEntryDto extends createZodDto(UpdateKnowledgeBaseEntrySchema) {}
 export class KnowledgeBaseSearchQueryDto extends createZodDto(KnowledgeBaseSearchQuerySchema) {}
-export class KnowledgeBaseEntryIdParamDto extends createZodDto(
-  KnowledgeBaseEntryIdParamSchema,
-) {}
+export class KnowledgeBaseEntryIdParamDto extends createZodDto(KnowledgeBaseEntryIdParamSchema) {}

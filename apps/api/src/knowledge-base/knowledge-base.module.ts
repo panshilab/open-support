@@ -8,9 +8,7 @@ import { KnowledgeBaseController } from './knowledge-base.controller';
 import { KnowledgeBaseService } from './knowledge-base.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ProductEntity, CategoryEntity, KnowledgeBaseArticleEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([ProductEntity, CategoryEntity, KnowledgeBaseArticleEntity])],
   controllers: [KnowledgeBaseController],
   providers: [EmbeddingService, KnowledgeBaseService],
   exports: [KnowledgeBaseService],
