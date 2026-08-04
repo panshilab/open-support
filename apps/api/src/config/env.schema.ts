@@ -50,6 +50,15 @@ export const EnvSchema = z.object({
   OPENAI_API_KEY: optionalStringSchema,
   OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
   OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
+
+  MEDIA_PROVIDER: z.enum(['local', 's3', 'cloudinary']).default('local'),
+  MEDIA_LOCAL_DIR: z.string().min(1).default('uploads/media'),
+  MEDIA_PUBLIC_URL: z.string().url().default('http://localhost:3001/uploads/media'),
+  MEDIA_MAX_FILE_SIZE_BYTES: z.coerce.number().int().min(1).default(5242880),
+  MEDIA_ALLOWED_MIME_TYPES: z
+    .string()
+    .min(1)
+    .default('image/jpeg,image/png,image/webp,image/gif,application/pdf'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

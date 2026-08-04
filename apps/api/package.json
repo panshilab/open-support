@@ -19,6 +19,7 @@
     "@open-support/schemas": "workspace:*",
     "google-auth-library": "^11.0.0",
     "ioredis": "^5.0.0",
+    "multer": "^2.2.0",
     "nestjs-zod": "^5.5.0",
     "nodemailer": "^9.0.3",
     "pg": "^8.0.0",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
     "@types/node": "^24.0.0",
     "@types/nodemailer": "^8.0.1",
     "ts-node-dev": "^2.0.0",

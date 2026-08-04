@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import express from 'express';
 import { NestFactory } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
@@ -10,6 +11,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ZodValidationPipe());
+  app.use('/uploads/media', express.static(env.media.localDir));
   app.enableShutdownHooks();
 
   await app.listen(env.port, env.host);

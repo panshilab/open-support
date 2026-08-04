@@ -9,6 +9,8 @@ build
 .vinxi
 .tanstack
 coverage
+uploads
+apps/api/uploads
 
 # Generated route manifests
 apps/web/src/routeTree.gen.ts

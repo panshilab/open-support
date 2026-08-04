@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthController } from './health/health.controller';
 import { KnowledgeBaseModule } from './knowledge-base/knowledge-base.module';
+import { MediaModule } from './media/media.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     AuthModule,
     KnowledgeBaseModule,
+    MediaModule,
     TicketsModule,
   ],
   controllers: [HealthController],

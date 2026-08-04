@@ -46,7 +46,14 @@ export type {
   KnowledgeBaseSearchQuery,
   UpdateKnowledgeBaseEntryInput,
 } from '../knowledge-base/index.js';
-export type { MediaAsset, MediaProvider } from '../media/index.js';
+export type {
+  MediaAsset,
+  MediaAssetIdParam,
+  MediaListQuery,
+  MediaProvider,
+  UploadMediaForm,
+  UploadMediaMetadataInput,
+} from '../media/index.js';
 export type {
   CreateTicketCommentForm,
   CreateTicketCommentInput,

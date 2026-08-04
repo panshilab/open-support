@@ -109,4 +109,18 @@ export class EnvService {
       embeddingDimensions: this.config.get('OPENAI_EMBEDDING_DIMENSIONS', { infer: true }),
     };
   }
+
+  get media() {
+    return {
+      provider: this.config.get('MEDIA_PROVIDER', { infer: true }),
+      localDir: this.config.get('MEDIA_LOCAL_DIR', { infer: true }),
+      publicUrl: this.config.get('MEDIA_PUBLIC_URL', { infer: true }),
+      maxFileSizeBytes: this.config.get('MEDIA_MAX_FILE_SIZE_BYTES', { infer: true }),
+      allowedMimeTypes: this.config
+        .get('MEDIA_ALLOWED_MIME_TYPES', { infer: true })
+        .split(',')
+        .map((mimeType) => mimeType.trim())
+        .filter(Boolean),
+    };
+  }
 }
