@@ -32,24 +32,35 @@ jobs:
           - app: web
             dockerfile: apps/web/Dockerfile
             image: open-support-web
-    if: |
-      (matrix.app == 'api' && (github.event_name != 'workflow_dispatch' || inputs.deploy_api)) ||
-      (matrix.app == 'web' && (github.event_name != 'workflow_dispatch' || inputs.deploy_web))
 
     steps:
+      - name: Check if app should deploy
+        id: gate
+        run: |
+          if [ "${{ matrix.app }}" = "api" ]; then
+            should_run="${{ github.event_name != 'workflow_dispatch' || inputs.deploy_api }}"
+          else
+            should_run="${{ github.event_name != 'workflow_dispatch' || inputs.deploy_web }}"
+          fi
+          echo "run=${should_run}" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
+        if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
+        if: steps.gate.outputs.run == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
+        if: steps.gate.outputs.run == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract Docker metadata
+        if: steps.gate.outputs.run == 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -59,6 +70,7 @@ jobs:
             type=sha,prefix=
 
       - name: Build and push
+        if: steps.gate.outputs.run == 'true'
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -70,6 +82,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
 
       - name: Trigger Dokploy deployment
+        if: steps.gate.outputs.run == 'true'
         env:
           DOKPLOY_WEBHOOK_URL: ${{ matrix.app == 'api' && secrets.DOKPLOY_API_WEBHOOK_URL || secrets.DOKPLOY_WEB_WEBHOOK_URL }}
         run: |
