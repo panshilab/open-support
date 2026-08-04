@@ -1,5 +1,11 @@
 export type { AiConfig, AiProvider, UpsertAiConfigInput } from '../ai/index.js';
-export type { SendOtpForm, SendOtpInput, VerifyOtpForm, VerifyOtpInput } from '../auth/index.js';
+export type {
+  GoogleLoginInput,
+  SendOtpForm,
+  SendOtpInput,
+  VerifyOtpForm,
+  VerifyOtpInput,
+} from '../auth/index.js';
 export type {
   Category,
   CategoryTreeNode,
@@ -58,5 +64,6 @@ export type {
   UpdateUserRoleForm,
   UpdateUserRoleInput,
   User,
+  UserIdParam,
   UserRole,
 } from '../user/index.js';
