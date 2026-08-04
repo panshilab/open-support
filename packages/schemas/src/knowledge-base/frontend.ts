@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  BaseKnowledgeBaseEntrySchema,
-  KnowledgeBaseEntryTypeSchema,
-} from './base.js';
+import { BaseKnowledgeBaseEntrySchema, KnowledgeBaseEntryTypeSchema } from './base.js';
 
 export const KnowledgeBaseEntryFieldsSchema = BaseKnowledgeBaseEntrySchema.pick({
   productId: true,
@@ -22,33 +19,35 @@ export const KnowledgeBaseEntryFieldsSchema = BaseKnowledgeBaseEntrySchema.pick(
 });
 export type KnowledgeBaseEntryFields = z.infer<typeof KnowledgeBaseEntryFieldsSchema>;
 
-export const KnowledgeBaseEntryFormSchema = KnowledgeBaseEntryFieldsSchema.superRefine((value, ctx) => {
-  if (value.type === 'article' && !value.contentHtml) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['contentHtml'],
-      message: 'Article content is required.',
-    });
-  }
-
-  if (value.type === 'faq') {
-    if (!value.question) {
+export const KnowledgeBaseEntryFormSchema = KnowledgeBaseEntryFieldsSchema.superRefine(
+  (value, ctx) => {
+    if (value.type === 'article' && !value.contentHtml) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['question'],
-        message: 'FAQ question is required.',
+        path: ['contentHtml'],
+        message: 'Article content is required.',
       });
     }
 
-    if (!value.answerHtml) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['answerHtml'],
-        message: 'FAQ answer is required.',
-      });
+    if (value.type === 'faq') {
+      if (!value.question) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['question'],
+          message: 'FAQ question is required.',
+        });
+      }
+
+      if (!value.answerHtml) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['answerHtml'],
+          message: 'FAQ answer is required.',
+        });
+      }
     }
-  }
-});
+  },
+);
 export type KnowledgeBaseEntryForm = z.infer<typeof KnowledgeBaseEntryFormSchema>;
 
 export const KnowledgeBaseSearchFormSchema = z.object({

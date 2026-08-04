@@ -1,14 +1,5 @@
-export type {
-  AiConfig,
-  AiProvider,
-  UpsertAiConfigInput,
-} from '../ai/index.js';
-export type {
-  SendOtpForm,
-  SendOtpInput,
-  VerifyOtpForm,
-  VerifyOtpInput,
-} from '../auth/index.js';
+export type { AiConfig, AiProvider, UpsertAiConfigInput } from '../ai/index.js';
+export type { SendOtpForm, SendOtpInput, VerifyOtpForm, VerifyOtpInput } from '../auth/index.js';
 export type {
   Category,
   CategoryTreeNode,
@@ -45,10 +36,7 @@ export type {
   KnowledgeBaseSearchQuery,
   UpdateKnowledgeBaseEntryInput,
 } from '../knowledge-base/index.js';
-export type {
-  MediaAsset,
-  MediaProvider,
-} from '../media/index.js';
+export type { MediaAsset, MediaProvider } from '../media/index.js';
 export type {
   CreateTicketCommentForm,
   CreateTicketCommentInput,

@@ -16,8 +16,16 @@ Shared Zod schemas and inferred TypeScript types for the Open Support frontend a
 
 ```ts
 import { BaseUserSchema } from '@open-support/schemas/base';
-import { BaseCategorySchema, CreateCategoryDto, type CreateCategoryInput } from '@open-support/schemas/category';
+import {
+  BaseCategorySchema,
+  CreateCategoryDto,
+  type CreateCategoryInput,
+} from '@open-support/schemas/category';
 import { CreateTicketFormSchema } from '@open-support/schemas/frontend';
-import { CreateTicketDto, CreateTicketSchema, type CreateTicketInput } from '@open-support/schemas/backend';
+import {
+  CreateTicketDto,
+  CreateTicketSchema,
+  type CreateTicketInput,
+} from '@open-support/schemas/backend';
 import type { User } from '@open-support/schemas/types';
 ```

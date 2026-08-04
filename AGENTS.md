@@ -22,6 +22,8 @@ Use pnpm, not npm.
 
 ```sh
 pnpm install
+pnpm lint
+pnpm format:check
 pnpm api:typecheck
 pnpm api:build
 pnpm web:typecheck

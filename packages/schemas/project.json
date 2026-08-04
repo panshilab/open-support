@@ -18,6 +18,20 @@
         "command": "../../node_modules/.bin/tsc -p tsconfig.json --noEmit",
         "cwd": "packages/schemas"
       }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../node_modules/.bin/oxlint --ignore-path ../../.gitignore .",
+        "cwd": "packages/schemas"
+      }
+    },
+    "format:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../node_modules/.bin/oxfmt --check --ignore-path ../../.gitignore .",
+        "cwd": "packages/schemas"
+      }
     }
   },
   "tags": ["scope:shared", "type:schema"]

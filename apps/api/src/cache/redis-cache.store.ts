@@ -20,7 +20,7 @@ export class RedisCacheStore implements CacheStore {
 
   async get<T>(key: string): Promise<T | null> {
     const value = await this.redis.get(key);
-    return value === null ? null : JSON.parse(value) as T;
+    return value === null ? null : (JSON.parse(value) as T);
   }
 
   async set<T>(key: string, value: T, options: CacheSetOptions = {}): Promise<boolean> {

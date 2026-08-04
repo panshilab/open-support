@@ -4,11 +4,7 @@
   "useInferencePlugins": false,
   "namedInputs": {
     "default": ["{projectRoot}/**/*"],
-    "production": [
-      "default",
-      "!{projectRoot}/**/*.spec.ts",
-      "!{projectRoot}/**/*.test.ts"
-    ]
+    "production": ["default", "!{projectRoot}/**/*.spec.ts", "!{projectRoot}/**/*.test.ts"]
   },
   "targetDefaults": {
     "build": {
@@ -19,6 +15,14 @@
     "typecheck": {
       "inputs": ["default", "^production"],
       "dependsOn": ["^build"],
+      "cache": true
+    },
+    "lint": {
+      "inputs": ["default", "^production"],
+      "cache": true
+    },
+    "format:check": {
+      "inputs": ["default"],
       "cache": true
     }
   }

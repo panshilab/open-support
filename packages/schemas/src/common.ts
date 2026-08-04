@@ -1,11 +1,8 @@
 import { z } from 'zod';
 
-export const IdSchema = z.uuid().describe("UUID identifier");
+export const IdSchema = z.uuid().describe('UUID identifier');
 
-export const IsoDateStringSchema = z
-  .string()
-  .datetime()
-  .describe('ISO 8601 date-time string');
+export const IsoDateStringSchema = z.string().datetime().describe('ISO 8601 date-time string');
 
 export const EmailSchema = z
   .string()
@@ -15,11 +12,7 @@ export const EmailSchema = z
   .max(255)
   .describe('Email address');
 
-export const HtmlSchema = z
-  .string()
-  .trim()
-  .min(1)
-  .describe('Sanitized HTML content');
+export const HtmlSchema = z.string().trim().min(1).describe('Sanitized HTML content');
 
 export const SlugSchema = z
   .string()

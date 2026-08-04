@@ -12,7 +12,9 @@ export const UpdateNotificationPreferencesFormSchema = BaseUserSchema.pick({
   receiveEmailNotifications: true,
   receiveNewTicketEmails: true,
 });
-export type UpdateNotificationPreferencesForm = z.infer<typeof UpdateNotificationPreferencesFormSchema>;
+export type UpdateNotificationPreferencesForm = z.infer<
+  typeof UpdateNotificationPreferencesFormSchema
+>;
 
 export const UpdateUserRoleFormSchema = z.object({
   role: UserRoleSchema,

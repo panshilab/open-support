@@ -19,6 +19,20 @@
         "cwd": "apps/api"
       }
     },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../node_modules/.bin/oxlint --ignore-path ../../.gitignore .",
+        "cwd": "apps/api"
+      }
+    },
+    "format:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../node_modules/.bin/oxfmt --check --ignore-path ../../.gitignore .",
+        "cwd": "apps/api"
+      }
+    },
     "serve": {
       "executor": "nx:run-commands",
       "options": {

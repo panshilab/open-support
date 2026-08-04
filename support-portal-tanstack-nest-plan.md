@@ -3,6 +3,7 @@
 Source reference: `raselupm/support-portal`
 
 Target stack:
+
 - Monorepo: Nx
 - Frontend: TanStack Start, React, TypeScript
 - Backend: NestJS, TypeScript

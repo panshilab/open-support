@@ -12,11 +12,11 @@ export const UpdateKnowledgeBaseEntrySchema = KnowledgeBaseEntryFieldsSchema.par
 export type CreateKnowledgeBaseEntryInput = z.infer<typeof CreateKnowledgeBaseEntrySchema>;
 export type UpdateKnowledgeBaseEntryInput = z.infer<typeof UpdateKnowledgeBaseEntrySchema>;
 
-export const KnowledgeBaseSearchQuerySchema = KnowledgeBaseSearchFormSchema
-  .merge(PaginationQuerySchema)
-  .extend({
-    minScore: z.coerce.number().min(0).max(1).optional(),
-  });
+export const KnowledgeBaseSearchQuerySchema = KnowledgeBaseSearchFormSchema.merge(
+  PaginationQuerySchema,
+).extend({
+  minScore: z.coerce.number().min(0).max(1).optional(),
+});
 export type KnowledgeBaseSearchQuery = z.infer<typeof KnowledgeBaseSearchQuerySchema>;
 
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}

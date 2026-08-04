@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "plugins": ["typescript", "react", "jsx-a11y"],
+  "rules": {
+    "no-console": "off",
+    "react-in-jsx-scope": "off",
+    "typescript/no-extraneous-class": "off"
+  }
+}

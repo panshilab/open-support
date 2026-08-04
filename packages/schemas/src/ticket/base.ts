@@ -1,12 +1,7 @@
 import { z } from 'zod';
 import { EmailSchema, HtmlSchema, IdSchema, IsoDateStringSchema } from '../common.js';
 
-export const TicketStatusSchema = z.enum([
-  'open',
-  'customer_reply',
-  'replied',
-  'resolved',
-]);
+export const TicketStatusSchema = z.enum(['open', 'customer_reply', 'replied', 'resolved']);
 export type TicketStatus = z.infer<typeof TicketStatusSchema>;
 
 export const BaseTicketSchema = z.object({

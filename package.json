@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.11.0",
   "scripts": {
     "build": "nx run-many -t build",
+    "format": "oxfmt --write --ignore-path .gitignore .",
+    "format:check": "oxfmt --check --ignore-path .gitignore .",
+    "lint": "oxlint --ignore-path .gitignore .",
+    "lint:fix": "oxlint --fix --ignore-path .gitignore .",
     "typecheck": "nx run-many -t typecheck",
     "api:build": "nx build api",
     "api:dev": "nx serve api",
@@ -18,6 +21,9 @@
   },
   "devDependencies": {
     "nx": "^21.0.0",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
     "typescript": "^5.0.0"
-  }
+  },
+  "packageManager": "pnpm@11.11.0"
 }
