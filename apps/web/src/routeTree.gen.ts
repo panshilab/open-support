@@ -13,7 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as KnowledgebaseRouteImport } from './routes/knowledgebase'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as TicketsRouteImport } from './routes/tickets'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminKnowledgebaseRouteImport } from './routes/admin.knowledgebase'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminStaffRouteImport } from './routes/admin.staff'
+import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
+import { Route as TicketsNewRouteImport } from './routes/tickets.new'
+import { Route as AdminKnowledgebaseEditRouteImport } from './routes/admin.knowledgebase.edit'
+import { Route as AdminKnowledgebaseNewRouteImport } from './routes/admin.knowledgebase.new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,48 +45,176 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketsRoute = TicketsRouteImport.update({
   id: '/tickets',
   path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminKnowledgebaseRoute = AdminKnowledgebaseRouteImport.update({
+  id: '/knowledgebase',
+  path: '/knowledgebase',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStaffRoute = AdminStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => AdminRoute,
+} as any)
+const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
+  id: '/$ticketId',
+  path: '/$ticketId',
+  getParentRoute: () => TicketsRoute,
+} as any)
+const TicketsNewRoute = TicketsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => TicketsRoute,
+} as any)
+const AdminKnowledgebaseEditRoute = AdminKnowledgebaseEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => AdminKnowledgebaseRoute,
+} as any)
+const AdminKnowledgebaseNewRoute = AdminKnowledgebaseNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminKnowledgebaseRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
-  '/tickets': typeof TicketsRoute
+  '/profile': typeof ProfileRoute
+  '/tickets': typeof TicketsRouteWithChildren
+  '/verify': typeof VerifyRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/staff': typeof AdminStaffRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
+  '/tickets/new': typeof TicketsNewRoute
+  '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
+  '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
-  '/tickets': typeof TicketsRoute
+  '/profile': typeof ProfileRoute
+  '/tickets': typeof TicketsRouteWithChildren
+  '/verify': typeof VerifyRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/staff': typeof AdminStaffRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
+  '/tickets/new': typeof TicketsNewRoute
+  '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
+  '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/knowledgebase': typeof KnowledgebaseRoute
   '/login': typeof LoginRoute
-  '/tickets': typeof TicketsRoute
+  '/profile': typeof ProfileRoute
+  '/tickets': typeof TicketsRouteWithChildren
+  '/verify': typeof VerifyRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/knowledgebase': typeof AdminKnowledgebaseRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/staff': typeof AdminStaffRoute
+  '/tickets/$ticketId': typeof TicketsTicketIdRoute
+  '/tickets/new': typeof TicketsNewRoute
+  '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
+  '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/knowledgebase' | '/login' | '/tickets'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/knowledgebase'
+    | '/login'
+    | '/profile'
+    | '/tickets'
+    | '/verify'
+    | '/admin/categories'
+    | '/admin/knowledgebase'
+    | '/admin/settings'
+    | '/admin/staff'
+    | '/tickets/$ticketId'
+    | '/tickets/new'
+    | '/admin/knowledgebase/edit'
+    | '/admin/knowledgebase/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/knowledgebase' | '/login' | '/tickets'
-  id: '__root__' | '/' | '/admin' | '/knowledgebase' | '/login' | '/tickets'
+  to:
+    | '/'
+    | '/admin'
+    | '/knowledgebase'
+    | '/login'
+    | '/profile'
+    | '/tickets'
+    | '/verify'
+    | '/admin/categories'
+    | '/admin/knowledgebase'
+    | '/admin/settings'
+    | '/admin/staff'
+    | '/tickets/$ticketId'
+    | '/tickets/new'
+    | '/admin/knowledgebase/edit'
+    | '/admin/knowledgebase/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/knowledgebase'
+    | '/login'
+    | '/profile'
+    | '/tickets'
+    | '/verify'
+    | '/admin/categories'
+    | '/admin/knowledgebase'
+    | '/admin/settings'
+    | '/admin/staff'
+    | '/tickets/$ticketId'
+    | '/tickets/new'
+    | '/admin/knowledgebase/edit'
+    | '/admin/knowledgebase/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   KnowledgebaseRoute: typeof KnowledgebaseRoute
   LoginRoute: typeof LoginRoute
-  TicketsRoute: typeof TicketsRoute
+  ProfileRoute: typeof ProfileRoute
+  TicketsRoute: typeof TicketsRouteWithChildren
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tickets': {
       id: '/tickets'
       path: '/tickets'
@@ -116,15 +261,122 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/knowledgebase': {
+      id: '/admin/knowledgebase'
+      path: '/knowledgebase'
+      fullPath: '/admin/knowledgebase'
+      preLoaderRoute: typeof AdminKnowledgebaseRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/staff': {
+      id: '/admin/staff'
+      path: '/staff'
+      fullPath: '/admin/staff'
+      preLoaderRoute: typeof AdminStaffRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/tickets/$ticketId': {
+      id: '/tickets/$ticketId'
+      path: '/$ticketId'
+      fullPath: '/tickets/$ticketId'
+      preLoaderRoute: typeof TicketsTicketIdRouteImport
+      parentRoute: typeof TicketsRoute
+    }
+    '/tickets/new': {
+      id: '/tickets/new'
+      path: '/new'
+      fullPath: '/tickets/new'
+      preLoaderRoute: typeof TicketsNewRouteImport
+      parentRoute: typeof TicketsRoute
+    }
+    '/admin/knowledgebase/edit': {
+      id: '/admin/knowledgebase/edit'
+      path: '/edit'
+      fullPath: '/admin/knowledgebase/edit'
+      preLoaderRoute: typeof AdminKnowledgebaseEditRouteImport
+      parentRoute: typeof AdminKnowledgebaseRoute
+    }
+    '/admin/knowledgebase/new': {
+      id: '/admin/knowledgebase/new'
+      path: '/new'
+      fullPath: '/admin/knowledgebase/new'
+      preLoaderRoute: typeof AdminKnowledgebaseNewRouteImport
+      parentRoute: typeof AdminKnowledgebaseRoute
+    }
   }
 }
 
+interface AdminKnowledgebaseRouteChildren {
+  AdminKnowledgebaseEditRoute: typeof AdminKnowledgebaseEditRoute
+  AdminKnowledgebaseNewRoute: typeof AdminKnowledgebaseNewRoute
+}
+
+const AdminKnowledgebaseRouteChildren: AdminKnowledgebaseRouteChildren = {
+  AdminKnowledgebaseEditRoute: AdminKnowledgebaseEditRoute,
+  AdminKnowledgebaseNewRoute: AdminKnowledgebaseNewRoute,
+}
+
+const AdminKnowledgebaseRouteWithChildren =
+  AdminKnowledgebaseRoute._addFileChildren(AdminKnowledgebaseRouteChildren)
+
+interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminKnowledgebaseRoute: typeof AdminKnowledgebaseRouteWithChildren
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStaffRoute: typeof AdminStaffRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminKnowledgebaseRoute: AdminKnowledgebaseRouteWithChildren,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStaffRoute: AdminStaffRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface TicketsRouteChildren {
+  TicketsTicketIdRoute: typeof TicketsTicketIdRoute
+  TicketsNewRoute: typeof TicketsNewRoute
+}
+
+const TicketsRouteChildren: TicketsRouteChildren = {
+  TicketsTicketIdRoute: TicketsTicketIdRoute,
+  TicketsNewRoute: TicketsNewRoute,
+}
+
+const TicketsRouteWithChildren =
+  TicketsRoute._addFileChildren(TicketsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   KnowledgebaseRoute: KnowledgebaseRoute,
   LoginRoute: LoginRoute,
-  TicketsRoute: TicketsRoute,
+  ProfileRoute: ProfileRoute,
+  TicketsRoute: TicketsRouteWithChildren,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

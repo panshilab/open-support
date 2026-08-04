@@ -1,4 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import GoogleIcon from '@mui/icons-material/Google';
+import MailOutlineIcon from '@mui/icons-material/MailOutlineOutlined';
+import { Button, Paper, Stack, TextField, Typography } from '@mui/material';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -6,14 +9,17 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   return (
-    <section className="narrow-page">
-      <h1>Email login</h1>
-      <p>OTP and Google login forms will connect here once the auth API is implemented.</p>
-      <form className="stack-form">
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" />
-        <button type="button">Send OTP</button>
-      </form>
-    </section>
+    <Paper sx={{ maxWidth: 480, mx: 'auto', p: 3 }}>
+      <Stack component="form" spacing={2}>
+        <Typography variant="h1">Login</Typography>
+        <TextField autoComplete="email" label="Email" name="email" type="email" />
+        <Button component={Link} startIcon={<MailOutlineIcon />} to="/verify" variant="contained">
+          Send OTP
+        </Button>
+        <Button startIcon={<GoogleIcon />} variant="outlined">
+          Continue with Google
+        </Button>
+      </Stack>
+    </Paper>
   );
 }

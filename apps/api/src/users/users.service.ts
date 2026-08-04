@@ -68,10 +68,7 @@ export class UsersService {
     return this.users.save(user);
   }
 
-  async updateNotificationPreferences(
-    userId: string,
-    input: UpdateNotificationPreferencesInput,
-  ) {
+  async updateNotificationPreferences(userId: string, input: UpdateNotificationPreferencesInput) {
     const user = await this.getById(userId);
     user.receiveEmailNotifications = input.receiveEmailNotifications;
     user.receiveNewTicketEmails = input.receiveNewTicketEmails;
