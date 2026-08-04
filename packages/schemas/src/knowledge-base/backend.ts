@@ -22,9 +22,19 @@ export const KnowledgeBaseSearchQuerySchema = KnowledgeBaseSearchFormSchema.merg
 ).extend({
   minScore: z.coerce.number().min(0).max(1).optional(),
 });
+export const BackfillKnowledgeBaseEmbeddingsSchema = z.object({
+  limit: z.coerce.number().int().min(1).max(200).default(50),
+  force: z.boolean().default(false),
+});
 export type KnowledgeBaseSearchQuery = z.infer<typeof KnowledgeBaseSearchQuerySchema>;
+export type BackfillKnowledgeBaseEmbeddingsInput = z.infer<
+  typeof BackfillKnowledgeBaseEmbeddingsSchema
+>;
 
 export class CreateKnowledgeBaseEntryDto extends createZodDto(CreateKnowledgeBaseEntrySchema) {}
 export class UpdateKnowledgeBaseEntryDto extends createZodDto(UpdateKnowledgeBaseEntrySchema) {}
 export class KnowledgeBaseSearchQueryDto extends createZodDto(KnowledgeBaseSearchQuerySchema) {}
 export class KnowledgeBaseEntryIdParamDto extends createZodDto(KnowledgeBaseEntryIdParamSchema) {}
+export class BackfillKnowledgeBaseEmbeddingsDto extends createZodDto(
+  BackfillKnowledgeBaseEmbeddingsSchema,
+) {}

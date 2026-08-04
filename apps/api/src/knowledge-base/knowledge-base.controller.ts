@@ -12,10 +12,12 @@ import {
   type UpdateProductInput,
 } from '@open-support/schemas/category';
 import {
+  BackfillKnowledgeBaseEmbeddingsDto,
   CreateKnowledgeBaseEntryDto,
   KnowledgeBaseEntryIdParamDto,
   KnowledgeBaseSearchQueryDto,
   UpdateKnowledgeBaseEntryDto,
+  type BackfillKnowledgeBaseEmbeddingsInput,
   type CreateKnowledgeBaseEntryInput,
   type KnowledgeBaseSearchQuery,
   type UpdateKnowledgeBaseEntryInput,
@@ -87,6 +89,13 @@ export class KnowledgeBaseController {
   @Roles('admin', 'support_agent')
   createArticle(@Body() body: CreateKnowledgeBaseEntryDto) {
     return this.knowledgeBase.createArticle(body as CreateKnowledgeBaseEntryInput);
+  }
+
+  @Post('admin/articles/backfill-embeddings')
+  @UseGuards(SessionGuard, RolesGuard)
+  @Roles('admin')
+  backfillEmbeddings(@Body() body: BackfillKnowledgeBaseEmbeddingsDto) {
+    return this.knowledgeBase.backfillEmbeddings(body as BackfillKnowledgeBaseEmbeddingsInput);
   }
 
   @Patch('admin/articles/:articleId')

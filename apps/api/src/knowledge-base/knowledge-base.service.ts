@@ -7,6 +7,7 @@ import type {
   UpdateProductInput,
 } from '@open-support/schemas/category';
 import type {
+  BackfillKnowledgeBaseEmbeddingsInput,
   CreateKnowledgeBaseEntryInput,
   KnowledgeBaseSearchQuery,
   UpdateKnowledgeBaseEntryInput,
@@ -137,6 +138,59 @@ export class KnowledgeBaseService {
     return this.getArticle(saved.id, true);
   }
 
+  async backfillEmbeddings(input: BackfillKnowledgeBaseEmbeddingsInput) {
+    if (!this.embeddings.enabled) {
+      return {
+        enabled: false,
+        processed: 0,
+        updated: 0,
+        failed: 0,
+        skipped: 0,
+      };
+    }
+
+    const builder = this.articles
+      .createQueryBuilder('article')
+      .orderBy('article.updatedAt', 'DESC')
+      .take(input.limit);
+
+    if (!input.force) {
+      builder.where(
+        "(article.embeddingStatus != 'ready' OR article.embeddingStatus IS NULL OR article.embeddedAt IS NULL OR article.embedding IS NULL)",
+      );
+    }
+
+    const articles = await builder.getMany();
+    const result = {
+      enabled: true,
+      processed: articles.length,
+      updated: 0,
+      failed: 0,
+      skipped: 0,
+    };
+
+    /* eslint-disable no-await-in-loop */
+    for (const article of articles) {
+      const category = article.categoryId ? await this.getCategory(article.categoryId) : null;
+      article.categoryPath = category?.path ?? article.categoryPath;
+      article.searchText = this.createSearchText(article, article.categoryPath);
+      article.embeddingStatus = 'pending';
+      await this.articles.save(article);
+
+      const status = await this.refreshEmbedding(article);
+      if (status === 'ready') {
+        result.updated += 1;
+      } else if (status === 'failed') {
+        result.failed += 1;
+      } else {
+        result.skipped += 1;
+      }
+    }
+    /* eslint-enable no-await-in-loop */
+
+    return result;
+  }
+
   async search(query: KnowledgeBaseSearchQuery) {
     if (this.embeddings.enabled) {
       const semanticResults = await this.semanticSearch(query);
@@ -219,7 +273,7 @@ export class KnowledgeBaseService {
 
   private async refreshEmbedding(article: KnowledgeBaseArticleEntity) {
     if (!this.embeddings.enabled || !article.searchText) {
-      return;
+      return 'skipped' as const;
     }
 
     const embedding = await this.embeddings.embed(article.searchText);
@@ -227,7 +281,7 @@ export class KnowledgeBaseService {
     if (!embedding) {
       article.embeddingStatus = 'failed';
       await this.articles.save(article);
-      return;
+      return 'failed' as const;
     }
 
     await this.articles.query(
@@ -242,6 +296,7 @@ export class KnowledgeBaseService {
       `,
       [this.embeddings.toSqlVector(embedding), this.embeddings.model, embedding.length, article.id],
     );
+    return 'ready' as const;
   }
 
   private createSearchText(
