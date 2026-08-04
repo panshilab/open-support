@@ -17,6 +17,7 @@
     "@open-support/schemas": "workspace:*",
     "@tanstack/react-router": "^1.168.0",
     "@tanstack/react-start": "^1.168.0",
+    "@tiptap/extension-image": "^3.29.2",
     "@tiptap/extension-placeholder": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",

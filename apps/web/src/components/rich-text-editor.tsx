@@ -3,6 +3,7 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import ImageIcon from '@mui/icons-material/Image';
 import RedoIcon from '@mui/icons-material/Redo';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
@@ -16,6 +17,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import Placeholder from '@tiptap/extension-placeholder';
+import Image from '@tiptap/extension-image';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
@@ -41,6 +43,9 @@ export function RichTextEditor({
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Image.configure({
+        allowBase64: false,
+      }),
       Placeholder.configure({
         placeholder,
       }),
@@ -107,6 +112,18 @@ export function RichTextEditor({
             onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           >
             <FormatListNumberedIcon fontSize="small" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Insert image"
+            onClick={() => {
+              const url = window.prompt('Image URL');
+
+              if (url) {
+                editor?.chain().focus().setImage({ src: url }).run();
+              }
+            }}
+          >
+            <ImageIcon fontSize="small" />
           </ToolbarButton>
           <Box sx={{ flex: 1 }} />
           <ToolbarButton label="Undo" onClick={() => editor?.chain().focus().undo().run()}>

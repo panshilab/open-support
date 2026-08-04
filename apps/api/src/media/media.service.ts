@@ -27,7 +27,10 @@ export class MediaService {
       builder.andWhere('media.mimeType = :mimeType', { mimeType: query.mimeType });
     }
 
-    return builder.skip((query.page - 1) * query.limit).take(query.limit).getMany();
+    return builder
+      .skip((query.page - 1) * query.limit)
+      .take(query.limit)
+      .getMany();
   }
 
   async upload(
