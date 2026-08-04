@@ -11,7 +11,10 @@
     "api:dev": "nx serve api",
     "api:typecheck": "nx typecheck api",
     "schemas:build": "nx build schemas",
-    "schemas:typecheck": "nx typecheck schemas"
+    "schemas:typecheck": "nx typecheck schemas",
+    "web:build": "nx build web",
+    "web:dev": "nx serve web",
+    "web:typecheck": "nx typecheck web"
   },
   "devDependencies": {
     "nx": "^21.0.0",

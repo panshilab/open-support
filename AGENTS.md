@@ -24,6 +24,8 @@ Use pnpm, not npm.
 pnpm install
 pnpm api:typecheck
 pnpm api:build
+pnpm web:typecheck
+pnpm web:build
 pnpm schemas:typecheck
 pnpm schemas:build
 ```
@@ -35,6 +37,7 @@ If Nx project graph commands hang in a sandbox, verify directly:
 ./node_modules/.bin/tsc -p packages/schemas/tsconfig.json
 ./node_modules/.bin/tsc -p apps/api/tsconfig.json --noEmit
 ./node_modules/.bin/tsc -p apps/api/tsconfig.build.json
+./node_modules/.bin/tsc -p apps/web/tsconfig.json --noEmit
 ```
 
 ## Validation And Types
@@ -97,4 +100,3 @@ Before committing:
 - Check `git status --short`
 - Run relevant typecheck/build commands
 - Avoid committing generated `dist`, `.nx`, `.pnpm-store`, or `node_modules`
-
