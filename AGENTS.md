@@ -82,6 +82,10 @@ export class CreateTicketDto extends createZodDto(CreateTicketSchema) {}
 - Use NestJS modules by domain.
 - Use TypeORM entities, repositories, and migrations.
 - Use raw SQL migrations/queries for pgvector-specific features.
+- All runtime environment variables must go through the universal Zod validation layer in `apps/api/src/config/env.schema.ts`.
+- Required environment variables must not have silent defaults. If a required variable is missing or malformed, the API must fail during startup.
+- Optional integrations such as Redis, SMTP, Google login, and OpenAI must be represented as optional schema fields and conditionally validated when one related credential implies another.
+- Access environment values only through `EnvService`; do not read `process.env` directly in feature modules.
 - Do not call Redis directly from feature modules.
 - Use `CacheService` from `apps/api/src/cache`.
 - Cache should automatically use Redis only when `REDIS_URL` is configured.

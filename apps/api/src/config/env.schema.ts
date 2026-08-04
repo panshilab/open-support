@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const requiredStringSchema = z.string().trim().min(1);
+const requiredUrlSchema = requiredStringSchema.pipe(z.string().url());
 const booleanStringSchema = z.enum(['true', 'false']).transform((value) => value === 'true');
 const optionalStringSchema = z
   .string()
@@ -9,57 +11,80 @@ const optionalStringSchema = z
 const optionalUrlSchema = optionalStringSchema.pipe(z.string().url().optional());
 const optionalEmailSchema = optionalStringSchema.pipe(z.string().email().optional());
 
-export const EnvSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  APP_NAME: z.string().min(1).default('Open Support'),
-  APP_URL: z.string().url().default('http://localhost:3000'),
-  API_HOST: z.string().min(1).default('0.0.0.0'),
-  API_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+export const EnvSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    APP_NAME: requiredStringSchema,
+    APP_URL: requiredUrlSchema,
+    API_HOST: requiredStringSchema,
+    API_PORT: z.coerce.number().int().min(1).max(65535),
 
-  DATABASE_HOST: z.string().min(1).default('localhost'),
-  DATABASE_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
-  DATABASE_NAME: z.string().min(1).default('open_support'),
-  DATABASE_USER: z.string().min(1).default('postgres'),
-  DATABASE_PASSWORD: z.string().default('postgres'),
-  DATABASE_SSL: booleanStringSchema.default(false),
+    DATABASE_HOST: requiredStringSchema,
+    DATABASE_PORT: z.coerce.number().int().min(1).max(65535),
+    DATABASE_NAME: requiredStringSchema,
+    DATABASE_USER: requiredStringSchema,
+    DATABASE_PASSWORD: z.string(),
+    DATABASE_SSL: booleanStringSchema,
 
-  REDIS_URL: optionalUrlSchema,
-  REDIS_HOST: optionalStringSchema,
-  REDIS_PORT: z.coerce.number().int().min(1).max(65535).optional(),
-  REDIS_DB: z.coerce.number().int().min(0).default(0),
-  REDIS_PASSWORD: optionalStringSchema,
-  CACHE_DEFAULT_TTL_SECONDS: z.coerce.number().int().min(1).default(300),
+    REDIS_URL: optionalUrlSchema,
+    REDIS_HOST: optionalStringSchema,
+    REDIS_PORT: z.coerce.number().int().min(1).max(65535).optional(),
+    REDIS_DB: z.coerce.number().int().min(0).default(0),
+    REDIS_PASSWORD: optionalStringSchema,
+    CACHE_DEFAULT_TTL_SECONDS: z.coerce.number().int().min(1).default(300),
 
-  SESSION_SECRET: z.string().min(32).default('change-this-session-secret-before-production'),
-  SESSION_COOKIE_NAME: z.string().min(1).default('open_support_session'),
-  SESSION_TTL_SECONDS: z.coerce.number().int().min(60).default(604800),
-  ADMIN_EMAILS: z.string().default(''),
+    SESSION_SECRET: z.string().min(32),
+    SESSION_COOKIE_NAME: requiredStringSchema,
+    SESSION_TTL_SECONDS: z.coerce.number().int().min(60),
+    ADMIN_EMAILS: z.string().default(''),
 
-  OTP_EXPIRES_IN_SECONDS: z.coerce.number().int().min(60).default(600),
-  OTP_LENGTH: z.coerce.number().int().min(6).max(8).default(6),
+    OTP_EXPIRES_IN_SECONDS: z.coerce.number().int().min(60),
+    OTP_LENGTH: z.coerce.number().int().min(6).max(8),
 
-  SMTP_HOST: optionalStringSchema,
-  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
-  SMTP_SECURE: booleanStringSchema.default(false),
-  SMTP_USER: optionalStringSchema,
-  SMTP_PASS: optionalStringSchema,
-  SMTP_FROM_EMAIL: optionalEmailSchema,
-  SMTP_FROM_NAME: z.string().min(1).default('Open Support'),
+    SMTP_HOST: optionalStringSchema,
+    SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+    SMTP_SECURE: booleanStringSchema.default(false),
+    SMTP_USER: optionalStringSchema,
+    SMTP_PASS: optionalStringSchema,
+    SMTP_FROM_EMAIL: optionalEmailSchema,
+    SMTP_FROM_NAME: z.string().min(1).default('Open Support'),
 
-  GOOGLE_CLIENT_ID: optionalStringSchema,
-  OPENAI_API_KEY: optionalStringSchema,
-  OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
-  OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
+    GOOGLE_CLIENT_ID: optionalStringSchema,
+    OPENAI_API_KEY: optionalStringSchema,
+    OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
+    OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
 
-  MEDIA_PROVIDER: z.enum(['local', 's3', 'cloudinary']).default('local'),
-  MEDIA_LOCAL_DIR: z.string().min(1).default('uploads/media'),
-  MEDIA_PUBLIC_URL: z.string().url().default('http://localhost:3001/uploads/media'),
-  MEDIA_MAX_FILE_SIZE_BYTES: z.coerce.number().int().min(1).default(5242880),
-  MEDIA_ALLOWED_MIME_TYPES: z
-    .string()
-    .min(1)
-    .default('image/jpeg,image/png,image/webp,image/gif,application/pdf'),
-});
+    MEDIA_PROVIDER: z.enum(['local', 's3', 'cloudinary']),
+    MEDIA_LOCAL_DIR: requiredStringSchema,
+    MEDIA_PUBLIC_URL: requiredUrlSchema,
+    MEDIA_MAX_FILE_SIZE_BYTES: z.coerce.number().int().min(1),
+    MEDIA_ALLOWED_MIME_TYPES: requiredStringSchema,
+  })
+  .superRefine((env, context) => {
+    if (env.REDIS_HOST && !env.REDIS_PORT) {
+      context.addIssue({
+        code: 'custom',
+        message: 'REDIS_PORT is required when REDIS_HOST is set',
+        path: ['REDIS_PORT'],
+      });
+    }
+
+    if (env.SMTP_HOST && !env.SMTP_FROM_EMAIL) {
+      context.addIssue({
+        code: 'custom',
+        message: 'SMTP_FROM_EMAIL is required when SMTP_HOST is set',
+        path: ['SMTP_FROM_EMAIL'],
+      });
+    }
+
+    if ((env.SMTP_USER && !env.SMTP_PASS) || (!env.SMTP_USER && env.SMTP_PASS)) {
+      context.addIssue({
+        code: 'custom',
+        message: 'SMTP_USER and SMTP_PASS must be configured together',
+        path: ['SMTP_USER'],
+      });
+    }
+  });
 
 export type Env = z.infer<typeof EnvSchema>;
 
