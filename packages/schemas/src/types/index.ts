@@ -55,6 +55,7 @@ export type {
   MarkTicketSeenInput,
   Ticket,
   TicketComment,
+  TicketIdParam,
   TicketSeenState,
   TicketStatus,
   UpdateTicketStatusInput,
