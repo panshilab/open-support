@@ -27,6 +27,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminTicketsRouteImport } from './routes/admin.tickets'
+import { Route as KnowledgebaseArticleIdRouteImport } from './routes/knowledgebase.$articleId'
 import { Route as TicketsTicketIdRouteImport } from './routes/tickets.$ticketId'
 import { Route as AdminKnowledgebaseEditRouteImport } from './routes/admin.knowledgebase.edit'
 import { Route as AdminKnowledgebaseNewRouteImport } from './routes/admin.knowledgebase.new'
@@ -121,6 +122,11 @@ const AdminTicketsRoute = AdminTicketsRouteImport.update({
   path: '/tickets',
   getParentRoute: () => AdminRoute,
 } as any)
+const KnowledgebaseArticleIdRoute = KnowledgebaseArticleIdRouteImport.update({
+  id: '/$articleId',
+  path: '/$articleId',
+  getParentRoute: () => KnowledgebaseRoute,
+} as any)
 const TicketsTicketIdRoute = TicketsTicketIdRouteImport.update({
   id: '/$ticketId',
   path: '/$ticketId',
@@ -142,7 +148,7 @@ export interface FileRoutesByFullPath {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
   '/change-password': typeof ChangePasswordRoute
-  '/knowledgebase': typeof KnowledgebaseRoute
+  '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
   '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
+  '/knowledgebase/$articleId': typeof KnowledgebaseArticleIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
@@ -165,7 +172,7 @@ export interface FileRoutesByTo {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
   '/change-password': typeof ChangePasswordRoute
-  '/knowledgebase': typeof KnowledgebaseRoute
+  '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
   '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
+  '/knowledgebase/$articleId': typeof KnowledgebaseArticleIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
@@ -189,7 +197,7 @@ export interface FileRoutesById {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
   '/change-password': typeof ChangePasswordRoute
-  '/knowledgebase': typeof KnowledgebaseRoute
+  '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
   '/new-ticket': typeof NewTicketRoute
   '/profile': typeof ProfileRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/admin/tickets': typeof AdminTicketsRoute
+  '/knowledgebase/$articleId': typeof KnowledgebaseArticleIdRoute
   '/tickets/$ticketId': typeof TicketsTicketIdRoute
   '/admin/knowledgebase/edit': typeof AdminKnowledgebaseEditRoute
   '/admin/knowledgebase/new': typeof AdminKnowledgebaseNewRoute
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/staff'
     | '/admin/tickets'
+    | '/knowledgebase/$articleId'
     | '/tickets/$ticketId'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/staff'
     | '/admin/tickets'
+    | '/knowledgebase/$articleId'
     | '/tickets/$ticketId'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/staff'
     | '/admin/tickets'
+    | '/knowledgebase/$articleId'
     | '/tickets/$ticketId'
     | '/admin/knowledgebase/edit'
     | '/admin/knowledgebase/new'
@@ -284,7 +296,7 @@ export interface RootRouteChildren {
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   AdminRoute: typeof AdminRouteWithChildren
   ChangePasswordRoute: typeof ChangePasswordRoute
-  KnowledgebaseRoute: typeof KnowledgebaseRoute
+  KnowledgebaseRoute: typeof KnowledgebaseRouteWithChildren
   LoginRoute: typeof LoginRoute
   NewTicketRoute: typeof NewTicketRoute
   ProfileRoute: typeof ProfileRoute
@@ -420,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTicketsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/knowledgebase/$articleId': {
+      id: '/knowledgebase/$articleId'
+      path: '/$articleId'
+      fullPath: '/knowledgebase/$articleId'
+      preLoaderRoute: typeof KnowledgebaseArticleIdRouteImport
+      parentRoute: typeof KnowledgebaseRoute
+    }
     '/tickets/$ticketId': {
       id: '/tickets/$ticketId'
       path: '/$ticketId'
@@ -481,6 +500,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface KnowledgebaseRouteChildren {
+  KnowledgebaseArticleIdRoute: typeof KnowledgebaseArticleIdRoute
+}
+
+const KnowledgebaseRouteChildren: KnowledgebaseRouteChildren = {
+  KnowledgebaseArticleIdRoute: KnowledgebaseArticleIdRoute,
+}
+
+const KnowledgebaseRouteWithChildren = KnowledgebaseRoute._addFileChildren(
+  KnowledgebaseRouteChildren,
+)
+
 interface TicketsRouteChildren {
   TicketsTicketIdRoute: typeof TicketsTicketIdRoute
 }
@@ -497,7 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcceptInvitationRoute: AcceptInvitationRoute,
   AdminRoute: AdminRouteWithChildren,
   ChangePasswordRoute: ChangePasswordRoute,
-  KnowledgebaseRoute: KnowledgebaseRoute,
+  KnowledgebaseRoute: KnowledgebaseRouteWithChildren,
   LoginRoute: LoginRoute,
   NewTicketRoute: NewTicketRoute,
   ProfileRoute: ProfileRoute,

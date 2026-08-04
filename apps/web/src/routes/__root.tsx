@@ -116,6 +116,7 @@ export const Route = createRootRoute({
 function isPublicPath(pathname: string) {
   return (
     pathname === '/knowledgebase' ||
+    pathname.startsWith('/knowledgebase/') ||
     pathname === '/login' ||
     pathname === '/verify' ||
     pathname === '/accept-invitation' ||
