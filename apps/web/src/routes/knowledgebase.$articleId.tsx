@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
+import { primaryAlpha } from '../theme';
 import { useGetKnowledgeBaseArticle } from '@open-support/services';
 
 export const Route = createFileRoute('/knowledgebase/$articleId')({
@@ -126,7 +127,7 @@ function KnowledgebaseArticlePage() {
               <Typography
                 color="text.secondary"
                 sx={{
-                  bgcolor: 'rgba(20, 83, 45, 0.05)',
+                  bgcolor: primaryAlpha[5],
                   borderRadius: 1.5,
                   fontSize: '1.05rem',
                   lineHeight: 1.6,
@@ -155,7 +156,7 @@ function KnowledgebaseArticlePage() {
                 '& a': { color: 'secondary.main', fontWeight: 600 },
                 '& img': { borderRadius: 1.5, maxWidth: '100%' },
                 '& code': {
-                  bgcolor: 'rgba(20, 83, 45, 0.08)',
+                  bgcolor: primaryAlpha[8],
                   borderRadius: 0.5,
                   fontSize: '0.9em',
                   px: 0.5,

@@ -23,171 +23,11 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
-  createTheme,
 } from '@mui/material';
 import { getCurrentSession } from '@open-support/services';
 import { AppProviders } from '../providers/app-providers';
+import { brand, theme } from '../theme';
 import '../styles.css';
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#14532d',
-      light: '#2f7a4d',
-      dark: '#0f3d22',
-    },
-    secondary: {
-      main: '#0f766e',
-      light: '#4aa399',
-      dark: '#0d5f59',
-    },
-    background: {
-      default: '#f4f8f1',
-      paper: '#ffffff',
-    },
-    text: {
-      primary: 'rgba(0, 0, 0, 0.9)',
-      secondary: 'rgba(0, 0, 0, 0.62)',
-    },
-    divider: 'rgba(20, 83, 45, 0.14)',
-  },
-  shape: {
-    borderRadius: 10,
-  },
-  typography: {
-    fontFamily:
-      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    h1: {
-      fontSize: '2rem',
-      fontWeight: 760,
-      lineHeight: 1.12,
-    },
-    h2: {
-      fontSize: '1.25rem',
-      fontWeight: 740,
-      lineHeight: 1.2,
-    },
-  },
-  components: {
-    MuiAutocomplete: {
-      styleOverrides: {
-        option: {
-          '&[aria-selected="true"]': {
-            backgroundColor: 'rgba(20, 83, 45, 0.1)',
-          },
-          '&[aria-selected="true"].Mui-focused': {
-            backgroundColor: 'rgba(20, 83, 45, 0.14)',
-          },
-        },
-      },
-    },
-    MuiAppBar: {
-      defaultProps: {
-        elevation: 0,
-      },
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(255, 255, 255, 0.94)',
-          backdropFilter: 'blur(12px)',
-          boxShadow: 'none',
-        },
-      },
-    },
-    MuiButton: {
-      defaultProps: {
-        disableElevation: true,
-      },
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          border: '1px solid rgba(20, 83, 45, 0.12)',
-          boxShadow: '0 16px 40px rgba(15, 61, 34, 0.08)',
-        },
-      },
-    },
-    MuiCardActionArea: {
-      styleOverrides: {
-        root: {
-          '&:hover': {
-            backgroundColor: 'rgba(20, 83, 45, 0.04)',
-          },
-          '&:focus-visible': {
-            outline: '3px solid rgba(20, 83, 45, 0.24)',
-            outlineOffset: 2,
-          },
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(20, 83, 45, 0.08)',
-          color: 'rgba(0, 0, 0, 0.78)',
-          fontWeight: 650,
-        },
-        outlined: {
-          backgroundColor: 'rgba(15, 118, 110, 0.06)',
-          borderColor: 'rgba(15, 118, 110, 0.22)',
-        },
-      },
-    },
-    MuiListItemButton: {
-      styleOverrides: {
-        root: {
-          '&.Mui-selected': {
-            backgroundColor: 'rgba(20, 83, 45, 0.1)',
-          },
-          '&.Mui-selected:hover': {
-            backgroundColor: 'rgba(20, 83, 45, 0.14)',
-          },
-        },
-      },
-    },
-    MuiMenuItem: {
-      styleOverrides: {
-        root: {
-          '&.Mui-selected': {
-            backgroundColor: 'rgba(20, 83, 45, 0.1)',
-          },
-          '&.Mui-selected:hover': {
-            backgroundColor: 'rgba(20, 83, 45, 0.14)',
-          },
-        },
-      },
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#ffffff',
-          '& fieldset': {
-            borderColor: 'rgba(20, 83, 45, 0.18)',
-          },
-          '&:hover fieldset': {
-            borderColor: 'rgba(20, 83, 45, 0.34)',
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: '#14532d',
-            borderWidth: 1,
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-        },
-      },
-    },
-  },
-});
 
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
@@ -222,7 +62,7 @@ export const Route = createRootRoute({
       },
       {
         name: 'theme-color',
-        content: '#14532d',
+        content: brand.primary.main,
       },
     ],
     links: [{ rel: 'manifest', href: '/manifest.webmanifest' }],

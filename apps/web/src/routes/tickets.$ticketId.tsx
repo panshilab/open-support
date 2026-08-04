@@ -24,6 +24,7 @@ import {
 import { useFormik } from 'formik';
 import { RichTextEditor } from '../components/rich-text-editor';
 import { TICKET_STATUS_META } from '../components/ticket-status';
+import { primaryAlpha } from '../theme';
 
 export const Route = createFileRoute('/tickets/$ticketId')({
   component: TicketDetailPage,
@@ -142,7 +143,7 @@ function TicketDetailPage() {
                       </Stack>
                       <Paper
                         sx={{
-                          bgcolor: message.isStaff ? 'rgba(20, 83, 45, 0.05)' : 'rgba(0,0,0,0.03)',
+                          bgcolor: message.isStaff ? primaryAlpha[5] : 'rgba(0,0,0,0.03)',
                           borderRadius: 2,
                           mt: 0.5,
                           p: 1.5,
