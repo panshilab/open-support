@@ -162,8 +162,10 @@ function KnowledgebaseIndexPage() {
           bgcolor: 'rgba(244, 248, 241, 0.92)',
           borderBottom: 1,
           borderColor: 'divider',
+          ml: 'calc(50% - 50vw)',
           position: 'sticky',
           top: { xs: 88, sm: 72 },
+          width: '100vw',
           zIndex: 10,
         }}
       >
