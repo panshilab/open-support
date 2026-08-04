@@ -91,6 +91,19 @@ export class CreateTicketDto extends createZodDto(CreateTicketSchema) {}
 - Cache should automatically use Redis only when `REDIS_URL` is configured.
 - Without Redis credentials, use the in-memory cache implementation.
 
+## Frontend Design Guidelines
+
+- Put app-wide visual decisions in the MUI theme in `apps/web/src/routes/__root.tsx`, not as one-off route styles.
+- Preserve the existing green brand color `#14532d`; use soft green/teal supporting colors and muted green dividers/backgrounds.
+- Use 90% black for primary text: `rgba(0, 0, 0, 0.9)`.
+- Keep shared component polish in theme overrides for cards, chips, inputs, buttons, app bar, and focus/hover states.
+- Use MUI `Container` for page width. Prefer `maxWidth="lg"` for knowledgebase-style reading surfaces.
+- If a header/filter band needs full-browser-width background, use a balanced full-bleed wrapper such as `mx: 'calc(50% - 50vw)'`, then place the actual controls inside `Container maxWidth="lg"`.
+- Do not use CSS grid on the knowledgebase route. Use MUI `Grid` for the title/filter row and article card layouts.
+- Keep knowledgebase title, search, product filter, and category filter together in one sticky row on desktop, with responsive wrapping on smaller screens.
+- Keep knowledgebase content below the sticky header in `Container maxWidth="lg"` so article cards align with the header controls.
+- Avoid fixed viewport widths for content areas; only full-bleed background bands should break out.
+
 ## Git
 
 Commit coherent chunks as checkpoints. Do not wait for one giant commit.
