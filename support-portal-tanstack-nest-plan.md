@@ -1239,21 +1239,7 @@ Deliverable:
 
 - Customers and staff can manage support tickets end to end
 
-### Phase 5: Realtime Foundation
-
-- Choose Pusher or NestJS WebSocket Gateway
-- Define channels/rooms
-- Add authenticated staff/admin realtime connection
-- Add visitor chat realtime connection
-- Implement event publishing service
-- Add frontend realtime hooks
-- Add notification sounds/toasts
-
-Deliverable:
-
-- Ticket and admin notifications update without page reload
-
-### Phase 6: Media Library
+### Phase 5: Media Library
 
 - Implement storage abstraction
 - Add S3-compatible provider
@@ -1268,7 +1254,7 @@ Deliverable:
 
 - Admin can upload and insert images into docs/tickets
 
-### Phase 7: Dashboard, Staff Operations, and Polish
+### Phase 6: Dashboard, Staff Operations, and Polish
 
 - Implement dashboard stats
 - Add recent ticket/chat panels
@@ -1285,6 +1271,20 @@ Deliverable:
 Deliverable:
 
 - Admin/staff panel feels complete and operational
+
+### Phase 7: Realtime Foundation
+
+- Choose Pusher or NestJS WebSocket Gateway
+- Define channels/rooms
+- Add authenticated staff/admin realtime connection
+- Add visitor chat realtime connection
+- Implement event publishing service
+- Add frontend realtime hooks
+- Add notification sounds/toasts
+
+Deliverable:
+
+- Ticket and admin notifications update without page reload
 
 ### Phase 8: Live Chat
 
