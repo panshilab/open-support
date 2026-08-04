@@ -26,6 +26,19 @@ export class EnvService {
     return this.config.get('APP_URL', { infer: true });
   }
 
+  get corsOrigins() {
+    const origins = this.config.get('CORS_ORIGINS', { infer: true });
+
+    if (!origins) {
+      return [this.appUrl];
+    }
+
+    return origins
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  }
+
   get cacheDefaultTtlSeconds() {
     return this.config.get('CACHE_DEFAULT_TTL_SECONDS', { infer: true });
   }

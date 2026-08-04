@@ -10,6 +10,10 @@ async function bootstrap() {
   const env = app.get(EnvService);
 
   app.setGlobalPrefix('api');
+  app.enableCors({
+    origin: env.corsOrigins,
+    credentials: true,
+  });
   app.useGlobalPipes(new ZodValidationPipe());
   app.use('/uploads/media', express.static(env.media.localDir));
   app.enableShutdownHooks();

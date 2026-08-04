@@ -18,6 +18,7 @@ export const EnvSchema = z
     APP_URL: requiredUrlSchema,
     API_HOST: requiredStringSchema,
     API_PORT: z.coerce.number().int().min(1).max(65535),
+    CORS_ORIGINS: optionalStringSchema,
 
     DATABASE_HOST: requiredStringSchema,
     DATABASE_PORT: z.coerce.number().int().min(1).max(65535),
