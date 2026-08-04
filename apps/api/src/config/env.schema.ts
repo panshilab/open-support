@@ -24,6 +24,9 @@ export const EnvSchema = z.object({
   DATABASE_SSL: booleanStringSchema.default(false),
 
   REDIS_URL: optionalUrlSchema,
+  REDIS_HOST: optionalStringSchema,
+  REDIS_PORT: z.coerce.number().int().min(1).max(65535).optional(),
+  REDIS_DB: z.coerce.number().int().min(0).default(0),
   REDIS_PASSWORD: optionalStringSchema,
   CACHE_DEFAULT_TTL_SECONDS: z.coerce.number().int().min(1).default(300),
 

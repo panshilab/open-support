@@ -31,7 +31,21 @@ export class EnvService {
   }
 
   get redisUrl() {
-    return this.config.get('REDIS_URL', { infer: true });
+    const redisUrl = this.config.get('REDIS_URL', { infer: true });
+
+    if (redisUrl) {
+      return redisUrl;
+    }
+
+    const host = this.config.get('REDIS_HOST', { infer: true });
+    const port = this.config.get('REDIS_PORT', { infer: true });
+    const db = this.config.get('REDIS_DB', { infer: true });
+
+    if (!host || !port) {
+      return undefined;
+    }
+
+    return `redis://${host}:${port}/${db}`;
   }
 
   get redisPassword() {
