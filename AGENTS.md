@@ -104,6 +104,7 @@ export class CreateTicketDto extends createZodDto(CreateTicketSchema) {}
 - Keep knowledgebase content below the sticky header in `Container maxWidth="lg"` so article cards align with the header controls.
 - Avoid fixed viewport widths for content areas; only full-bleed background bands should break out.
 - For card-based layouts, use infinite scroll. For tabular views, use pagination.
+- use smooth shadow for components
 
 ## Git
 
