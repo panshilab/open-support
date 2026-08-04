@@ -77,6 +77,36 @@ After the first password login, the app asks the admin to change this temporary 
 - Password login is available for seeded or invited staff users.
 - Users can have `admin`, `support_agent`, or `user` roles.
 
+## Google Login Setup
+
+Create a Google OAuth web client ID:
+
+1. Go to Google Cloud Console: `https://console.cloud.google.com/`
+2. Create or select a project.
+3. Open `APIs & Services` -> `OAuth consent screen` and complete the required app details.
+4. Open `APIs & Services` -> `Credentials`.
+5. Click `Create Credentials` -> `OAuth client ID`.
+6. Choose `Web application`.
+7. Add authorized JavaScript origins:
+
+```txt
+http://localhost:3000
+```
+
+For production, also add the production frontend origin:
+
+```txt
+https://support.yourdomain.com
+```
+
+Save the client and copy the generated client ID into `apps/api/.env`:
+
+```env
+GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
+```
+
+Restart the API and web dev servers after changing the env file.
+
 ## Staff Invitations
 
 Admins can invite staff from `admin/staff`.
