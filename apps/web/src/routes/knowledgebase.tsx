@@ -10,25 +10,25 @@ import {
   CardContent,
   Chip,
   Container,
-  FormControl,
   Grid,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  type SelectChangeEvent,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import {
+  AutocompleteDropdown,
+  type AutocompleteDropdownOption,
+} from '../components/autocomplete-dropdown';
 import { EmptyState } from '../components/empty-state';
 import { ErrorState } from '../components/error-state';
 import { LoadingState } from '../components/loading-state';
-import type { CategoryTreeNode } from '@open-support/schemas/category';
+import type { CategoryTreeNode, Product } from '@open-support/schemas/category';
 import type { ChangeEvent } from 'react';
 import { knowledgebaseService } from '../services/knowledgebase.service';
 
 const EMPTY_CATEGORY_TREE: CategoryTreeNode[] = [];
+const EMPTY_PRODUCTS: Product[] = [];
 
 export const Route = createFileRoute('/knowledgebase')({
   component: KnowledgebasePage,
@@ -98,11 +98,28 @@ function KnowledgebaseIndexPage() {
     getNextPageParam: getNextArticlePageParam,
   });
 
-  const products = productsQuery.data ?? [];
+  const products = productsQuery.data ?? EMPTY_PRODUCTS;
   const categories = categoriesQuery.data ?? EMPTY_CATEGORY_TREE;
   const articles = articlesQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const searchMode = articlesQuery.data?.pages.find((page) => page.mode)?.mode ?? null;
   const flatCategories = useMemo(() => flattenCategories(categories), [categories]);
+  const productOptions = useMemo<AutocompleteDropdownOption[]>(
+    () =>
+      products.map((product) => ({
+        label: product.name,
+        value: product.id,
+      })),
+    [products],
+  );
+  const categoryOptions = useMemo<AutocompleteDropdownOption[]>(
+    () =>
+      flatCategories.map((category) => ({
+        group: getCategoryParentPath(category),
+        label: category.path,
+        value: category.id,
+      })),
+    [flatCategories],
+  );
   const loading = productsQuery.isLoading || categoriesQuery.isLoading || articlesQuery.isLoading;
   const error =
     productsQuery.error?.message ??
@@ -114,13 +131,13 @@ function KnowledgebaseIndexPage() {
     setQuery(event.target.value);
   }, []);
 
-  const handleProductChange = useCallback((event: SelectChangeEvent<string>) => {
-    setProductId(event.target.value || undefined);
+  const handleProductChange = useCallback((value: string | undefined) => {
+    setProductId(value);
     setCategoryId(undefined);
   }, []);
 
-  const handleCategoryChange = useCallback((event: SelectChangeEvent<string>) => {
-    setCategoryId(event.target.value || undefined);
+  const handleCategoryChange = useCallback((value: string | undefined) => {
+    setCategoryId(value);
   }, []);
 
   const setLoadMoreNode = useCallback(
@@ -152,6 +169,7 @@ function KnowledgebaseIndexPage() {
           position: 'sticky',
           top: { xs: 88, sm: 65 },
           zIndex: 10,
+          marginBottom: 2,
         }}
       >
         <Box sx={{ px: 3, py: 2 }}>
@@ -182,46 +200,28 @@ function KnowledgebaseIndexPage() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <FormControl fullWidth sx={{ minWidth: 0 }}>
-                <InputLabel id="knowledgebase-product-label">Product</InputLabel>
-                <Select
-                  label="Product"
-                  labelId="knowledgebase-product-label"
-                  onChange={handleProductChange}
-                  sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
-                  value={productId ?? ''}
-                >
-                  <MenuItem value="">All products</MenuItem>
-                  {products.map((product) => (
-                    <MenuItem key={product.id} value={product.id}>
-                      {product.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <AutocompleteDropdown
+                allLabel="All products"
+                label="Product"
+                onChange={handleProductChange}
+                options={productOptions}
+                value={productId}
+              />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <FormControl fullWidth sx={{ minWidth: 0 }}>
-                <InputLabel id="knowledgebase-category-label">Category</InputLabel>
-                <Select
-                  label="Category"
-                  labelId="knowledgebase-category-label"
-                  onChange={handleCategoryChange}
-                  sx={{ '& .MuiSelect-select': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
-                  value={categoryId ?? ''}
-                >
-                  <MenuItem value="">All categories</MenuItem>
-                  {flatCategories.map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.path}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <AutocompleteDropdown
+                allLabel="All categories"
+                grouped
+                label="Category"
+                onChange={handleCategoryChange}
+                options={categoryOptions}
+                value={categoryId}
+              />
             </Grid>
           </Grid>
         </Box>
       </Box>
+
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
       ) : null}
@@ -280,4 +280,14 @@ function flattenCategories(categories: CategoryTreeNode[]): CategoryTreeNode[] {
     category,
     ...flattenCategories(category.children ?? []),
   ]);
+}
+
+function getCategoryParentPath(category: CategoryTreeNode) {
+  const segments = category.path.split(' / ');
+
+  if (segments.length <= 1) {
+    return 'Top level';
+  }
+
+  return segments.slice(0, -1).join(' / ');
 }
