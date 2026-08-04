@@ -70,10 +70,14 @@ const theme = createTheme({
   },
   components: {
     MuiAppBar: {
+      defaultProps: {
+        elevation: 0,
+      },
       styleOverrides: {
         root: {
           backgroundColor: 'rgba(255, 255, 255, 0.94)',
           backdropFilter: 'blur(12px)',
+          boxShadow: 'none',
         },
       },
     },
