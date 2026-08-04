@@ -163,10 +163,9 @@ function KnowledgebaseIndexPage() {
           bgcolor: 'rgba(244, 248, 241, 0.92)',
           borderBottom: 1,
           borderColor: 'divider',
-          ml: 'calc(50% - 50vw)',
+          mx: 'calc(50% - 50vw)',
           position: 'sticky',
           top: { xs: 88, sm: 72 },
-          width: '100vw',
           zIndex: 10,
         }}
       >
@@ -244,7 +243,7 @@ function KnowledgebaseIndexPage() {
       {searchMode ? (
         <Alert severity="info">Search mode: {searchMode === 'vector' ? 'vector' : 'text'}</Alert>
       ) : null}
-      <Container maxWidth="lg" sx={{ px: { xs: 0, sm: 0 } }}>
+      <Container maxWidth="lg">
         {loading ? <LoadingState label="Loading articles" /> : null}
         {error ? <ErrorState message={error} /> : null}
         {!loading && !error && articles.length === 0 ? (
