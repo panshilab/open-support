@@ -37,6 +37,8 @@ ENV PATH=$PNPM_HOME:$PATH
 
 WORKDIR /app
 
+RUN apk add --no-cache bash
+
 RUN corepack enable && corepack prepare pnpm@11.11.0 --activate
 
 COPY --from=deps --chown=node:node /app/node_modules node_modules
