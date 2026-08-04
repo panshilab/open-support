@@ -7,6 +7,9 @@
   "scripts": {
     "build": "nx run-many -t build",
     "typecheck": "nx run-many -t typecheck",
+    "api:build": "nx build api",
+    "api:dev": "nx serve api",
+    "api:typecheck": "nx typecheck api",
     "schemas:build": "nx build schemas",
     "schemas:typecheck": "nx typecheck schemas"
   },

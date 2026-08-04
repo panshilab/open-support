@@ -1,0 +1,18 @@
+import 'reflect-metadata';
+import { NestFactory } from '@nestjs/core';
+import { ZodValidationPipe } from 'nestjs-zod';
+import { AppModule } from './app.module';
+import { EnvService } from './config/env.service';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const env = app.get(EnvService);
+
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ZodValidationPipe());
+  app.enableShutdownHooks();
+
+  await app.listen(env.port, env.host);
+}
+
+void bootstrap();
