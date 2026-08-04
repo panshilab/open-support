@@ -85,13 +85,15 @@ export class KnowledgeBaseService {
   }
 
   async listArticles(query: ListKnowledgeBaseArticlesQuery, includeDrafts = false) {
+    const page = Number(query.page);
+    const limit = Number(query.limit);
     const builder = this.articles
       .createQueryBuilder('article')
       .orderBy('article.featured', 'DESC')
       .addOrderBy('article.order', 'ASC')
       .addOrderBy('article.updatedAt', 'DESC')
-      .skip((query.page - 1) * query.limit)
-      .take(query.limit);
+      .skip((page - 1) * limit)
+      .take(limit);
 
     if (!includeDrafts) {
       builder.where('article.published = true');
@@ -109,10 +111,10 @@ export class KnowledgeBaseService {
 
     return {
       items,
-      page: query.page,
-      limit: query.limit,
+      page,
+      limit,
       total,
-      nextPage: query.page * query.limit < total ? query.page + 1 : null,
+      nextPage: page * limit < total ? page + 1 : null,
     };
   }
 
