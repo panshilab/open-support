@@ -77,6 +77,25 @@ After the first password login, the app asks the admin to change this temporary 
 - Password login is available for seeded or invited staff users.
 - Users can have `admin`, `support_agent`, or `user` roles.
 
+### Session Model
+
+The web app uses signed HTTP-only cookie sessions, not standard JWT bearer tokens.
+
+After a successful OTP, password, Google, or invitation login, the API creates a stateless session token with:
+
+- `id`
+- `email`
+- `name`
+- `role`
+- `mustChangePassword`
+- `exp`
+
+The token is HMAC SHA-256 signed with `SESSION_SECRET` and stored in the cookie named by `SESSION_COOKIE_NAME` (`open_support_session` locally). The browser sends the cookie automatically, and the backend guards verify the signature and expiry on each protected request.
+
+This is a good fit for the browser-based portal because the session is stored in an HTTP-only cookie and is not readable by frontend JavaScript. It avoids storing tokens in local storage.
+
+JWT bearer tokens may be useful later for mobile apps, third-party API clients, or service-to-service integrations. If the app needs stronger session revocation, add a `sessionVersion`, shorter TTLs, or DB-backed session checks for sensitive admin actions.
+
 ## Google Login Setup
 
 Create a Google OAuth web client ID:
