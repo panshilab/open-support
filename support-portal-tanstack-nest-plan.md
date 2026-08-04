@@ -1253,7 +1253,40 @@ Deliverable:
 
 - Ticket and admin notifications update without page reload
 
-### Phase 6: Live Chat
+### Phase 6: Media Library
+
+- Implement storage abstraction
+- Add S3-compatible provider
+- Add Cloudinary provider if needed
+- Implement media upload/list/delete APIs
+- Add image picker modal
+- Add editor image insertion
+- Add image resize and caption support
+- Validate mime type and file size
+
+Deliverable:
+
+- Admin can upload and insert images into docs/tickets
+
+### Phase 7: Dashboard, Staff Operations, and Polish
+
+- Implement dashboard stats
+- Add recent ticket/chat panels
+- Add staff reply stats
+- Add staff online heartbeat
+- Add staff management UI
+- Add admin-only settings sections
+- Add audit logs for deletes/config changes
+- Add PWA manifest
+- Add service worker/offline page
+- Add navigation progress
+- Improve loading/error/empty states
+
+Deliverable:
+
+- Admin/staff panel feels complete and operational
+
+### Phase 8: Live Chat
 
 - Implement chat start endpoint
 - Store visitor token in `CacheService`
@@ -1271,7 +1304,7 @@ Deliverable:
 
 - Visitors can chat from the widget; staff can answer from admin panel
 
-### Phase 7: Embeddable Widget
+### Phase 9: Embeddable Widget
 
 - Build standalone `chat-widget.js`
 - Support `data-portal-url`
@@ -1288,7 +1321,7 @@ Deliverable:
 
 - External sites can embed the chat widget with a single script tag
 
-### Phase 8: AI Bot
+### Phase 10: AI Bot
 
 - Implement AI config admin API
 - Encrypt provider API key at rest
@@ -1305,39 +1338,6 @@ Deliverable:
 Deliverable:
 
 - AI bot can answer chat questions from documentation and hand off to humans
-
-### Phase 9: Media Library
-
-- Implement storage abstraction
-- Add S3-compatible provider
-- Add Cloudinary provider if needed
-- Implement media upload/list/delete APIs
-- Add image picker modal
-- Add editor image insertion
-- Add image resize and caption support
-- Validate mime type and file size
-
-Deliverable:
-
-- Admin can upload and insert images into docs/tickets
-
-### Phase 10: Dashboard, Staff Operations, and Polish
-
-- Implement dashboard stats
-- Add recent ticket/chat panels
-- Add staff reply stats
-- Add staff online heartbeat
-- Add staff management UI
-- Add admin-only settings sections
-- Add audit logs for deletes/config changes
-- Add PWA manifest
-- Add service worker/offline page
-- Add navigation progress
-- Improve loading/error/empty states
-
-Deliverable:
-
-- Admin/staff panel feels complete and operational
 
 ### Phase 11: Testing and Hardening
 
