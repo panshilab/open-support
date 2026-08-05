@@ -41,6 +41,7 @@ RUN apk add --no-cache bash
 
 RUN corepack enable && corepack prepare pnpm@11.11.0 --activate
 
+COPY --from=deps --chown=node:node /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/nx.json ./
 COPY --from=deps --chown=node:node /app/node_modules node_modules
 COPY --from=deps --chown=node:node /app/apps/web/node_modules apps/web/node_modules
 COPY --from=deps --chown=node:node /app/packages/schemas/node_modules packages/schemas/node_modules

@@ -20,6 +20,7 @@
     "@open-support/schemas": "workspace:*",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.1.0",
+    "express": "^5.0.0",
     "google-auth-library": "^11.0.0",
     "ioredis": "^5.0.0",
     "multer": "^2.2.0",

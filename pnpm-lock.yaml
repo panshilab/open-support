@@ -47,6 +47,9 @@ importers:
       '@react-email/render':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      express:
+        specifier: ^5.0.0
+        version: 5.2.1
       google-auth-library:
         specifier: ^11.0.0
         version: 11.0.0
