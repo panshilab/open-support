@@ -124,6 +124,10 @@ export class EnvService {
     };
   }
 
+  get sentryDsn() {
+    return this.config.get('SENTRY_DSN', { infer: true });
+  }
+
   get media() {
     return {
       provider: this.config.get('MEDIA_PROVIDER', { infer: true }),

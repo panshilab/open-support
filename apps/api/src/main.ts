@@ -6,11 +6,13 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { EnvService } from './config/env.service';
 import { HttpExceptionFilter } from './observability/http-exception.filter';
+import { ProductionLogger } from './observability/production.logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useWebSocketAdapter(new WsAdapter(app));
   const env = app.get(EnvService);
+  app.useLogger(app.get(ProductionLogger));
 
   app.setGlobalPrefix('api');
   app.enableCors({
