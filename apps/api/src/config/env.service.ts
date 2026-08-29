@@ -128,6 +128,10 @@ export class EnvService {
     return this.config.get('SENTRY_DSN', { infer: true });
   }
 
+  get slackErrorWebhookUrl() {
+    return this.config.get('SLACK_ERROR_WEBHOOK_URL', { infer: true });
+  }
+
   get media() {
     return {
       provider: this.config.get('MEDIA_PROVIDER', { infer: true }),

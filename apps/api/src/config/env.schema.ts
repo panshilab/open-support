@@ -56,6 +56,7 @@ export const EnvSchema = z
     OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
     OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
     SENTRY_DSN: optionalUrlSchema,
+    SLACK_ERROR_WEBHOOK_URL: optionalUrlSchema,
 
     MEDIA_PROVIDER: z.enum(['local', 's3', 'cloudinary']),
     MEDIA_LOCAL_DIR: requiredStringSchema,
