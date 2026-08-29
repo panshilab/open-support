@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { AppCacheModule } from '../cache/cache.module';
+import { AppConfigModule } from '../config/config.module';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { RateLimitMiddleware } from './rate-limit.middleware';
 import { RequestLoggingMiddleware } from './request-logging.middleware';
@@ -8,7 +9,7 @@ import { ErrorMonitoringService } from './error-monitoring.service';
 
 @Global()
 @Module({
-  imports: [AppCacheModule],
+  imports: [AppConfigModule, AppCacheModule],
   providers: [
     HttpExceptionFilter,
     RateLimitMiddleware,
