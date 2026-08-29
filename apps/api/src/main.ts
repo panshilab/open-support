@@ -1,12 +1,14 @@
 import 'reflect-metadata';
 import express from 'express';
 import { NestFactory } from '@nestjs/core';
+import { WsAdapter } from '@nestjs/platform-ws';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { EnvService } from './config/env.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useWebSocketAdapter(new WsAdapter(app));
   const env = app.get(EnvService);
 
   app.setGlobalPrefix('api');

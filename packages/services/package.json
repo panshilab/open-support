@@ -21,9 +21,14 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "react": "^19.2.8",
+    "reconnecting-websocket": "^4.4.0"
+  },
   "devDependencies": {
     "@open-support/schemas": "workspace:*",
     "@tanstack/react-query": "^5.101.4",
+    "@types/react": "^19.2.18",
     "typescript": "^5.0.0"
   },
   "peerDependencies": {

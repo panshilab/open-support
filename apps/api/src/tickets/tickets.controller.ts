@@ -58,7 +58,11 @@ export class TicketsController {
   @Patch(':ticketId/status')
   @UseGuards(RolesGuard)
   @Roles('admin', 'support_agent')
-  updateStatus(@Param() params: TicketIdParamDto, @Body() body: UpdateTicketStatusDto) {
-    return this.tickets.updateStatus(params.ticketId, body as UpdateTicketStatusInput);
+  updateStatus(
+    @CurrentUser() user: SessionUser,
+    @Param() params: TicketIdParamDto,
+    @Body() body: UpdateTicketStatusDto,
+  ) {
+    return this.tickets.updateStatus(params.ticketId, user, body as UpdateTicketStatusInput);
   }
 }

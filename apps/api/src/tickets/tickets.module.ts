@@ -6,9 +6,11 @@ import { TicketSeenStateEntity } from './entities/ticket-seen-state.entity';
 import { TicketEntity } from './entities/ticket.entity';
 import { TicketsController } from './tickets.controller';
 import { TicketsService } from './tickets.service';
+import { RealtimeModule } from '../realtime/realtime.module';
 
 @Module({
   imports: [
+    RealtimeModule,
     TypeOrmModule.forFeature([
       TicketEntity,
       TicketCommentEntity,

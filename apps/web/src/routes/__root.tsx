@@ -30,8 +30,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { getCurrentSession } from '@open-support/services';
-import { AppProviders } from '../providers/app-providers';
+import { getCurrentSession, useRealtime } from '@open-support/services';
+import { AppProviders, useSnackbar } from '../providers/app-providers';
 import { green, theme } from '../theme';
 import '../styles.css';
 
@@ -267,6 +267,8 @@ function NavLink({
 function Shell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { session } = Route.useRouteContext();
+  const { notifySuccess } = useSnackbar();
+  useRealtime(session?.user, notifySuccess);
   const authenticated = Boolean(session);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const navigating = useRouterState({ select: (state) => state.status === 'pending' });

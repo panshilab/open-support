@@ -6,4 +6,5 @@ export * from './config';
 export * from './knowledge-base';
 export * from './media';
 export * from './query-client';
+export * from './realtime';
 export * from './types';

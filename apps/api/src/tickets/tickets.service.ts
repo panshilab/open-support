@@ -12,6 +12,7 @@ import type { SessionUser } from '../auth/session.service';
 import { TicketCommentEntity } from './entities/ticket-comment.entity';
 import { TicketSeenStateEntity } from './entities/ticket-seen-state.entity';
 import { TicketEntity } from './entities/ticket.entity';
+import { RealtimePublisher } from '../realtime/realtime.publisher';
 
 @Injectable()
 export class TicketsService {
@@ -24,6 +25,7 @@ export class TicketsService {
     private readonly seenStates: Repository<TicketSeenStateEntity>,
     @InjectRepository(CategoryEntity)
     private readonly categories: Repository<CategoryEntity>,
+    private readonly realtime: RealtimePublisher,
   ) {}
 
   async create(user: SessionUser, input: CreateTicketInput) {
@@ -56,6 +58,16 @@ export class TicketsService {
         staffSeenAt: null,
       }),
     );
+
+    this.realtime.publish({
+      type: 'ticket.created',
+      ticketId: ticket.id,
+      ticketOwnerId: user.id,
+      actorId: user.id,
+      actorRole: user.role,
+      status: ticket.status,
+      occurredAt: new Date().toISOString(),
+    });
 
     return this.getForUser(ticket.id, user);
   }
@@ -103,13 +115,32 @@ export class TicketsService {
       status: isStaff ? 'replied' : 'customer_reply',
     });
     await this.markSeen(ticket.id, user, { side: isStaff ? 'staff' : 'customer' });
+    this.realtime.publish({
+      type: 'ticket.comment_added',
+      ticketId: ticket.id,
+      ticketOwnerId: ticket.userId,
+      actorId: user.id,
+      actorRole: user.role,
+      status: isStaff ? 'replied' : 'customer_reply',
+      occurredAt: new Date().toISOString(),
+    });
     return this.getForUser(ticket.id, user);
   }
 
-  async updateStatus(ticketId: string, input: UpdateTicketStatusInput) {
+  async updateStatus(ticketId: string, user: SessionUser, input: UpdateTicketStatusInput) {
     const ticket = await this.get(ticketId);
     ticket.status = input.status;
-    return this.tickets.save(ticket);
+    const saved = await this.tickets.save(ticket);
+    this.realtime.publish({
+      type: 'ticket.status_updated',
+      ticketId: saved.id,
+      ticketOwnerId: saved.userId,
+      actorId: user.id,
+      actorRole: user.role,
+      status: saved.status,
+      occurredAt: new Date().toISOString(),
+    });
+    return saved;
   }
 
   async markSeen(ticketId: string, user: SessionUser, input: MarkTicketSeenInput) {
@@ -124,7 +155,18 @@ export class TicketsService {
       seenState.customerSeenAt = new Date();
     }
 
-    return this.seenStates.save(seenState);
+    const saved = await this.seenStates.save(seenState);
+    const ticket = await this.get(ticketId);
+    this.realtime.publish({
+      type: 'ticket.seen_updated',
+      ticketId,
+      ticketOwnerId: ticket.userId,
+      actorId: user.id,
+      actorRole: user.role,
+      side: input.side,
+      occurredAt: new Date().toISOString(),
+    });
+    return saved;
   }
 
   private async get(ticketId: string) {
