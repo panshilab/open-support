@@ -9,5 +9,6 @@ import { AssistantService } from './assistant.service';
   imports: [AppConfigModule, KnowledgeBaseModule, AdminOpsModule],
   controllers: [AssistantController],
   providers: [AssistantService],
+  exports: [AssistantService],
 })
 export class AssistantModule {}
