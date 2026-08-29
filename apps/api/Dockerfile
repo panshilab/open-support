@@ -27,7 +27,7 @@ FROM node:22-alpine AS runner
 
 ENV NODE_ENV=production
 ENV API_HOST=0.0.0.0
-ENV API_PORT=3001
+ENV API_PORT=7001
 ENV MEDIA_LOCAL_DIR=/app/uploads/media
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
@@ -53,6 +53,6 @@ USER node
 
 WORKDIR /app/apps/api
 
-EXPOSE 3001
+EXPOSE 7001
 
 CMD ["node", "dist/apps/api/src/main.js"]

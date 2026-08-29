@@ -506,7 +506,7 @@ Authentication and email:
 
 ```env
 # App
-APP_URL=http://localhost:3000
+APP_URL=http://localhost:7000
 APP_NAME=Support Portal
 SESSION_SECRET=replace-with-strong-secret
 
@@ -525,7 +525,7 @@ SMTP_FROM_NAME=Support Portal
 # Google OAuth, optional
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
+GOOGLE_CALLBACK_URL=http://localhost:7000/api/auth/google/callback
 
 # OTP
 OTP_EXPIRES_IN_SECONDS=600

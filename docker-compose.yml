@@ -22,9 +22,10 @@ services:
     environment:
       NODE_ENV: production
       APP_NAME: Open Support
-      APP_URL: http://localhost:3000
+      APP_URL: http://localhost:7000
       API_HOST: 0.0.0.0
-      API_PORT: 3001
+      API_PORT: 7001
+      CORS_ORIGINS: http://localhost:7000
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       DATABASE_NAME: open_support
@@ -41,14 +42,14 @@ services:
       OTP_LENGTH: 6
       MEDIA_PROVIDER: local
       MEDIA_LOCAL_DIR: /app/uploads/media
-      MEDIA_PUBLIC_URL: http://localhost:3000/uploads/media
+      MEDIA_PUBLIC_URL: http://localhost:7000/uploads/media
       MEDIA_MAX_FILE_SIZE_BYTES: 5242880
       MEDIA_ALLOWED_MIME_TYPES: image/jpeg,image/png,image/webp,image/gif,application/pdf
     depends_on:
       - postgres
       - redis
     ports:
-      - '3001:3001'
+      - '7001:7001'
     volumes:
       - api-uploads:/app/uploads/media
 
@@ -59,12 +60,12 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3000
-      API_ORIGIN: http://api:3001
+      PORT: 7000
+      API_ORIGIN: http://api:7001
     depends_on:
       - api
     ports:
-      - '3000:3000'
+      - '7000:7000'
 
 volumes:
   postgres-data:

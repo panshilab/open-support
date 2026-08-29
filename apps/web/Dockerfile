@@ -30,8 +30,8 @@ FROM node:22-alpine AS runner
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=3000
-ENV API_ORIGIN=http://api:3001
+ENV PORT=7000
+ENV API_ORIGIN=http://api:7001
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
@@ -58,6 +58,6 @@ USER node
 
 WORKDIR /app/apps/web
 
-EXPOSE 3000
+EXPOSE 7000
 
 CMD ["pnpm", "run", "start"]

@@ -2,11 +2,11 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
-const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:3001';
+const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:7001';
 
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 7000,
     proxy: {
       '/api': {
         target: apiOrigin,
@@ -20,7 +20,7 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: 3000,
+    port: 7000,
     strictPort: true,
     proxy: {
       '/api': {

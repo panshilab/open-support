@@ -23,14 +23,14 @@ const assets = [
     filename: 'invoice-upload.png',
     mimeType: 'image/png',
     size: '84 KB',
-    url: 'http://localhost:3001/uploads/media/invoice-upload.png',
+    url: 'http://localhost:7001/uploads/media/invoice-upload.png',
   },
   {
     id: 'asset-2',
     filename: 'billing-guide.pdf',
     mimeType: 'application/pdf',
     size: '220 KB',
-    url: 'http://localhost:3001/uploads/media/billing-guide.pdf',
+    url: 'http://localhost:7001/uploads/media/billing-guide.pdf',
   },
 ];
 

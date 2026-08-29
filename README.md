@@ -58,8 +58,8 @@ pnpm web:dev
 
 Default URLs:
 
-- Web: `http://localhost:3000`
-- API: `http://localhost:3001/api`
+- Web: `http://localhost:7000`
+- API: `http://localhost:7001/api`
 
 ## Seeded Admin
 
@@ -109,7 +109,7 @@ Create a Google OAuth web client ID:
 7. Add authorized JavaScript origins:
 
 ```txt
-http://localhost:3000
+http://localhost:7000
 ```
 
 For production, also add the production frontend origin:
@@ -158,8 +158,8 @@ docker compose up --build
 
 Default Docker URLs:
 
-- Web: `http://localhost:3000`
-- API: `http://localhost:3001/api`
+- Web: `http://localhost:7000`
+- API: `http://localhost:7001/api`
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
@@ -175,12 +175,12 @@ docker build -f apps/web/Dockerfile -t open-support-web .
 Run the API image manually:
 
 ```sh
-docker run --rm -p 3001:3001 \
+docker run --rm -p 7001:7001 \
   -e NODE_ENV=production \
   -e APP_NAME="Open Support" \
-  -e APP_URL=http://localhost:3000 \
+  -e APP_URL=http://localhost:7000 \
   -e API_HOST=0.0.0.0 \
-  -e API_PORT=3001 \
+  -e API_PORT=7001 \
   -e DATABASE_HOST=host.docker.internal \
   -e DATABASE_PORT=5432 \
   -e DATABASE_NAME=open_support \
@@ -194,7 +194,7 @@ docker run --rm -p 3001:3001 \
   -e OTP_LENGTH=6 \
   -e MEDIA_PROVIDER=local \
   -e MEDIA_LOCAL_DIR=/app/uploads/media \
-  -e MEDIA_PUBLIC_URL=http://localhost:3001/uploads/media \
+  -e MEDIA_PUBLIC_URL=http://localhost:7001/uploads/media \
   -e MEDIA_MAX_FILE_SIZE_BYTES=5242880 \
   -e MEDIA_ALLOWED_MIME_TYPES=image/jpeg,image/png,image/webp,image/gif,application/pdf \
   open-support-api
@@ -203,12 +203,12 @@ docker run --rm -p 3001:3001 \
 Run the web image manually:
 
 ```sh
-docker run --rm -p 3000:3000 \
-  -e API_ORIGIN=http://host.docker.internal:3001 \
+docker run --rm -p 7000:7000 \
+  -e API_ORIGIN=http://host.docker.internal:7001 \
   open-support-web
 ```
 
-The web container proxies `/api` and `/uploads` to `API_ORIGIN`. In Docker Compose and Dokploy, set `API_ORIGIN` to the internal API service URL, for example `http://api:3001`.
+The web container proxies `/api` and `/uploads` to `API_ORIGIN`. In Docker Compose and Dokploy, set `API_ORIGIN` to the internal API service URL, for example `http://api:7001`.
 
 ## Dokploy Deployment
 
@@ -233,13 +233,13 @@ The workflow pushes these tags for both images:
 In Dokploy, create one application for the API and one for the web app using the Docker image source:
 
 - API image: `<dockerhub-username>/open-support-api:latest`
-- API exposed port: `3001`
+- API exposed port: `7001`
 - API health check path: `/api/health`
 - Web image: `<dockerhub-username>/open-support-web:latest`
-- Web exposed port: `3000`
-- Web `API_ORIGIN`: the internal Dokploy API service URL, for example `http://open-support-api:3001`
+- Web exposed port: `7000`
+- Web `API_ORIGIN`: the internal Dokploy API service URL, for example `http://open-support-api:7001`
 
-Set all required API environment variables in the Dokploy API application. At minimum, production needs `APP_NAME`, `APP_URL`, `API_HOST`, `API_PORT`, database settings, session settings, OTP settings, and media settings. Use `API_HOST=0.0.0.0`, `API_PORT=3001`, `MEDIA_LOCAL_DIR=/app/uploads/media`, and attach persistent storage to `/app/uploads/media` if using local media uploads.
+Set all required API environment variables in the Dokploy API application. At minimum, production needs `APP_NAME`, `APP_URL`, `API_HOST`, `API_PORT`, database settings, session settings, OTP settings, and media settings. Use `API_HOST=0.0.0.0`, `API_PORT=7001`, `MEDIA_LOCAL_DIR=/app/uploads/media`, and attach persistent storage to `/app/uploads/media` if using local media uploads.
 
 To get each application's deploy webhook URL, open the Dokploy application, go to its `Deployments` (or `General`) tab, and copy the deploy webhook URL. Use the API application's URL for `DOKPLOY_API_WEBHOOK_URL` and the web application's URL for `DOKPLOY_WEB_WEBHOOK_URL`.
 
