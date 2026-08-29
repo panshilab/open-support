@@ -6,6 +6,7 @@ import type {
 } from '@open-support/schemas/assistant';
 import { EnvService } from '../config/env.service';
 import { KnowledgeBaseService } from '../knowledge-base/knowledge-base.service';
+import { AiConfigService } from '../admin-ops/ai-config.service';
 
 interface OpenAiResponse {
   output_text?: string;
@@ -27,6 +28,7 @@ export class AssistantService {
   constructor(
     private readonly env: EnvService,
     private readonly knowledgeBase: KnowledgeBaseService,
+    private readonly aiConfig: AiConfigService,
   ) {}
 
   async ask(input: AskAssistantInput): Promise<AssistantResponse> {
@@ -49,7 +51,16 @@ export class AssistantService {
       };
     }
 
-    if (!this.env.openAi.apiKey) {
+    const configured = await this.aiConfig.getConfig();
+    const apiKey = configured?.enabled ? configured.apiKey : this.env.openAi.apiKey;
+    const model =
+      configured?.enabled && configured.provider === 'openai'
+        ? (configured.model ?? this.env.openAi.assistantModel)
+        : this.env.openAi.assistantModel;
+    if (configured?.enabled && configured.provider !== 'openai') {
+      throw new ServiceUnavailableException('The selected AI provider is not available yet.');
+    }
+    if (!apiKey) {
       throw new ServiceUnavailableException(
         'Automated support is not configured. Please open a support ticket instead.',
       );
@@ -70,7 +81,7 @@ export class AssistantService {
           },
         ],
         max_output_tokens: 600,
-        model: this.env.openAi.assistantModel,
+        model,
         store: false,
         text: {
           format: {
@@ -92,7 +103,7 @@ export class AssistantService {
         },
       }),
       headers: {
-        Authorization: `Bearer ${this.env.openAi.apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

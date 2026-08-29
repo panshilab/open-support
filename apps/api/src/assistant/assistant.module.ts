@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppConfigModule } from '../config/config.module';
 import { KnowledgeBaseModule } from '../knowledge-base/knowledge-base.module';
+import { AdminOpsModule } from '../admin-ops/admin-ops.module';
 import { AssistantController } from './assistant.controller';
 import { AssistantService } from './assistant.service';
 
 @Module({
-  imports: [AppConfigModule, KnowledgeBaseModule],
+  imports: [AppConfigModule, KnowledgeBaseModule, AdminOpsModule],
   controllers: [AssistantController],
   providers: [AssistantService],
 })

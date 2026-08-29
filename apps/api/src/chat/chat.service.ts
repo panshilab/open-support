@@ -11,12 +11,15 @@ import type {
   StartChatInput,
   UpdateChatStatusInput,
 } from '@open-support/schemas/chat';
+import type { AskAssistantInput } from '@open-support/schemas/assistant';
 import { Repository } from 'typeorm';
 import { CacheService } from '../cache/cache.service';
 import type { SessionUser } from '../auth/session.service';
 import { ChatEntity } from './entities/chat.entity';
 import { ChatMessageEntity } from './entities/chat-message.entity';
 import { ChatMetaEntity } from './entities/chat-meta.entity';
+import { AssistantService } from '../assistant/assistant.service';
+import { AiConfigService } from '../admin-ops/ai-config.service';
 
 const TOKEN_TTL_SECONDS = 60 * 60 * 24 * 30;
 
@@ -27,6 +30,8 @@ export class ChatService {
     @InjectRepository(ChatMessageEntity) private readonly messages: Repository<ChatMessageEntity>,
     @InjectRepository(ChatMetaEntity) private readonly meta: Repository<ChatMetaEntity>,
     private readonly cache: CacheService,
+    private readonly assistant: AssistantService,
+    private readonly aiConfig: AiConfigService,
   ) {}
 
   async start(input: StartChatInput, ipAddress: string | null) {
@@ -82,6 +87,7 @@ export class ChatService {
       updatedAt: new Date(),
       status: chat.status === 'waiting' ? 'waiting' : 'active',
     });
+    await this.maybeAddBotReply(chatId, content);
     return message;
   }
 
@@ -165,5 +171,30 @@ export class ChatService {
 
   private tokenKey(token: string) {
     return `chat:visitor-token:${token}`;
+  }
+
+  private async maybeAddBotReply(chatId: string, message: string) {
+    const config = await this.aiConfig.publicConfig();
+    if (!config?.enabled) return;
+    try {
+      const answer = await this.assistant.ask({ message, history: [] } as AskAssistantInput);
+      await this.messages.save(
+        this.messages.create({
+          chatId,
+          sender: 'bot',
+          senderEmail: null,
+          senderName: 'Open Support guide',
+          content: answer.answer,
+          staffOnly: false,
+        }),
+      );
+      await this.chats.update(chatId, {
+        botActive: !answer.shouldEscalate,
+        status: answer.shouldEscalate ? 'waiting' : 'active',
+        updatedAt: new Date(),
+      });
+    } catch {
+      // A bot outage must never prevent a visitor from opening a human chat.
+    }
   }
 }

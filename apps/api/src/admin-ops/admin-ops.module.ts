@@ -13,6 +13,7 @@ import { AdminSettingEntity } from './entities/admin-setting.entity';
 import { AuditLogEntity } from './entities/audit-log.entity';
 import { StaffInvitationEntity } from './entities/staff-invitation.entity';
 import { StaffPresenceEntity } from './entities/staff-presence.entity';
+import { AiConfigService } from './ai-config.service';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { StaffPresenceEntity } from './entities/staff-presence.entity';
     ]),
   ],
   controllers: [AdminOpsController, InvitationsController],
-  providers: [AdminOpsService],
-  exports: [AdminOpsService],
+  providers: [AdminOpsService, AiConfigService],
+  exports: [AdminOpsService, AiConfigService],
 })
 export class AdminOpsModule {}

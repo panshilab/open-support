@@ -9,18 +9,34 @@ import {
   type UpsertAdminSettingInput,
   UpsertAdminSettingDto,
 } from '@open-support/schemas/dashboard';
+import { UpsertAiConfigDto, type UpsertAiConfigInput } from '@open-support/schemas/ai';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { SessionGuard } from '../auth/session.guard';
 import type { SessionUser } from '../auth/session.service';
 import { AdminOpsService } from './admin-ops.service';
+import { AiConfigService } from './ai-config.service';
 
 @Controller('admin')
 @UseGuards(SessionGuard, RolesGuard)
 @Roles('admin', 'support_agent')
 export class AdminOpsController {
-  constructor(private readonly adminOps: AdminOpsService) {}
+  constructor(
+    private readonly adminOps: AdminOpsService,
+    private readonly aiConfig: AiConfigService,
+  ) {}
+
+  @Get('ai')
+  ai() {
+    return this.aiConfig.publicConfig();
+  }
+
+  @Patch('ai')
+  @Roles('admin')
+  upsertAi(@CurrentUser() user: SessionUser, @Body() body: UpsertAiConfigDto) {
+    return this.aiConfig.upsert(user.id, body as UpsertAiConfigInput);
+  }
 
   @Get('dashboard/stats')
   stats() {
