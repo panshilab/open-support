@@ -118,6 +118,7 @@ export class EnvService {
   get openAi() {
     return {
       apiKey: this.config.get('OPENAI_API_KEY', { infer: true }),
+      assistantModel: this.config.get('OPENAI_ASSISTANT_MODEL', { infer: true }),
       embeddingModel: this.config.get('OPENAI_EMBEDDING_MODEL', { infer: true }),
       embeddingDimensions: this.config.get('OPENAI_EMBEDDING_DIMENSIONS', { infer: true }),
     };

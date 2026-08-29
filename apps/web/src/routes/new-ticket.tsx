@@ -1,17 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { RichTextEditor } from '../components/rich-text-editor';
+import { PageHeader, PrimaryAction } from '../components/page-header';
+import { Surface } from '../components/surface';
 
 export const Route = createFileRoute('/new-ticket')({
   component: NewTicketPage,
@@ -29,9 +21,16 @@ function NewTicketPage() {
   });
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Surface sx={{ maxWidth: 780, mx: 'auto', my: { xs: 3, md: 6 } }}>
       <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-        <Typography variant="h1">New ticket</Typography>
+        <PageHeader
+          description="Tell us what happened and our team will pick it up from there."
+          title="Start a conversation"
+        />
+        <Alert severity="info">
+          Include the product, what you expected, and what happened instead. We’ll use your message
+          to route the right support guidance and team.
+        </Alert>
         <FormControl>
           <InputLabel id="product-label">Product</InputLabel>
           <Select
@@ -73,10 +72,10 @@ function NewTicketPage() {
           placeholder="Describe the issue..."
           value={form.values.descriptionHtml}
         />
-        <Button type="submit" variant="contained">
+        <PrimaryAction type="submit" sx={{ alignSelf: 'flex-start', mt: 1 }}>
           Create ticket
-        </Button>
+        </PrimaryAction>
       </Stack>
-    </Paper>
+    </Surface>
   );
 }

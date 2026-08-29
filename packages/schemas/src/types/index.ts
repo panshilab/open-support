@@ -35,6 +35,14 @@ export type {
   StartChatInput,
 } from '../chat/index.js';
 export type {
+  AskAssistantForm,
+  AskAssistantInput,
+  AssistantMessage,
+  AssistantResponse,
+  AssistantRole,
+  AssistantSource,
+} from '../assistant/index.js';
+export type {
   AdminSetting,
   AdminSettingForm,
   AuditAction,

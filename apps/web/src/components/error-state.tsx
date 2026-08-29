@@ -1,13 +1,31 @@
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlineOutlined';
-import { Paper, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
-export function ErrorState({ message }: Readonly<{ message: string }>) {
+/**
+ * Error state: a hairline box tinted with the danger wash, plain language, an
+ * optional recovery action. No icon-and-card.
+ */
+export function ErrorState({
+  action,
+  message,
+}: Readonly<{ action?: ReactNode; message: string }>) {
   return (
-    <Paper sx={{ borderColor: 'error.light', p: 2 }} variant="outlined">
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-        <ErrorOutlineIcon color="error" />
-        <Typography color="error.main">{message}</Typography>
+    <Box
+      sx={{
+        bgcolor: 'var(--os-palette-feedback-dangerBg)',
+        border: '1px solid',
+        borderColor: 'rule.main',
+        borderLeftColor: 'var(--os-palette-feedback-dangerFg)',
+        borderLeftWidth: 2,
+        p: 2,
+      }}
+    >
+      <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+        <Typography sx={{ color: 'var(--os-palette-feedback-dangerFg)' }} variant="body2">
+          {message}
+        </Typography>
+        {action ? <Box>{action}</Box> : null}
       </Stack>
-    </Paper>
+    </Box>
   );
 }

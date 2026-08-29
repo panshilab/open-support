@@ -4,14 +4,14 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { RichTextEditor } from '../components/rich-text-editor';
+import { PageHeader } from '../components/page-header';
+import { Surface } from '../components/surface';
 
 export const Route = createFileRoute('/admin/knowledgebase/new')({
   component: NewKnowledgebaseEntryPage,
@@ -31,9 +31,10 @@ function NewKnowledgebaseEntryPage() {
   });
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-        <Typography variant="h1">New article</Typography>
+    <Stack spacing={4}>
+      <PageHeader title="New article" />
+      <Surface component="form" onSubmit={form.handleSubmit}>
+        <Stack spacing={2}>
         <FormControl>
           <InputLabel id="article-type-label">Type</InputLabel>
           <Select
@@ -86,7 +87,8 @@ function NewKnowledgebaseEntryPage() {
         <Button type="submit" variant="contained">
           Save article
         </Button>
-      </Stack>
-    </Paper>
+        </Stack>
+      </Surface>
+    </Stack>
   );
 }

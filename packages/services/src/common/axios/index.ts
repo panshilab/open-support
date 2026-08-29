@@ -41,6 +41,7 @@ export const PUBLIC_PATHS = [
   '/auth/google/config',
   '/invitations/accept',
   '/knowledgebase',
+  '/assistant',
 ];
 
 function isPublicPath(path: string) {

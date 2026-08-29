@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import CheckIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Stack, TextField } from '@mui/material';
 import { useAcceptInvitationMutation } from '@open-support/services';
+import { AuthLayout } from '../components/auth-layout';
 import { useFormik, type FormikHelpers } from 'formik';
 import type { AcceptInvitationForm } from '@open-support/schemas/auth';
 
@@ -41,9 +41,11 @@ function AcceptInvitationPage() {
   });
 
   return (
-    <Paper sx={{ maxWidth: 520, mx: 'auto', p: 3 }}>
+    <AuthLayout
+      title="Accept your invitation"
+      description="Set your name and a password to join the support workspace."
+    >
       <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-        <Typography variant="h1">Accept invitation</Typography>
         {form.status ? <Alert severity="error">{form.status}</Alert> : null}
         <TextField
           label="Name"
@@ -70,10 +72,10 @@ function AcceptInvitationPage() {
           type="password"
           value={form.values.confirmPassword}
         />
-        <Button startIcon={<CheckIcon />} type="submit" variant="contained">
+        <Button type="submit" variant="contained">
           Accept invitation
         </Button>
       </Stack>
-    </Paper>
+    </AuthLayout>
   );
 }

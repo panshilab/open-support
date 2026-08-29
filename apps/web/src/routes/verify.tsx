@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Stack, TextField } from '@mui/material';
 import { useVerifyOtpMutation } from '@open-support/services';
+import { AuthLayout } from '../components/auth-layout';
 import { useFormik, type FormikHelpers } from 'formik';
 import type { VerifyOtpForm } from '@open-support/schemas/auth';
 
@@ -39,9 +39,11 @@ function VerifyPage() {
   });
 
   return (
-    <Paper sx={{ maxWidth: 480, mx: 'auto', p: 3 }}>
+    <AuthLayout
+      title="Enter your code"
+      description="We emailed a 6-digit code. It expires shortly."
+    >
       <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-        <Typography variant="h1">Verify OTP</Typography>
         {form.status ? <Alert severity="error">{form.status}</Alert> : null}
         <TextField
           label="Email"
@@ -59,10 +61,10 @@ function VerifyPage() {
           slotProps={{ htmlInput: { maxLength: 6 } }}
           value={form.values.otp}
         />
-        <Button startIcon={<CheckCircleIcon />} type="submit" variant="contained">
+        <Button type="submit" variant="contained">
           Verify and continue
         </Button>
       </Stack>
-    </Paper>
+    </AuthLayout>
   );
 }

@@ -52,6 +52,7 @@ export const EnvSchema = z
 
     GOOGLE_CLIENT_ID: optionalStringSchema,
     OPENAI_API_KEY: optionalStringSchema,
+    OPENAI_ASSISTANT_MODEL: z.string().min(1).default('gpt-5-mini'),
     OPENAI_EMBEDDING_MODEL: z.string().min(1).default('text-embedding-3-small'),
     OPENAI_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1536),
 

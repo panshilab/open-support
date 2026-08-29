@@ -15,6 +15,7 @@
       "@open-support/schemas/frontend": ["packages/schemas/src/frontend/index.ts"],
       "@open-support/schemas/types": ["packages/schemas/src/types/index.ts"],
       "@open-support/schemas/ai": ["packages/schemas/src/ai/index.ts"],
+      "@open-support/schemas/assistant": ["packages/schemas/src/assistant/index.ts"],
       "@open-support/schemas/auth": ["packages/schemas/src/auth/index.ts"],
       "@open-support/schemas/category": ["packages/schemas/src/category/index.ts"],
       "@open-support/schemas/chat": ["packages/schemas/src/chat/index.ts"],

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import SaveIcon from '@mui/icons-material/SaveOutlined';
-import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Stack, TextField } from '@mui/material';
 import { useChangePasswordMutation } from '@open-support/services';
+import { AuthLayout } from '../components/auth-layout';
 import { useFormik, type FormikHelpers } from 'formik';
 import type { ChangePasswordForm } from '@open-support/schemas/auth';
 
@@ -36,10 +36,11 @@ function ChangePasswordPage() {
   });
 
   return (
-    <Paper sx={{ maxWidth: 520, mx: 'auto', p: 3 }}>
+    <AuthLayout
+      title="Set a new password"
+      description="Choose a new password before continuing to the workspace."
+    >
       <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-        <Typography variant="h1">Change password</Typography>
-        <Alert severity="info">Set a new password before using the admin portal.</Alert>
         {form.status ? <Alert severity="error">{form.status}</Alert> : null}
         <TextField
           autoComplete="current-password"
@@ -68,10 +69,10 @@ function ChangePasswordPage() {
           type="password"
           value={form.values.confirmPassword}
         />
-        <Button startIcon={<SaveIcon />} type="submit" variant="contained">
+        <Button type="submit" variant="contained">
           Save password
         </Button>
       </Stack>
-    </Paper>
+    </AuthLayout>
   );
 }

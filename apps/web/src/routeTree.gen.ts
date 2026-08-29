@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as KnowledgebaseRouteImport } from './routes/knowledgebase'
 import { Route as LoginRouteImport } from './routes/login'
@@ -45,6 +46,11 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangePasswordRoute = ChangePasswordRouteImport.update({
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
+  '/assistant': typeof AssistantRoute
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
+  '/assistant': typeof AssistantRoute
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/admin': typeof AdminRouteWithChildren
+  '/assistant': typeof AssistantRoute
   '/change-password': typeof ChangePasswordRoute
   '/knowledgebase': typeof KnowledgebaseRouteWithChildren
   '/login': typeof LoginRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/admin'
+    | '/assistant'
     | '/change-password'
     | '/knowledgebase'
     | '/login'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/admin'
+    | '/assistant'
     | '/change-password'
     | '/knowledgebase'
     | '/login'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/admin'
+    | '/assistant'
     | '/change-password'
     | '/knowledgebase'
     | '/login'
@@ -295,6 +307,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AssistantRoute: typeof AssistantRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
   KnowledgebaseRoute: typeof KnowledgebaseRouteWithChildren
   LoginRoute: typeof LoginRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistant': {
+      id: '/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/change-password': {
@@ -527,6 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcceptInvitationRoute: AcceptInvitationRoute,
   AdminRoute: AdminRouteWithChildren,
+  AssistantRoute: AssistantRoute,
   ChangePasswordRoute: ChangePasswordRoute,
   KnowledgebaseRoute: KnowledgebaseRouteWithChildren,
   LoginRoute: LoginRoute,

@@ -1,14 +1,31 @@
-import InboxIcon from '@mui/icons-material/Inbox';
-import { Paper, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
-export function EmptyState({ title, message }: Readonly<{ title: string; message: string }>) {
+/**
+ * Empty state as a margin note, not a centered card with an icon: a hairline
+ * rule on the left, a plain serif line, the reason beneath it.
+ */
+export function EmptyState({
+  action,
+  title,
+  message,
+}: Readonly<{ action?: ReactNode; title: string; message: string }>) {
   return (
-    <Paper sx={{ p: 3, textAlign: 'center' }} variant="outlined">
-      <Stack spacing={1} sx={{ alignItems: 'center' }}>
-        <InboxIcon color="disabled" />
-        <Typography variant="h2">{title}</Typography>
-        <Typography color="text.secondary">{message}</Typography>
+    <Box
+      sx={{
+        borderLeft: '1px solid',
+        borderColor: 'rule.strong',
+        pl: 2.5,
+        py: 1,
+      }}
+    >
+      <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+        <Typography variant="h4">{title}</Typography>
+        <Typography color="text.secondary" sx={{ maxWidth: '48ch' }}>
+          {message}
+        </Typography>
+        {action ? <Box sx={{ pt: 0.5 }}>{action}</Box> : null}
       </Stack>
-    </Paper>
+    </Box>
   );
 }

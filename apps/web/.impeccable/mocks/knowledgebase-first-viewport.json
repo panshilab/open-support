@@ -1,0 +1,11 @@
+{
+  "surface": "apps/web/src/routes/knowledgebase.tsx",
+  "world": "The Field Manual",
+  "seedKey": "29d44b6a",
+  "approved": true,
+  "approvedOn": "2026-08-29",
+  "renderMode": "written-spec",
+  "renderModeReason": "no image generation available this session (no native tool, no OPENAI_API_KEY)",
+  "composition": "B+C: sticky left contents index (margin tabs, mono labels, green 'you are here') + right typographic serif search hero with mono filter tabs and results-in-place",
+  "prompt": "N/A - written spec, see knowledgebase-first-viewport.md"
+}

@@ -1,14 +1,10 @@
 import { useCallback } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import CircleIcon from '@mui/icons-material/Circle';
-import SendIcon from '@mui/icons-material/SendOutlined';
 import {
   Alert,
+  Box,
   Button,
-  Chip,
-  Grid,
   MenuItem,
-  Paper,
   Stack,
   TextField,
   Typography,
@@ -16,12 +12,15 @@ import {
 import { useCreateStaffInvitationMutation } from '@open-support/services';
 import { useFormik, type FormikHelpers } from 'formik';
 import type { InviteStaffInput } from '@open-support/schemas/dashboard';
+import { PageHeader } from '../components/page-header';
+import { Surface } from '../components/surface';
 
-const staff = [
+// Presence list — hardcoded sample data (not yet wired to services).
+const STAFF: [string, string, string, string, string][] = [
   ['Asif Saho', 'asifsaho@example.com', 'admin', 'online', '18'],
   ['Support Agent', 'agent@example.com', 'support_agent', 'away', '42'],
   ['Billing Lead', 'billing@example.com', 'support_agent', 'offline', '27'],
-] as const;
+];
 
 export const Route = createFileRoute('/admin/staff')({
   component: AdminStaffPage,
@@ -44,21 +43,27 @@ function AdminStaffPage() {
     [createStaffInvitationMutation],
   );
   const form = useFormik<InviteStaffInput>({
-    initialValues: {
-      email: '',
-      role: 'support_agent',
-    },
+    initialValues: { email: '', role: 'support_agent' },
     onSubmit: handleSubmit,
   });
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h1">Staff</Typography>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Paper sx={{ p: 3 }}>
+    <Stack spacing={5}>
+      <PageHeader title="Staff" />
+
+      <Box
+        sx={{
+          display: { md: 'grid' },
+          gap: { md: 5 },
+          gridTemplateColumns: { md: 'minmax(0, 340px) minmax(0, 1fr)' },
+        }}
+      >
+        <Box sx={{ mb: { xs: 4, md: 0 } }}>
+          <Typography sx={{ mb: 1.5 }} variant="h4">
+            Invite a teammate
+          </Typography>
+          <Surface>
             <Stack component="form" onSubmit={form.handleSubmit} spacing={2}>
-              <Typography variant="h2">Invite staff</Typography>
               {form.status ? (
                 <Alert severity={form.status === 'Invitation sent' ? 'success' : 'error'}>
                   {form.status}
@@ -82,44 +87,74 @@ function AdminStaffPage() {
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="support_agent">Support agent</MenuItem>
               </TextField>
-              <Button startIcon={<SendIcon />} type="submit" variant="contained">
+              <Button type="submit" variant="contained">
                 Send invitation
               </Button>
             </Stack>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Paper sx={{ p: 3 }}>
-            <Stack spacing={2}>
-              <Typography variant="h2">Presence and replies</Typography>
-              {staff.map(([name, email, role, status, replies]) => (
-                <Paper key={email} sx={{ p: 1.5 }} variant="outlined">
-                  <Stack
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={1}
-                    sx={{ justifyContent: 'space-between' }}
-                  >
-                    <div>
-                      <Typography>{name}</Typography>
-                      <Typography color="text.secondary" variant="body2">
-                        {email} · {role}
-                      </Typography>
-                    </div>
-                    <Stack direction="row" spacing={1}>
-                      <Chip
-                        icon={<CircleIcon sx={{ fontSize: 10 }} />}
-                        label={status}
-                        size="small"
-                      />
-                      <Chip label={`${replies} replies`} size="small" variant="outlined" />
-                    </Stack>
-                  </Stack>
-                </Paper>
-              ))}
-            </Stack>
-          </Paper>
-        </Grid>
-      </Grid>
+          </Surface>
+        </Box>
+
+        <Box>
+          <Typography sx={{ mb: 1.5 }} variant="h4">
+            Presence &amp; replies
+          </Typography>
+          <Stack sx={{ borderTop: '1px solid', borderColor: 'rule.main' }}>
+            {STAFF.map(([name, email, role, status, replies]) => (
+              <Stack
+                key={email}
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={1}
+                sx={{
+                  borderBottom: '1px solid',
+                  borderColor: 'rule.main',
+                  justifyContent: 'space-between',
+                  py: 1.75,
+                }}
+              >
+                <Box>
+                  <Typography variant="body2">{name}</Typography>
+                  <Typography color="text.secondary" variant="caption">
+                    {email} &middot; {role}
+                  </Typography>
+                </Box>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexShrink: 0 }}>
+                  <PresenceTag status={status} />
+                  <Typography sx={{ color: 'ink.faint' }} variant="caption">
+                    {replies} replies
+                  </Typography>
+                </Stack>
+              </Stack>
+            ))}
+          </Stack>
+        </Box>
+      </Box>
     </Stack>
+  );
+}
+
+function PresenceTag({ status }: Readonly<{ status: string }>) {
+  const color =
+    status === 'online'
+      ? 'var(--os-palette-feedback-successFg)'
+      : status === 'away'
+        ? 'var(--os-palette-feedback-warnFg)'
+        : 'var(--os-palette-ink-faint)';
+  return (
+    <Box
+      component="span"
+      sx={{
+        alignItems: 'center',
+        color: 'ink.muted',
+        display: 'inline-flex',
+        fontFamily: (t) => t.typography.caption.fontFamily,
+        fontSize: '0.6875rem',
+        gap: 0.75,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+      }}
+    >
+      <Box component="span" sx={{ bgcolor: color, borderRadius: '50%', height: 6, width: 6 }} />
+      {status}
+    </Box>
   );
 }

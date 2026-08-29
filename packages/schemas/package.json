@@ -36,6 +36,11 @@
       "require": "./dist/ai/index.js",
       "import": "./dist/ai/index.js"
     },
+    "./assistant": {
+      "types": "./dist/assistant/index.d.ts",
+      "require": "./dist/assistant/index.js",
+      "import": "./dist/assistant/index.js"
+    },
     "./auth": {
       "types": "./dist/auth/index.d.ts",
       "require": "./dist/auth/index.js",

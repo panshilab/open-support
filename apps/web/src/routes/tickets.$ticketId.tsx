@@ -8,7 +8,6 @@ import {
   Avatar,
   Box,
   Button,
-  Chip,
   Container,
   Divider,
   FormControl,
@@ -23,8 +22,8 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { RichTextEditor } from '../components/rich-text-editor';
-import { TICKET_STATUS_META } from '../components/ticket-status';
-import { primaryAlpha } from '../theme';
+import { TicketStatus } from '../components/ticket-status';
+import { Surface } from '../components/surface';
 
 export const Route = createFileRoute('/tickets/$ticketId')({
   component: TicketDetailPage,
@@ -62,8 +61,6 @@ function TicketDetailPage() {
     onSubmit: () => undefined,
   });
 
-  const statusMeta = TICKET_STATUS_META[statusForm.values.status];
-
   return (
     <Container maxWidth="lg" sx={{ pb: 4, pt: 3 }}>
       <MuiLink
@@ -93,11 +90,7 @@ function TicketDetailPage() {
             <Typography color="text.secondary" variant="body2">
               {ticketId}
             </Typography>
-            <Chip
-              label={statusMeta.label}
-              size="small"
-              sx={{ bgcolor: statusMeta.bg, color: statusMeta.fg, fontWeight: 650 }}
-            />
+            <TicketStatus status={statusForm.values.status} />
           </Stack>
           <Typography variant="h1">Cannot upload invoice attachment</Typography>
           <Typography color="text.secondary" sx={{ mt: 0.5 }}>
@@ -108,7 +101,7 @@ function TicketDetailPage() {
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 8 }}>
-          <Paper sx={{ overflow: 'hidden' }}>
+          <Surface sx={{ overflow: 'hidden' }}>
             <Stack spacing={2.5} sx={{ p: { xs: 2.5, md: 3 } }}>
               <Typography variant="h2">Conversation</Typography>
               <Stack spacing={2.5}>
@@ -143,8 +136,8 @@ function TicketDetailPage() {
                       </Stack>
                       <Paper
                         sx={{
-                          bgcolor: message.isStaff ? primaryAlpha[5] : 'rgba(0,0,0,0.03)',
-                          borderRadius: 2,
+                          borderLeft: '2px solid',
+                          borderLeftColor: message.isStaff ? 'primary.main' : 'rule.strong',
                           mt: 0.5,
                           p: 1.5,
                         }}
@@ -176,7 +169,7 @@ function TicketDetailPage() {
                 </Box>
               </Stack>
             </Stack>
-          </Paper>
+          </Surface>
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>

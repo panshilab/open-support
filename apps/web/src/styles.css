@@ -1,3 +1,9 @@
+/* Self-hosted faces — "The Field Manual" */
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource-variable/source-sans-3/wght.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
 html,
 body,
 #root {
@@ -5,7 +11,22 @@ body,
 }
 
 body {
+  /* real value set by the theme via --os-palette-background-ground;
+     this is the pre-hydration fallback for both schemes */
+  background: #f7f8f4;
   margin: 0;
+}
+
+:root[data-os-color-scheme='dark'] body {
+  background: #14170f;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -13,6 +34,12 @@ a {
   text-decoration: none;
 }
 
+a.os-entry-link:focus-visible {
+  outline: 2px solid var(--os-palette-primary-main);
+  outline-offset: -2px;
+}
+
+/* Rich text editor content — typography only; colours come from theme vars */
 .rich-text-editor-content {
   min-height: inherit;
   outline: none;
@@ -33,7 +60,7 @@ a {
 }
 
 .rich-text-editor-content .is-editor-empty:first-child::before {
-  color: #6b7280;
+  color: var(--os-palette-ink-faint, #8a8f82);
   content: attr(data-placeholder);
   float: left;
   height: 0;

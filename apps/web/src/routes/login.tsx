@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import GoogleIcon from '@mui/icons-material/Google';
-import MailOutlineIcon from '@mui/icons-material/MailOutlineOutlined';
-import PasswordIcon from '@mui/icons-material/PasswordOutlined';
-import { Alert, Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Divider, Stack, TextField, Typography } from '@mui/material';
 import {
   getCurrentSession,
   getGoogleConfig,
@@ -175,56 +173,89 @@ function LoginPage() {
   }, [navigate, search.redirect]);
 
   return (
-    <Paper sx={{ maxWidth: 480, mx: 'auto', p: 3 }}>
-      <Stack component="form" onSubmit={otpForm.handleSubmit} spacing={2}>
-        <Typography variant="h1">Login</Typography>
-        {otpForm.status ? <Alert severity="error">{otpForm.status}</Alert> : null}
-        <TextField
-          autoComplete="email"
-          label="Email"
-          name="email"
-          onBlur={otpForm.handleBlur}
-          onChange={otpForm.handleChange}
-          type="email"
-          value={otpForm.values.email}
-        />
-        <Button startIcon={<MailOutlineIcon />} type="submit" variant="contained">
-          Send OTP
-        </Button>
-        <Box ref={googleButtonRef} sx={{ minHeight: 40 }} />
-        {googleStatus ? (
-          <Alert icon={<GoogleIcon />} severity="info">
-            {googleStatus}
-          </Alert>
-        ) : null}
-      </Stack>
-      <Divider sx={{ my: 3 }} />
-      <Stack component="form" onSubmit={passwordForm.handleSubmit} spacing={2}>
-        <Typography variant="h2">Password login</Typography>
-        {passwordForm.status ? <Alert severity="error">{passwordForm.status}</Alert> : null}
-        <TextField
-          autoComplete="email"
-          label="Email"
-          name="email"
-          onBlur={passwordForm.handleBlur}
-          onChange={passwordForm.handleChange}
-          type="email"
-          value={passwordForm.values.email}
-        />
-        <TextField
-          autoComplete="current-password"
-          label="Password"
-          name="password"
-          onBlur={passwordForm.handleBlur}
-          onChange={passwordForm.handleChange}
-          type="password"
-          value={passwordForm.values.password}
-        />
-        <Button startIcon={<PasswordIcon />} type="submit" variant="outlined">
-          Login with password
-        </Button>
-      </Stack>
-    </Paper>
+    <Box
+      sx={{
+        alignItems: { md: 'center' },
+        display: { md: 'grid' },
+        gap: { md: 8 },
+        gridTemplateColumns: { md: '1fr 1fr' },
+        maxWidth: 900,
+        mx: 'auto',
+        minHeight: { md: 'calc(100vh - var(--os-appbar-height) - 96px)' },
+        pt: { xs: 4, md: 3 },
+      }}
+    >
+      <Box sx={{ mb: { xs: 5, md: 0 } }}>
+        <Typography variant="h1">Sign in</Typography>
+        <Typography color="text.secondary" sx={{ maxWidth: '38ch', mt: 2 }}>
+          Access your tickets and the support workspace. Customers can browse the{' '}
+          knowledgebase without an account.
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          borderLeft: { md: '1px solid' },
+          borderColor: { md: 'rule.main' },
+          pl: { md: 8 },
+        }}
+      >
+        <Stack component="form" onSubmit={otpForm.handleSubmit} spacing={2}>
+          <Typography variant="h4">Email a one-time code</Typography>
+          {otpForm.status ? <Alert severity="error">{otpForm.status}</Alert> : null}
+          <TextField
+            autoComplete="email"
+            label="Email"
+            name="email"
+            onBlur={otpForm.handleBlur}
+            onChange={otpForm.handleChange}
+            type="email"
+            value={otpForm.values.email}
+          />
+          <Button type="submit" variant="contained">
+            Send code
+          </Button>
+          <Box ref={googleButtonRef} sx={{ minHeight: 40 }} />
+          {googleStatus ? (
+            <Alert icon={<GoogleIcon />} severity="info">
+              {googleStatus}
+            </Alert>
+          ) : null}
+        </Stack>
+
+        <Divider sx={{ my: 4 }}>
+          <Typography sx={{ color: 'ink.faint' }} variant="overline">
+            or
+          </Typography>
+        </Divider>
+
+        <Stack component="form" onSubmit={passwordForm.handleSubmit} spacing={2}>
+          <Typography variant="h4">Use a password</Typography>
+          {passwordForm.status ? <Alert severity="error">{passwordForm.status}</Alert> : null}
+          <TextField
+            autoComplete="email"
+            label="Email"
+            name="email"
+            onBlur={passwordForm.handleBlur}
+            onChange={passwordForm.handleChange}
+            type="email"
+            value={passwordForm.values.email}
+          />
+          <TextField
+            autoComplete="current-password"
+            label="Password"
+            name="password"
+            onBlur={passwordForm.handleBlur}
+            onChange={passwordForm.handleChange}
+            type="password"
+            value={passwordForm.values.password}
+          />
+          <Button type="submit" variant="outlined">
+            Sign in with password
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 }
 
