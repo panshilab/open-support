@@ -16,28 +16,17 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-
-const assets = [
-  {
-    id: 'asset-1',
-    filename: 'invoice-upload.png',
-    mimeType: 'image/png',
-    size: '84 KB',
-    url: 'http://localhost:7001/uploads/media/invoice-upload.png',
-  },
-  {
-    id: 'asset-2',
-    filename: 'billing-guide.pdf',
-    mimeType: 'application/pdf',
-    size: '220 KB',
-    url: 'http://localhost:7001/uploads/media/billing-guide.pdf',
-  },
-];
+import type { MediaAsset } from '@open-support/schemas/media';
+import {
+  useDeleteMediaMutation,
+  useGetMediaAssetsQuery,
+  useUploadMediaMutation,
+} from '@open-support/services';
 
 export interface MediaPickerDialogProps {
   open: boolean;
   onClose: () => void;
-  onSelect?: (url: string) => void;
+  onSelect?: (asset: MediaAsset) => void;
 }
 
 export function MediaPickerDialog({ open, onClose, onSelect }: MediaPickerDialogProps) {
@@ -47,8 +36,15 @@ export function MediaPickerDialog({ open, onClose, onSelect }: MediaPickerDialog
       altText: '',
       caption: '',
     },
-    onSubmit: () => undefined,
+    onSubmit: async (values, helpers) => {
+      if (!values.file) return;
+      await uploadMutation.mutateAsync({ file: values.file, metadata: values });
+      helpers.resetForm();
+    },
   });
+  const assetsQuery = useGetMediaAssetsQuery();
+  const uploadMutation = useUploadMediaMutation();
+  const deleteMutation = useDeleteMediaMutation();
 
   return (
     <Dialog fullWidth maxWidth="md" onClose={onClose} open={open}>
@@ -93,7 +89,7 @@ export function MediaPickerDialog({ open, onClose, onSelect }: MediaPickerDialog
             </Stack>
           </Paper>
           <Grid container spacing={2}>
-            {assets.map((asset) => (
+            {(assetsQuery.data ?? []).map((asset) => (
               <Grid key={asset.id} size={{ xs: 12, sm: 6 }}>
                 <Paper sx={{ p: 2 }} variant="outlined">
                   <Stack spacing={1.5}>
@@ -109,13 +105,20 @@ export function MediaPickerDialog({ open, onClose, onSelect }: MediaPickerDialog
                     </Stack>
                     <Stack direction="row" spacing={1}>
                       <Button
-                        onClick={() => onSelect?.(asset.url)}
+                        disabled={!asset.mimeType.startsWith('image/')}
+                        onClick={() => onSelect?.(asset)}
                         size="small"
                         variant="contained"
                       >
                         Insert
                       </Button>
-                      <Button color="error" size="small" startIcon={<DeleteIcon />}>
+                      <Button
+                        color="error"
+                        disabled={deleteMutation.isPending}
+                        onClick={() => void deleteMutation.mutateAsync(asset.id)}
+                        size="small"
+                        startIcon={<DeleteIcon />}
+                      >
                         Delete
                       </Button>
                     </Stack>

@@ -2,12 +2,8 @@ import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import UploadIcon from '@mui/icons-material/Upload';
 import { Button, Chip, Paper, Stack, Typography } from '@mui/material';
+import { useGetMediaAssetsQuery } from '@open-support/services';
 import { MediaPickerDialog } from '../components/media-picker-dialog';
-
-const assets = [
-  ['invoice-upload.png', 'image/png', 'local'],
-  ['billing-guide.pdf', 'application/pdf', 'local'],
-];
 
 export const Route = createFileRoute('/admin/media')({
   component: AdminMediaPage,
@@ -15,6 +11,7 @@ export const Route = createFileRoute('/admin/media')({
 
 function AdminMediaPage() {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const assetsQuery = useGetMediaAssetsQuery();
 
   return (
     <Stack spacing={2}>
@@ -24,21 +21,21 @@ function AdminMediaPage() {
           Upload media
         </Button>
       </Stack>
-      {assets.map(([filename, mimeType, provider]) => (
-        <Paper key={filename} sx={{ p: 2 }}>
+      {(assetsQuery.data ?? []).map((asset) => (
+        <Paper key={asset.id} sx={{ p: 2 }}>
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={2}
             sx={{ justifyContent: 'space-between' }}
           >
             <div>
-              <Typography>{filename}</Typography>
+              <Typography>{asset.filename}</Typography>
               <Typography color="text.secondary" variant="body2">
-                {mimeType}
+                {asset.mimeType} · {Math.ceil(asset.size / 1024)} KB
               </Typography>
             </div>
             <Stack direction="row" spacing={1}>
-              <Chip label={provider} size="small" />
+              <Chip label={asset.provider} size="small" />
               <Chip label="ready" size="small" variant="outlined" />
             </Stack>
           </Stack>

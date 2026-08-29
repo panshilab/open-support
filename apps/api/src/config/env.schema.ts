@@ -61,6 +61,12 @@ export const EnvSchema = z
     MEDIA_PUBLIC_URL: requiredUrlSchema,
     MEDIA_MAX_FILE_SIZE_BYTES: z.coerce.number().int().min(1),
     MEDIA_ALLOWED_MIME_TYPES: requiredStringSchema,
+    MEDIA_S3_ENDPOINT: optionalUrlSchema,
+    MEDIA_S3_REGION: optionalStringSchema,
+    MEDIA_S3_BUCKET: optionalStringSchema,
+    MEDIA_S3_ACCESS_KEY_ID: optionalStringSchema,
+    MEDIA_S3_SECRET_ACCESS_KEY: optionalStringSchema,
+    MEDIA_S3_PREFIX: optionalStringSchema,
   })
   .superRefine((env, context) => {
     if (env.REDIS_HOST && !env.REDIS_PORT) {
@@ -85,6 +91,23 @@ export const EnvSchema = z
         message: 'SMTP_USER and SMTP_PASS must be configured together',
         path: ['SMTP_USER'],
       });
+    }
+
+    if (env.MEDIA_PROVIDER === 's3') {
+      for (const [key, value] of [
+        ['MEDIA_S3_REGION', env.MEDIA_S3_REGION],
+        ['MEDIA_S3_BUCKET', env.MEDIA_S3_BUCKET],
+        ['MEDIA_S3_ACCESS_KEY_ID', env.MEDIA_S3_ACCESS_KEY_ID],
+        ['MEDIA_S3_SECRET_ACCESS_KEY', env.MEDIA_S3_SECRET_ACCESS_KEY],
+      ] as const) {
+        if (!value) {
+          context.addIssue({
+            code: 'custom',
+            message: `${key} is required when MEDIA_PROVIDER is s3`,
+            path: [key],
+          });
+        }
+      }
     }
   });
 

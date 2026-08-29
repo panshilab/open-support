@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -20,6 +20,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Image from '@tiptap/extension-image';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { MediaPickerDialog } from './media-picker-dialog';
+import type { MediaAsset } from '@open-support/schemas/media';
 
 export interface RichTextEditorProps {
   label?: string;
@@ -40,6 +42,7 @@ export function RichTextEditor({
   helperText,
   minHeight = 180,
 }: RichTextEditorProps) {
+  const [mediaOpen, setMediaOpen] = useState(false);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -116,11 +119,7 @@ export function RichTextEditor({
           <ToolbarButton
             label="Insert image"
             onClick={() => {
-              const url = window.prompt('Image URL');
-
-              if (url) {
-                editor?.chain().focus().setImage({ src: url }).run();
-              }
+              setMediaOpen(true);
             }}
           >
             <ImageIcon fontSize="small" />
@@ -138,6 +137,22 @@ export function RichTextEditor({
         </Box>
       </Paper>
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
+      <MediaPickerDialog
+        onClose={() => setMediaOpen(false)}
+        onSelect={(asset: MediaAsset) => {
+          editor
+            ?.chain()
+            .focus()
+            .setImage({
+              alt: asset.altText ?? '',
+              src: asset.url,
+              title: asset.caption ?? undefined,
+            })
+            .run();
+          setMediaOpen(false);
+        }}
+        open={mediaOpen}
+      />
     </FormControl>
   );
 }

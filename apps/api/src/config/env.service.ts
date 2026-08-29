@@ -135,6 +135,14 @@ export class EnvService {
         .split(',')
         .map((mimeType) => mimeType.trim())
         .filter(Boolean),
+      s3: {
+        endpoint: this.config.get('MEDIA_S3_ENDPOINT', { infer: true }),
+        region: this.config.get('MEDIA_S3_REGION', { infer: true }),
+        bucket: this.config.get('MEDIA_S3_BUCKET', { infer: true }),
+        accessKeyId: this.config.get('MEDIA_S3_ACCESS_KEY_ID', { infer: true }),
+        secretAccessKey: this.config.get('MEDIA_S3_SECRET_ACCESS_KEY', { infer: true }),
+        prefix: this.config.get('MEDIA_S3_PREFIX', { infer: true }),
+      },
     };
   }
 }

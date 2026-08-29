@@ -68,7 +68,8 @@ async function request<T>(
   }
 
   const headers = new Headers(axiosServiceInstance.defaults.headers);
-  if (config.body !== undefined) {
+  const isFormData = typeof FormData !== 'undefined' && config.body instanceof FormData;
+  if (config.body !== undefined && !isFormData) {
     headers.set('Content-Type', 'application/json');
   }
   if (bearerToken) {
@@ -77,7 +78,12 @@ async function request<T>(
   new Headers(config.headers).forEach((value, key) => headers.set(key, value));
 
   const response = await fetch(createUrl(path, axiosServiceInstance.defaults.baseURL), {
-    body: config.body === undefined ? undefined : JSON.stringify(config.body),
+    body:
+      config.body === undefined
+        ? undefined
+        : isFormData
+          ? (config.body as FormData)
+          : JSON.stringify(config.body),
     credentials: 'include',
     headers,
     method,
