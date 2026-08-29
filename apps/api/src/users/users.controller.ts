@@ -28,6 +28,13 @@ export class UsersController {
     return this.sessions.toSessionUser(await this.users.getById(user.id));
   }
 
+  @Get('staff')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  listStaff() {
+    return this.users.listStaff();
+  }
+
   @Patch('me/profile')
   async updateProfile(@CurrentUser() user: SessionUser, @Body() body: UpdateProfileDto) {
     return this.sessions.toSessionUser(

@@ -1,6 +1,10 @@
 import { createFileRoute, Link, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { Box, Stack, Typography } from '@mui/material';
-import { getCurrentSession } from '@open-support/services';
+import {
+  getCurrentSession,
+  useDashboardStatsQuery,
+  useRecentTicketsQuery,
+} from '@open-support/services';
 import type { UserRole } from '@open-support/schemas/user';
 import { EmptyState } from '../components/empty-state';
 import { TicketStatus } from '../components/ticket-status';
@@ -18,20 +22,6 @@ const ADMIN_SECTIONS: { label: string; to: string; exact?: boolean }[] = [
   { label: 'Staff', to: '/admin/staff' },
   { label: 'Settings', to: '/admin/settings' },
   { label: 'Audit logs', to: '/admin/audit-logs' },
-];
-
-// Dashboard content — hardcoded sample data (screen not yet wired to services).
-const OVERVIEW_STATS = [
-  ['Open tickets', '14'],
-  ['Resolved this week', '82'],
-  ['Awaiting reply', '4'],
-  ['Published articles', '36'],
-] as const;
-
-const RECENT_TICKETS: [string, string, string][] = [
-  ['TS-1048', 'Invoice upload fails', 'customer_reply'],
-  ['TS-1047', 'Account invite expired', 'open'],
-  ['TS-1042', 'Billing email needs update', 'replied'],
 ];
 
 export const Route = createFileRoute('/admin')({
@@ -93,9 +83,7 @@ function AdminLayout() {
           Administration
         </Typography>
         {ADMIN_SECTIONS.map((section) => {
-          const active = section.exact
-            ? pathname === section.to
-            : pathname.startsWith(section.to);
+          const active = section.exact ? pathname === section.to : pathname.startsWith(section.to);
           return (
             <Typography
               key={section.to}
@@ -122,14 +110,25 @@ function AdminLayout() {
         })}
       </Box>
 
-      <Box sx={{ minWidth: 0, pb: 6 }}>
-        {isOverview ? <AdminOverview /> : <Outlet />}
-      </Box>
+      <Box sx={{ minWidth: 0, pb: 6 }}>{isOverview ? <AdminOverview /> : <Outlet />}</Box>
     </Box>
   );
 }
 
 function AdminOverview() {
+  const statsQuery = useDashboardStatsQuery();
+  const ticketsQuery = useRecentTicketsQuery();
+  const stats = statsQuery.data;
+  const overviewStats = stats
+    ? ([
+        ['Open tickets', stats.openTickets],
+        ['Resolved tickets', stats.resolvedTickets],
+        ['Awaiting reply', stats.customerReplies],
+        ['Published articles', stats.articles],
+      ] as const)
+    : [];
+  const recentTickets = ticketsQuery.data ?? [];
+
   return (
     <Stack spacing={4}>
       <PageHeader title="Overview" />
@@ -140,7 +139,7 @@ function AdminOverview() {
           borderColor: 'rule.main',
         }}
       >
-        {OVERVIEW_STATS.map(([label, value]) => (
+        {overviewStats.map(([label, value]) => (
           <Stack
             key={label}
             direction="row"
@@ -168,13 +167,13 @@ function AdminOverview() {
         <Typography sx={{ mb: 1.5 }} variant="h4">
           Recent tickets
         </Typography>
-        {RECENT_TICKETS.length === 0 ? (
+        {recentTickets.length === 0 ? (
           <EmptyState message="New tickets will show here." title="Queue is clear" />
         ) : (
           <Stack sx={{ borderTop: '1px solid', borderColor: 'rule.main' }}>
-            {RECENT_TICKETS.map(([id, title, status]) => (
+            {recentTickets.map((ticket) => (
               <Stack
-                key={id}
+                key={ticket.id}
                 component={Link}
                 to="/admin/tickets"
                 direction="row"
@@ -190,12 +189,12 @@ function AdminOverview() {
                 }}
               >
                 <Box>
-                  <Typography variant="body2">{title}</Typography>
+                  <Typography variant="body2">{ticket.title}</Typography>
                   <Typography color="text.secondary" variant="caption">
-                    {id}
+                    {ticket.id}
                   </Typography>
                 </Box>
-                <TicketStatus status={status} />
+                <TicketStatus status={ticket.status} />
               </Stack>
             ))}
           </Stack>

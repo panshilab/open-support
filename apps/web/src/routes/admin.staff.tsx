@@ -1,26 +1,18 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
+import { Alert, Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import {
-  Alert,
-  Box,
-  Button,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { useCreateStaffInvitationMutation } from '@open-support/services';
+  sendStaffHeartbeat,
+  useCreateStaffInvitationMutation,
+  useStaffQuery,
+  useStaffPresenceQuery,
+  useStaffStatsQuery,
+  useUpdateStaffRoleMutation,
+} from '@open-support/services';
 import { useFormik, type FormikHelpers } from 'formik';
 import type { InviteStaffInput } from '@open-support/schemas/dashboard';
 import { PageHeader } from '../components/page-header';
 import { Surface } from '../components/surface';
-
-// Presence list — hardcoded sample data (not yet wired to services).
-const STAFF: [string, string, string, string, string][] = [
-  ['Asif Saho', 'asifsaho@example.com', 'admin', 'online', '18'],
-  ['Support Agent', 'agent@example.com', 'support_agent', 'away', '42'],
-  ['Billing Lead', 'billing@example.com', 'support_agent', 'offline', '27'],
-];
 
 export const Route = createFileRoute('/admin/staff')({
   component: AdminStaffPage,
@@ -28,6 +20,22 @@ export const Route = createFileRoute('/admin/staff')({
 
 function AdminStaffPage() {
   const createStaffInvitationMutation = useCreateStaffInvitationMutation();
+  const presenceQuery = useStaffPresenceQuery();
+  const staffStatsQuery = useStaffStatsQuery();
+  const staffQuery = useStaffQuery();
+  const updateRoleMutation = useUpdateStaffRoleMutation();
+  const staffStats = new Map(
+    (staffStatsQuery.data ?? []).map((staff) => [staff.id, staff.replyCount]),
+  );
+  const heartbeat = useCallback(() => {
+    void sendStaffHeartbeat();
+  }, []);
+
+  useEffect(() => {
+    heartbeat();
+    const timer = window.setInterval(heartbeat, 60_000);
+    return () => window.clearInterval(timer);
+  }, [heartbeat]);
   const handleSubmit = useCallback(
     async (values: InviteStaffInput, helpers: FormikHelpers<InviteStaffInput>) => {
       helpers.setStatus(undefined);
@@ -99,32 +107,53 @@ function AdminStaffPage() {
             Presence &amp; replies
           </Typography>
           <Stack sx={{ borderTop: '1px solid', borderColor: 'rule.main' }}>
-            {STAFF.map(([name, email, role, status, replies]) => (
-              <Stack
-                key={email}
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={1}
-                sx={{
-                  borderBottom: '1px solid',
-                  borderColor: 'rule.main',
-                  justifyContent: 'space-between',
-                  py: 1.75,
-                }}
-              >
-                <Box>
-                  <Typography variant="body2">{name}</Typography>
-                  <Typography color="text.secondary" variant="caption">
-                    {email} &middot; {role}
-                  </Typography>
-                </Box>
-                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexShrink: 0 }}>
-                  <PresenceTag status={status} />
-                  <Typography sx={{ color: 'ink.faint' }} variant="caption">
-                    {replies} replies
-                  </Typography>
+            {(presenceQuery.data ?? []).map((presence) => {
+              const staff = staffQuery.data?.find((candidate) => candidate.id === presence.userId);
+              return (
+                <Stack
+                  key={presence.userId}
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={1}
+                  sx={{
+                    borderBottom: '1px solid',
+                    borderColor: 'rule.main',
+                    justifyContent: 'space-between',
+                    py: 1.75,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="body2">{presence.name ?? 'Unnamed teammate'}</Typography>
+                    <Typography color="text.secondary" variant="caption">
+                      {presence.email} &middot; {presence.role}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexShrink: 0 }}>
+                    <PresenceTag status={presence.status} />
+                    {staff ? (
+                      <TextField
+                        aria-label={`Role for ${staff.email}`}
+                        onChange={(event) =>
+                          void updateRoleMutation.mutateAsync({
+                            role: event.target.value as 'admin' | 'support_agent',
+                            userId: staff.id,
+                          })
+                        }
+                        select
+                        size="small"
+                        sx={{ minWidth: 150 }}
+                        value={staff.role}
+                      >
+                        <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="support_agent">Support agent</MenuItem>
+                      </TextField>
+                    ) : null}
+                    <Typography sx={{ color: 'ink.faint' }} variant="caption">
+                      {staffStats.get(presence.userId) ?? 0} replies
+                    </Typography>
+                  </Stack>
                 </Stack>
-              </Stack>
-            ))}
+              );
+            })}
           </Stack>
         </Box>
       </Box>

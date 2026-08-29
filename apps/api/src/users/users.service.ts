@@ -38,6 +38,14 @@ export class UsersService {
     return user;
   }
 
+  listStaff() {
+    return this.users.find({
+      select: ['id', 'email', 'name', 'role', 'createdAt', 'updatedAt'],
+      where: [{ role: 'admin' }, { role: 'support_agent' }],
+      order: { email: 'ASC' },
+    });
+  }
+
   async findOrCreateLocalUser(email: string, name?: string | null) {
     const normalizedEmail = email.toLowerCase();
     const adminEmails = this.env.adminEmails;
@@ -114,6 +122,9 @@ export class UsersService {
   }
 
   async updateRole(actor: SessionUser, userId: string, input: UpdateUserRoleInput) {
+    if (actor.id === userId) {
+      throw new NotFoundException('You cannot change your own role');
+    }
     const user = await this.getById(userId);
     const previousRole = user.role;
     user.role = input.role;

@@ -10,21 +10,30 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import { useAdminSettingsQuery, upsertAdminSetting } from '@open-support/services';
+import { useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/admin/settings')({
   component: AdminSettingsPage,
 });
 
 function AdminSettingsPage() {
+  const settingsQuery = useAdminSettingsQuery();
+  const saveSettingsMutation = useMutation({
+    mutationFn: upsertAdminSetting,
+    meta: { successMessage: 'Settings saved' },
+  });
+  const saved = settingsQuery.data?.find((setting) => setting.key === 'portal')?.value;
   const form = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      smtpFromEmail: 'support@example.com',
-      googleClientId: '',
-      redisEnabled: true,
-      pwaEnabled: true,
-      offlinePageEnabled: true,
+      smtpFromEmail: String(saved?.smtpFromEmail ?? ''),
+      googleClientId: String(saved?.googleClientId ?? ''),
+      redisEnabled: saved?.redisEnabled !== false,
+      pwaEnabled: saved?.pwaEnabled !== false,
+      offlinePageEnabled: saved?.offlinePageEnabled !== false,
     },
-    onSubmit: () => undefined,
+    onSubmit: (values) => saveSettingsMutation.mutate({ key: 'portal', value: values }),
   });
 
   return (
@@ -81,7 +90,12 @@ function AdminSettingsPage() {
             label="Offline page enabled"
           />
         </Stack>
-        <Button startIcon={<SaveIcon />} type="submit" variant="contained">
+        <Button
+          disabled={saveSettingsMutation.isPending}
+          startIcon={<SaveIcon />}
+          type="submit"
+          variant="contained"
+        >
           Save settings
         </Button>
       </Stack>
