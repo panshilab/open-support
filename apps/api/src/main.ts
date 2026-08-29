@@ -5,6 +5,7 @@ import { WsAdapter } from '@nestjs/platform-ws';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { EnvService } from './config/env.service';
+import { HttpExceptionFilter } from './observability/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,7 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalPipes(new ZodValidationPipe());
+  app.useGlobalFilters(app.get(HttpExceptionFilter));
   app.use('/uploads/media', express.static(env.media.localDir));
   app.enableShutdownHooks();
 
