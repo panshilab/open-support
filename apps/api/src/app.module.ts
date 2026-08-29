@@ -11,6 +11,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
 import { AssistantModule } from './assistant/assistant.module';
 import { RealtimeModule } from './realtime/realtime.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RealtimeModule } from './realtime/realtime.module';
     TicketsModule,
     AssistantModule,
     RealtimeModule,
+    ChatModule,
   ],
   controllers: [HealthController],
 })

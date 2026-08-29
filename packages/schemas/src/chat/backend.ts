@@ -24,3 +24,12 @@ export class StartChatDto extends createZodDto(StartChatSchema) {}
 export class SendChatMessageDto extends createZodDto(SendChatMessageSchema) {}
 export class ChatTokenDto extends createZodDto(ChatTokenSchema) {}
 export class ChatTypingDto extends createZodDto(ChatTypingSchema) {}
+
+export const ChatIdParamSchema = z.object({ chatId: z.string().uuid() });
+export class ChatIdParamDto extends createZodDto(ChatIdParamSchema) {}
+
+export const UpdateChatStatusSchema = z.object({
+  status: z.enum(['active', 'closed']),
+});
+export type UpdateChatStatusInput = z.infer<typeof UpdateChatStatusSchema>;
+export class UpdateChatStatusDto extends createZodDto(UpdateChatStatusSchema) {}

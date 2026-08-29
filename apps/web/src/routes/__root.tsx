@@ -33,6 +33,7 @@ import {
 import { getCurrentSession, useRealtime } from '@open-support/services';
 import { AppProviders, useSnackbar } from '../providers/app-providers';
 import { green, theme } from '../theme';
+import { ChatWidget } from '../components/chat-widget';
 import '../styles.css';
 
 const NAV_ITEMS = [
@@ -275,6 +276,7 @@ function Shell() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      {authenticated ? <ChatWidget /> : null}
       {navigating ? (
         <LinearProgress sx={{ left: 0, position: 'fixed', right: 0, top: 0, zIndex: 2000 }} />
       ) : null}

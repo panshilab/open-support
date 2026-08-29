@@ -3,6 +3,7 @@ export * from './assistant';
 export * from './auth';
 export * from './axios';
 export * from './config';
+export * from './chat';
 export * from './knowledge-base';
 export * from './media';
 export * from './query-client';
