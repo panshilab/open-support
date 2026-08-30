@@ -23,7 +23,9 @@ export class RealtimeGateway {
   ) {}
 
   handleConnection(client: AuthenticatedSocket, request: IncomingMessage) {
-    const user = this.sessions.parseToken(this.readCookie(request.headers.cookie));
+    const user = this.sessions.parseToken(
+      this.readBearerToken(request.headers.authorization) ?? this.readCookie(request.headers.cookie),
+    );
     if (!user) {
       client.close(1008, 'Authentication required');
       return;
@@ -54,5 +56,10 @@ export class RealtimeGateway {
       cookie.startsWith(`${this.sessions.cookieName}=`),
     );
     return sessionCookie?.slice(this.sessions.cookieName.length + 1);
+  }
+
+  private readBearerToken(authorization: string | undefined) {
+    if (!authorization?.startsWith('Bearer ')) return undefined;
+    return authorization.slice('Bearer '.length).trim() || undefined;
   }
 }

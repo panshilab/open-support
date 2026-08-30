@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Open Support",
+    "slug": "open-support",
+    "scheme": "opensupport",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "plugins": ["expo-router", "expo-secure-store"]
+  }
+}

@@ -17,3 +17,7 @@ export interface SessionUser {
 export interface SessionResponse {
   user: SessionUser;
 }
+
+export interface MobileSessionResponse extends SessionResponse {
+  token: string;
+}

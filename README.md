@@ -96,6 +96,16 @@ This is a good fit for the browser-based portal because the session is stored in
 
 JWT bearer tokens may be useful later for mobile apps, third-party API clients, or service-to-service integrations. If the app needs stronger session revocation, add a `sessionVersion`, shorter TTLs, or DB-backed session checks for sensitive admin actions.
 
+### Mobile API connection
+
+Native clients use the same signed session token as a bearer token. Mobile OTP and password login are available at `/api/auth/mobile/verify-otp` and `/api/auth/mobile/password`; these endpoints return `{ user, token }` without setting a browser cookie. Send the token on subsequent requests as:
+
+```http
+Authorization: Bearer <token>
+```
+
+The mobile API origin is configured with `EXPO_PUBLIC_API_URL`, for example `http://192.168.1.10:7001` on a physical device. The shared service client appends `/api`, so do not include `/api` in this value. The mobile app stores the returned token in the platform secure store and restores it on launch.
+
 ## Google Login Setup
 
 Create a Google OAuth web client ID:

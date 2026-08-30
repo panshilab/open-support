@@ -17,4 +17,10 @@ export class InvitationsController {
     response.setHeader('Set-Cookie', this.sessions.createCookie(user));
     return { user: this.sessions.toSessionUser(user) };
   }
+
+  @Post('mobile/accept')
+  async mobileAccept(@Body() body: AcceptInvitationDto) {
+    const user = await this.adminOps.acceptInvitation(body as AcceptInvitationInput);
+    return { user: this.sessions.toSessionUser(user), token: this.sessions.createToken(user) };
+  }
 }

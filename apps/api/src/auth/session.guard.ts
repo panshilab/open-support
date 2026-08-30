@@ -12,7 +12,7 @@ export class SessionGuard implements CanActivate {
 
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
-    const user = this.sessions.parseToken(this.readCookie(request));
+    const user = this.sessions.parseToken(this.readBearerToken(request) ?? this.readCookie(request));
 
     if (!user) {
       throw new UnauthorizedException('Authentication required');
@@ -30,5 +30,11 @@ export class SessionGuard implements CanActivate {
     );
 
     return sessionCookie?.slice(this.sessions.cookieName.length + 1);
+  }
+
+  private readBearerToken(request: Request) {
+    const authorization = request.headers.authorization;
+    if (!authorization?.startsWith('Bearer ')) return undefined;
+    return authorization.slice('Bearer '.length).trim() || undefined;
   }
 }

@@ -36,6 +36,12 @@ export class AuthController {
     return { user: this.sessions.toSessionUser(user) };
   }
 
+  @Post('mobile/verify-otp')
+  async mobileVerifyOtp(@Body() body: VerifyOtpDto) {
+    const user = await this.auth.verifyOtp(body as VerifyOtpInput);
+    return { user: this.sessions.toSessionUser(user), token: this.sessions.createToken(user) };
+  }
+
   @Post('password')
   async passwordLogin(
     @Body() body: PasswordLoginDto,
@@ -44,6 +50,12 @@ export class AuthController {
     const user = await this.auth.passwordLogin(body as PasswordLoginInput);
     response.setHeader('Set-Cookie', this.sessions.createCookie(user));
     return { user: this.sessions.toSessionUser(user) };
+  }
+
+  @Post('mobile/password')
+  async mobilePassword(@Body() body: PasswordLoginDto) {
+    const user = await this.auth.passwordLogin(body as PasswordLoginInput);
+    return { user: this.sessions.toSessionUser(user), token: this.sessions.createToken(user) };
   }
 
   @Post('change-password')
