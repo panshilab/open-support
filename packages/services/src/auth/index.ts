@@ -3,6 +3,7 @@ export * from './change-password';
 export * from './get-current-session';
 export * from './get-google-config';
 export * from './google-login';
+export * from './logout';
 export * from './mobile-auth';
 export * from './password-login';
 export * from './send-otp';

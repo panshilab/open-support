@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import {
   HeadContent,
   Link,
@@ -15,6 +15,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   AppBar,
   Box,
@@ -24,13 +25,15 @@ import {
   Drawer,
   IconButton,
   LinearProgress,
+  Menu,
+  MenuItem,
   Stack,
   ThemeProvider,
   Toolbar,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { getCurrentSession, useRealtime } from '@open-support/services';
+import { getCurrentSession, logout, queryClient, useRealtime } from '@open-support/services';
 import { AppProviders, useSnackbar } from '../providers/app-providers';
 import { green, theme } from '../theme';
 import { ChatWidget } from '../components/chat-widget';
@@ -267,12 +270,29 @@ function NavLink({
 
 function Shell() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState<HTMLButtonElement | null>(null);
   const { session } = Route.useRouteContext();
   const { notifySuccess } = useSnackbar();
+  const navigate = Route.useNavigate();
   useRealtime(session?.user, notifySuccess);
   const authenticated = Boolean(session);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const navigating = useRouterState({ select: (state) => state.status === 'pending' });
+  const handleProfileMenuOpen = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    setProfileMenuAnchor(event.currentTarget);
+  }, []);
+  const handleProfileMenuClose = useCallback(() => {
+    setProfileMenuAnchor(null);
+  }, []);
+  const handleLogout = useCallback(async () => {
+    handleProfileMenuClose();
+    try {
+      await logout();
+    } finally {
+      queryClient.clear();
+      await navigate({ href: '/login' });
+    }
+  }, [handleProfileMenuClose, navigate]);
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -322,14 +342,26 @@ function Shell() {
             <Tooltip title="Profile">
               <IconButton
                 aria-label="Profile"
-                component={Link}
                 size="small"
                 sx={{ borderRadius: '2px', color: 'ink.muted' }}
-                to="/profile"
+                onClick={handleProfileMenuOpen}
               >
                 <PersonOutlineIcon fontSize="small" />
               </IconButton>
             </Tooltip>
+            <Menu
+              anchorEl={profileMenuAnchor}
+              onClose={handleProfileMenuClose}
+              open={Boolean(profileMenuAnchor)}
+            >
+              <MenuItem component={Link} onClick={handleProfileMenuClose} to="/profile">
+                Profile
+              </MenuItem>
+              <MenuItem onClick={() => void handleLogout()}>
+                <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+                Log out
+              </MenuItem>
+            </Menu>
             {!authenticated ? (
               <Button
                 component={Link}
